@@ -2,6 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Recoleta:wght@400&family=Sofia+Pro:wght@400;300&display=swap');
+
 html {
 	scroll-behavior: smooth;
+}
+
+.shutter {
+	position: relative;
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.shutter-blades {
+	animation: shutter-close-open 3s ease-in-out forwards;
+}
+
+@keyframes shutter-close-open {
+	0% {
+		transform: rotate(0deg);
+	}
+	50% {
+		transform: rotate(720deg); /* Full shutter close */
+	}
+	100% {
+		transform: rotate(0deg); /* Reopen the shutter */
+	}
+}
+
+.blade {
+	fill: black;
+	transform-origin: 100px 100px; /* Center of the SVG */
+	animation: blade-animation 3s ease-in-out forwards;
+}
+
+@keyframes blade-animation {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(0); /* Close all blades to the center */
+	}
+	100% {
+		transform: scale(1); /* Reopen all blades */
+	}
 }

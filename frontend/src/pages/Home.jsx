@@ -6,12 +6,16 @@ import GallerySections from '../components/GallerySections';
 
 const Home = () => {
 	return (
-		<div>
+		<div className="bg-neutralGray text-earthyBrown">
 			<Navbar />
-			<h1>Photographer Portfolio</h1>
 			<Hero />
-			<Gallery />
-			<GallerySections />
+			<div className="px-4 sm:px-6 lg:px-8">
+				<h1 className="text-5xl font-heading text-center mt-10 mb-4">
+					Photographer Portfolio
+				</h1>
+				<Gallery />
+				<GallerySections />
+			</div>
 		</div>
 	);
 };
