@@ -3,6 +3,8 @@ import Gallery from '../components/Gallery';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import GallerySections from '../components/GallerySections';
+import ContactForm from '../components/ContactForm';
+import Footer from '../components/Footer';
 
 const Home = () => {
 	return (
@@ -15,6 +17,8 @@ const Home = () => {
 				</h1>
 				<Gallery />
 				<GallerySections />
+				<ContactForm />
+				<Footer />
 			</div>
 		</div>
 	);

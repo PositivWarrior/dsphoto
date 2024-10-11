@@ -66,8 +66,8 @@ const galleryData = [
 		],
 	},
 	{
-		id: 'landskape',
-		title: 'Landskape',
+		id: 'landscape',
+		title: 'Landscape',
 		images: [
 			'https://0d7a648345.clvaw-cdnwnd.com/d558e59b0128d2ae079b0ab4f69601a0/200000533-d5e6ad5e6c/450/HZ1A8787.webp?ph=0d7a648345',
 			'https://0d7a648345.clvaw-cdnwnd.com/d558e59b0128d2ae079b0ab4f69601a0/200000537-471c3471c5/450/IMG_6465.webp?ph=0d7a648345',
