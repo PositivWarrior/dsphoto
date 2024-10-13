@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
 	return (
@@ -6,39 +7,39 @@ const Navbar = () => {
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-between items-center h-16">
 					<div className="text-2xl font-heading text-lollipop">
-						<a href="#landing">DS Photo</a>
+						<Link to="/">DS Photo</Link>
 					</div>
 					<div className="hidden md:flex space-x-6">
-						<a
-							href="#about"
+						<Link
+							to="/about"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
 							About
-						</a>
-						<a
-							href="#contact"
+						</Link>
+						<Link
+							to="/contact"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
 							Contact
-						</a>
-						<a
-							href="#book"
+						</Link>
+						<Link
+							to="/book"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
 							Book Time
-						</a>
-						<a
-							href="#prices"
+						</Link>
+						<Link
+							to="/prices"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
 							Prices
-						</a>
-						<a
-							href="#gallery"
+						</Link>
+						<Link
+							to="/gallery"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
 							Gallery
-						</a>
+						</Link>
 					</div>
 					{/* Add a mobile menu button for smaller screens */}
 					<div className="md:hidden">

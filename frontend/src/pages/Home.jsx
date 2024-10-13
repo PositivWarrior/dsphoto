@@ -1,13 +1,8 @@
 import React from 'react';
-// import Gallery from '../components/Gallery';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import About from '../components/About';
-import Contact from '../components/Contact';
-import BookTime from '../components/BookTime';
-import Prices from '../components/Prices';
 import GallerySections from '../components/GallerySections';
-import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
 
 const Home = () => {
@@ -20,12 +15,7 @@ const Home = () => {
 					Photographer Portfolio
 				</h1>
 				<About />
-				<Contact />
-				<BookTime />
-				<Prices />
-				{/* <Gallery /> */}
 				<GallerySections />
-				<ContactForm />
 				<Footer />
 			</div>
 		</div>
