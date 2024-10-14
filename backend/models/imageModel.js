@@ -13,6 +13,10 @@ const imageSchema = mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		category: {
+			type: String,
+			required: true,
+		},
 		tags: [String],
 	},
 	{
