@@ -6,7 +6,7 @@ const Hero = () => {
 
 	return (
 		<div
-			className="relative h-screen bg-cover bg-center"
+			className="relative h-screen bg-cover bg-center mt-10"
 			style={{
 				backgroundImage: `url('https://0d7a648345.clvaw-cdnwnd.com/d558e59b0128d2ae079b0ab4f69601a0/200000738-cea37cea38/700/4T5A8707FB.webp?ph=0d7a648345')`,
 			}}
