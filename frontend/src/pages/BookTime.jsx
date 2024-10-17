@@ -77,7 +77,7 @@ const BookTime = () => {
 	};
 
 	return (
-		<div className="max-w-md mx-auto p-8 bg-white shadow-lg rounded-lg">
+		<div className="max-w-md mx-auto p-8 bg-white shadow-lg rounded-lg mt-16">
 			<h2 className="text-2xl font-bold mb-6">Book a Session</h2>
 			<form onSubmit={handleSubmit} className="space-y-6">
 				<div>
