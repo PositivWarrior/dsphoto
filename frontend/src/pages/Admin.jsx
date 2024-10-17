@@ -15,7 +15,11 @@ const Admin = () => {
 	useEffect(() => {
 		// Fetch all bookings from the API
 		const fetchBookings = async () => {
-			const response = await fetch('/api/bookings');
+			const response = await fetch('http://localhost:8000/api/bookings', {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem('token')}`,
+				},
+			});
 			const data = await response.json();
 			setBookings(data.bookings);
 		};
@@ -25,18 +29,26 @@ const Admin = () => {
 
 	const handleAction = async (bookingId, status) => {
 		try {
-			const response = await fetch(`/api/bookings/${bookingId}`, {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ status }),
-			});
+			const response = await fetch(
+				`http://localhost:8000/api/bookings/${bookingId}`,
+				{
+					method: 'PATCH',
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem(
+							'token',
+						)}`,
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ status }),
+				},
+			);
 			const updatedBooking = await response.json();
 
-			// Update the bookings list
+			// Update the bookings list with the new status
 			setBookings((prevBookings) =>
 				prevBookings.map((booking) =>
-					booking._id === updatedBooking.booking._id
-						? updatedBooking.booking
+					booking._id === updatedBooking._id
+						? updatedBooking
 						: booking,
 				),
 			);
@@ -56,11 +68,20 @@ const Admin = () => {
 							className="mb-4 p-4 bg-white shadow-lg rounded-lg"
 						>
 							<p>
-								<strong>{booking.name}</strong> ({booking.email}
-								) - {booking.date}
+								<strong>Name:</strong> {booking.name}
 							</p>
-							<p>{booking.message}</p>
-							<p>Status: {booking.status}</p>
+							<p>
+								<strong>Email:</strong> {booking.email}
+							</p>
+							<p>
+								<strong>Date:</strong> {booking.date}
+							</p>
+							<p>
+								<strong>Message:</strong> {booking.message}
+							</p>
+							<p>
+								<strong>Status:</strong> {booking.status}
+							</p>
 							<div className="mt-4">
 								<button
 									className="mr-4 bg-green-500 text-white px-4 py-2 rounded"

@@ -1,4 +1,3 @@
-// src/components/UploadForm.js
 import React, { useState } from 'react';
 import { uploadImage } from '../api';
 

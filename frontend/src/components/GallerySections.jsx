@@ -1,6 +1,6 @@
 import React from 'react';
 
-const galleryData = [
+export const galleryData = [
 	{
 		id: 'weddings',
 		title: 'Weddings',
