@@ -28,32 +28,52 @@ const Admin = () => {
 	}, []);
 
 	const handleAction = async (bookingId, status) => {
-		try {
-			const response = await fetch(
-				`http://localhost:8000/api/bookings/${bookingId}`,
-				{
-					method: 'PATCH',
+		if (status === 'declined') {
+			// If status is 'declined', delete the booking
+			try {
+				await fetch(`http://localhost:8000/api/bookings/${bookingId}`, {
+					method: 'DELETE',
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem(
 							'token',
 						)}`,
-						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({ status }),
-				},
-			);
-			const updatedBooking = await response.json();
-
-			// Update the bookings list with the new status
-			setBookings((prevBookings) =>
-				prevBookings.map((booking) =>
-					booking._id === updatedBooking._id
-						? updatedBooking
-						: booking,
-				),
-			);
-		} catch (error) {
-			console.error('Error updating booking:', error);
+				});
+				// Remove the booking from the state
+				setBookings((prevBookings) =>
+					prevBookings.filter((booking) => booking._id !== bookingId),
+				);
+			} catch (error) {
+				console.error('Error deleting booking:', error);
+			}
+		} else {
+			// If status is 'accepted', update the booking status
+			try {
+				const response = await fetch(
+					`http://localhost:8000/api/bookings/${bookingId}`,
+					{
+						method: 'PATCH',
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem(
+								'token',
+							)}`,
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ status }),
+					},
+				);
+				const updatedBooking = await response.json();
+				// Update the booking in the state
+				setBookings((prevBookings) =>
+					prevBookings.map((booking) =>
+						booking._id === updatedBooking._id
+							? updatedBooking
+							: booking,
+					),
+				);
+			} catch (error) {
+				console.error('Error updating booking status:', error);
+			}
 		}
 	};
 
@@ -83,6 +103,7 @@ const Admin = () => {
 								<strong>Status:</strong> {booking.status}
 							</p>
 							<div className="mt-4">
+								{/* Accept Button */}
 								<button
 									className="mr-4 bg-green-500 text-white px-4 py-2 rounded"
 									onClick={() =>
@@ -91,6 +112,7 @@ const Admin = () => {
 								>
 									Accept
 								</button>
+								{/* Decline Button (also deletes the booking) */}
 								<button
 									className="bg-red-500 text-white px-4 py-2 rounded"
 									onClick={() =>
