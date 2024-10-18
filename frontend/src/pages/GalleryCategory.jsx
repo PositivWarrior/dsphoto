@@ -1,27 +1,22 @@
+// src/pages/GalleryCategory.jsx
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import galleryData from '../components/GallerySections'; // Ensure correct import
+import galleryData from '../data/galleryData'; // Import the gallery data
 import Carousel from '../components/Carousel';
 
 const GalleryCategory = () => {
 	const { category } = useParams();
 
-	// Use .filter() to find the category (returns an array)
-	const filteredCategoryData = galleryData.filter(
-		(section) => section.id === category,
-	);
+	// Find the category data based on the URL parameter
+	const categoryData = galleryData.find((section) => section.id === category);
 
-	// If no matching category is found, return an error message
-	if (filteredCategoryData.length === 0) {
+	if (!categoryData) {
 		return (
 			<h2 className="text-center text-red-600 mt-10">
 				Category not found
 			</h2>
 		);
 	}
-
-	// Since .filter() returns an array, get the first element
-	const categoryData = filteredCategoryData[0];
 
 	// Get the first 5 images for the carousel
 	const carouselImages = categoryData.images.slice(0, 5);
