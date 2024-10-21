@@ -14,26 +14,24 @@ export const uploadImage = async (req, res) => {
 
 	if (!title || !description || !category || !req.file) {
 		return res.status(400).json({
-			message:
-				'Please provide all required fields: title, description, category, and image.',
+			message: 'Please provide all required fields including the image',
 		});
 	}
 
-	const imageUrl = `/uploads/${req.file.filename}`;
+	const imageUrl = req.file.location;
 
 	try {
-		const image = new Image({
+		const newImage = new Image({
 			title,
 			description,
 			imageUrl,
 			category,
 		});
 
-		const savedImage = await image.save();
-		res.status(201).json(savedImage);
+		const savedImage = await newImage.save();
+		res.json(savedImage);
 	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: 'Image upload error' });
+		res.status(500).json({ message: 'Error uploading image' });
 	}
 };
 

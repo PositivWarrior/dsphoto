@@ -1,37 +1,29 @@
 import multer from 'multer';
-import path from 'path';
+import { S3Client } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
+import multerS3 from 'multer-s3';
+import dotenv from 'dotenv';
 
-// Multer storage config
-const storage = multer.diskStorage({
-	destination(req, file, cb) {
-		cb(null, 'uploads/');
-	},
-	filename(req, file, cb) {
-		cb(null, `${Date.now()}-${file.originalname}`);
+dotenv.config();
+
+const s3 = new S3Client({
+	region: process.env.AWS_REGION,
+	credentials: {
+		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 	},
 });
 
-// File type check
-const checkFileType = (file, cb) => {
-	const filetypes = /jpg|jpeg|png|gif/;
-	const extname = filetypes.test(
-		path.extname(file.originalname).toLowerCase(),
-	);
-	const mimetype = filetypes.test(file.mimetype);
-
-	if (extname && mimetype) {
-		return cb(null, true);
-	} else {
-		cb('Only images man!');
-	}
-};
-
-// Multer middleware to handle file uploads
 const upload = multer({
-	storage,
-	fileFilter(req, file, cb) {
-		checkFileType(file, cb);
-	},
+	storage: multerS3({
+		s3: s3,
+		bucket: process.env.AWS_BUCKET_NAME,
+		// acl: 'public-read',
+		contentType: multerS3.AUTO_CONTENT_TYPE,
+		key: function (req, file, cb) {
+			cb(null, `images/${Date.now()}_${file.originalname}`);
+		},
+	}),
 });
 
 export default upload;
