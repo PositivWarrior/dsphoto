@@ -1,14 +1,39 @@
 // src/pages/GalleryCategory.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import galleryData from '../data/galleryData'; // Import the gallery data
 import Carousel from '../components/Carousel';
 
 const GalleryCategory = () => {
 	const { category } = useParams();
+	const [categoryData, setCategoryData] = useState(null);
+	const [loading, setLoading] = useState(true);
 
-	// Find the category data based on the URL parameter
-	const categoryData = galleryData.find((section) => section.id === category);
+	// Fetch images for the selected category
+	useEffect(() => {
+		const fetchCategoryData = async () => {
+			try {
+				const response = await fetch(
+					'http://localhost:8000/api/images',
+				);
+				const data = await response.json();
+
+				// Find the category data based on the URL parameter
+				const categoryInfo = data.find(
+					(section) => section.id === category,
+				);
+				setCategoryData(categoryInfo);
+				setLoading(false);
+			} catch (error) {
+				console.error('Error fetching category data:', error);
+			}
+		};
+
+		fetchCategoryData();
+	}, [category]);
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
 
 	if (!categoryData) {
 		return (

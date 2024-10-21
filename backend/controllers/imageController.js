@@ -1,11 +1,54 @@
 import Image from '../models/imageModel.js';
+import aws from 'aws-sdk';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const s3 = new aws.S3({
+	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+	region: process.env.AWS_REGION,
+});
 
 export const getImages = async (req, res) => {
 	try {
-		const images = await Image.find({});
-		res.json(images);
+		const categories = [
+			'weddings',
+			'portraits',
+			'animals',
+			'art',
+			'pregnant',
+			'newborn',
+			'housing',
+			'nature',
+			'landscape',
+		];
+		let galleryData = [];
+
+		// Fetch images for each category
+		for (let category of categories) {
+			const images = await s3
+				.listObjectsV2({
+					Bucket: process.env.AWS_BUCKET_NAME,
+					Prefix: `images/${category}/`, // Path to the category folder in S3
+				})
+				.promise();
+
+			const imageUrls = images.Contents.map((image) => ({
+				url: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${image.Key}`,
+			}));
+
+			galleryData.push({
+				id: category,
+				title: category.charAt(0).toUpperCase() + category.slice(1),
+				images: imageUrls,
+			});
+		}
+
+		res.status(200).json(galleryData);
 	} catch (error) {
-		res.status(500).json({ message: 'No images' });
+		console.error('Error fetching images from S3:', error);
+		res.status(500).json({ message: 'Error fetching images from S3' });
 	}
 };
 

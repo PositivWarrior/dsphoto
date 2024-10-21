@@ -1,8 +1,32 @@
-import React from 'react';
-import galleryData from '../data/galleryData';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const GalleryPage = () => {
+	const [galleryData, setGalleryData] = useState([]);
+	const [loading, setLoading] = useState(true);
+
+	// Fetch images from the backend API
+	useEffect(() => {
+		const fetchGalleryData = async () => {
+			try {
+				const response = await fetch(
+					'http://localhost:8000/api/images',
+				);
+				const data = await response.json();
+				setGalleryData(data);
+				setLoading(false);
+			} catch (error) {
+				console.error('Error fetching gallery data:', error);
+			}
+		};
+
+		fetchGalleryData();
+	}, []);
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+
 	return (
 		<div id="gallery" className="py-12 bg-gray-100 mt-10">
 			<div className="max-w-7xl mx-auto px-4">
