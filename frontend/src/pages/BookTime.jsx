@@ -27,10 +27,10 @@ const BookTime = () => {
 				templateParams,
 				'ouIL0a7IpDVcizQLE',
 			);
-			setStatus('Booking request sent successfully!');
+			setStatus('Bookingforespørsel sendt!');
 		} catch (error) {
 			console.error('EmailJS Error:', error);
-			setStatus('Failed to send booking request.');
+			setStatus('Kunne ikke sende bookingforespørsel.');
 			return;
 		}
 
@@ -59,14 +59,13 @@ const BookTime = () => {
 			if (!response.ok) {
 				// Handle error responses
 				const errorText = await response.text(); // Check the response body if not valid JSON
-				throw new Error(`Error ${response.status}: ${errorText}`);
+				throw new Error(`Feil ${response.status}: ${errorText}`);
 			}
 
-			// const data = await response.json();
-			setStatus('Booking request successfully saved!');
+			setStatus('Bookingforespørsel lagret!');
 		} catch (error) {
-			console.error('Error saving booking to the backend:', error);
-			setStatus('Failed to save booking request.');
+			console.error('Error on sending to backend:', error);
+			setStatus('Kunne ikke lagre bookingforespørselen.');
 		}
 
 		// Reset form fields
@@ -78,11 +77,11 @@ const BookTime = () => {
 
 	return (
 		<div className="max-w-md mx-auto p-8 bg-white shadow-lg rounded-lg mt-16">
-			<h2 className="text-2xl font-bold mb-6">Book a Session</h2>
+			<h2 className="text-2xl font-bold mb-6">Bestill en Time</h2>
 			<form onSubmit={handleSubmit} className="space-y-6">
 				<div>
 					<label className="block text-sm font-medium text-gray-700 mb-2">
-						Name
+						Navn
 					</label>
 					<input
 						type="text"
@@ -94,7 +93,7 @@ const BookTime = () => {
 				</div>
 				<div>
 					<label className="block text-sm font-medium text-gray-700 mb-2">
-						Email
+						E-post
 					</label>
 					<input
 						type="email"
@@ -106,7 +105,7 @@ const BookTime = () => {
 				</div>
 				<div>
 					<label className="block text-sm font-medium text-gray-700 mb-2">
-						Date
+						Dato
 					</label>
 					<input
 						type="date"
@@ -118,7 +117,7 @@ const BookTime = () => {
 				</div>
 				<div>
 					<label className="block text-sm font-medium text-gray-700 mb-2">
-						Message
+						Melding
 					</label>
 					<textarea
 						value={message}
@@ -131,7 +130,7 @@ const BookTime = () => {
 					type="submit"
 					className="w-full bg-lollipop text-white py-3 rounded-lg hover:bg-earthyBrown transition-all"
 				>
-					Submit Booking
+					Send Bookingforespørsel
 				</button>
 				{status && <p className="mt-4 text-green-500">{status}</p>}
 			</form>

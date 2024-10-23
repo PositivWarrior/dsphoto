@@ -17,7 +17,7 @@ const GalleryPage = () => {
 				// Group images by category
 				const groupedData = data.reduce((acc, image) => {
 					// Ensure category is valid
-					const category = image.category || 'unknown';
+					const category = image.category;
 					if (!acc[category]) {
 						acc[category] = [];
 					}

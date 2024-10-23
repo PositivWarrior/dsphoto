@@ -67,7 +67,6 @@ const Carousel = ({ images }) => {
 							src={image.url}
 							alt={`slide ${index}`}
 							className="w-full h-full object-cover cursor-pointer"
-							onClick={() => openModal(image.url)} // Open modal when image is clicked
 						/>
 					</div>
 				))}

@@ -16,7 +16,7 @@ export const getImages = async (req, res) => {
 
 		const imageUrls = images.map((image) => ({
 			url: image.imageUrl,
-			category: image.category || 'unknown',
+			category: image.category,
 			title: image.title,
 		}));
 

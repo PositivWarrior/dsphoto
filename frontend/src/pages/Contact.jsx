@@ -30,12 +30,12 @@ const Contact = () => {
 			.then(
 				(response) => {
 					console.log('SUCCESS!', response.status, response.text);
-					setSuccessMessage('Message sent successfully!');
+					setSuccessMessage('Meldingen ble sendt!');
 				},
 				(error) => {
 					console.log('FAILED...', error);
 					setSuccessMessage(
-						'Failed to send message. Please try again.',
+						'Kunne ikke sende meldingen. Vennligst prøv igjen.',
 					);
 				},
 			);
@@ -47,17 +47,17 @@ const Contact = () => {
 		<section id="contact" className="py-20 bg-white text-center">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<h2 className="text-4xl font-bold text-gray-800 mb-8">
-					Contact
+					Kontakt
 				</h2>
 				<p className="text-lg text-gray-600 mb-4">
-					Have any questions? Feel free to reach out.
+					Har du noen spørsmål? Ta gjerne kontakt med oss.
 				</p>
 				<form onSubmit={sendEmail} className="max-w-lg mx-auto">
 					<div className="mb-4">
 						<input
 							type="text"
 							name="name"
-							placeholder="Your Name"
+							placeholder="Ditt navn"
 							value={formData.name}
 							onChange={handleChange}
 							required
@@ -68,7 +68,7 @@ const Contact = () => {
 						<input
 							type="email"
 							name="email"
-							placeholder="Your Email"
+							placeholder="Din e-post"
 							value={formData.email}
 							onChange={handleChange}
 							required
@@ -78,7 +78,7 @@ const Contact = () => {
 					<div className="mb-4">
 						<textarea
 							name="message"
-							placeholder="Your Message"
+							placeholder="Din melding"
 							value={formData.message}
 							onChange={handleChange}
 							required
@@ -87,7 +87,7 @@ const Contact = () => {
 						/>
 					</div>
 					<button className="px-6 py-3 bg-lollipop text-white font-semibold rounded-lg">
-						Send Message
+						Send melding
 					</button>
 				</form>
 				{successMessage && (

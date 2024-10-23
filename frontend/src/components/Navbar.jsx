@@ -14,31 +14,31 @@ const Navbar = () => {
 							to="/about"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
-							About
+							Om meg
 						</Link>
 						<Link
 							to="/contact"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
-							Contact
+							Kontakt
 						</Link>
 						<Link
 							to="/book"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
-							Book Time
+							Bestill time
 						</Link>
 						<Link
 							to="/prices"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
-							Prices
+							Priser
 						</Link>
 						<Link
 							to="/gallery"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
-							Gallery
+							Galleriet
 						</Link>
 					</div>
 					{/* Add a mobile menu button for smaller screens */}
