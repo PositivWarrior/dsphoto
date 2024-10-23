@@ -61,7 +61,7 @@ const GalleryCategory = () => {
 			{carouselImages.length > 0 && <Carousel images={carouselImages} />}
 
 			{/* Image grid */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
+			{/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
 				{categoryData.images.map((image, index) => (
 					<div key={index} className="w-full h-auto">
 						<img
@@ -71,7 +71,7 @@ const GalleryCategory = () => {
 						/>
 					</div>
 				))}
-			</div>
+			</div> */}
 		</div>
 	);
 };
