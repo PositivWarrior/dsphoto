@@ -12,40 +12,38 @@ const s3 = new aws.S3({
 
 export const getImages = async (req, res) => {
 	try {
-		const categories = [
-			'weddings',
-			'portraits',
-			'animals',
-			'art',
-			'pregnant',
-			'newborn',
-			'housing',
-			'nature',
-			'landscape',
-		];
-		let galleryData = [];
+		const images = await Image.find();
 
-		// Fetch images for each category
-		for (let category of categories) {
-			const images = await s3
-				.listObjectsV2({
-					Bucket: process.env.AWS_BUCKET_NAME,
-					Prefix: `images/${category}/`, // Path to the category folder in S3
-				})
-				.promise();
+		const imageUrls = images.map((image) => ({
+			url: image.imageUrl,
+			category: image.category || 'unknown',
+			title: image.title,
+		}));
 
-			const imageUrls = images.Contents.map((image) => ({
-				url: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${image.Key}`,
-			}));
+		// const images = await s3
+		// 	.listObjectsV2({
+		// 		Bucket: process.env.AWS_BUCKET_NAME,
+		// 		Prefix: `images/`,
+		// 	})
+		// 	.promise();
 
-			galleryData.push({
-				id: category,
-				title: category.charAt(0).toUpperCase() + category.slice(1),
-				images: imageUrls,
-			});
-		}
+		// const imageUrls = await Promise.all(
+		// 	images.Contents.map(async (image) => {
+		// 		// Fetch object metadata to retrieve category
+		// 		const metadata = await s3
+		// 			.headObject({
+		// 				Bucket: process.env.AWS_BUCKET_NAME,
+		// 				Key: image.Key,
+		// 			})
+		// 			.promise();
 
-		res.status(200).json(galleryData);
+		// 		return {
+		// 			url: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${image.Key}`,
+		// 			category: metadata.Metadata.category || 'unknown', // Retrieve category from metadata
+		// 		};
+		// 	}),
+		// );
+		res.status(200).json(imageUrls);
 	} catch (error) {
 		console.error('Error fetching images from S3:', error);
 		res.status(500).json({ message: 'Error fetching images from S3' });

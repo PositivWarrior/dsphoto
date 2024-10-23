@@ -58,7 +58,11 @@ const UploadForm = () => {
 					{uploadStatus}
 				</p>
 			)}
-			<form onSubmit={handleSubmit} className="space-y-6">
+			<form
+				onSubmit={handleSubmit}
+				encType="multipart/form-data"
+				className="space-y-6"
+			>
 				<div>
 					<label className="block text-sm font-medium text-gray-700 mb-2">
 						Title

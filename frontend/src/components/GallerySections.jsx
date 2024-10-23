@@ -11,9 +11,31 @@ const GallerySections = () => {
 			try {
 				const response = await fetch(
 					'http://localhost:8000/api/images',
-				); // API endpoint to fetch all categories and images
+				);
 				const data = await response.json();
-				setGalleryData(data); // Set the gallery data from the API response
+
+				// Group images by category
+				const groupedData = data.reduce((acc, image) => {
+					// Ensure category is valid
+					const category = image.category || 'unknown';
+					if (!acc[category]) {
+						acc[category] = [];
+					}
+					acc[category].push(image);
+					return acc;
+				}, {});
+
+				const formattedData = Object.keys(groupedData).map(
+					(category) => ({
+						id: category,
+						title:
+							category.charAt(0).toUpperCase() +
+							category.slice(1),
+						images: groupedData[category],
+					}),
+				);
+
+				setGalleryData(formattedData);
 				setLoading(false);
 			} catch (error) {
 				console.error('Error fetching gallery data:', error);
@@ -36,7 +58,7 @@ const GallerySections = () => {
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 					{galleryData.map((section) => (
 						<Link
-							to={`/gallery/${section.id}`} // Use Link for navigation to the category page
+							to={`/gallery/${section.id}`}
 							key={section.id}
 							className="relative block group"
 						>

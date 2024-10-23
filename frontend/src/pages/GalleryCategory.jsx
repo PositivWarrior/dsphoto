@@ -18,10 +18,15 @@ const GalleryCategory = () => {
 				const data = await response.json();
 
 				// Find the category data based on the URL parameter
-				const categoryInfo = data.find(
-					(section) => section.id === category,
+				const categoryInfo = data.filter(
+					(image) => image.category === category,
 				);
-				setCategoryData(categoryInfo);
+				if (categoryInfo.length > 0) {
+					setCategoryData({
+						title: category,
+						images: categoryInfo,
+					});
+				}
 				setLoading(false);
 			} catch (error) {
 				console.error('Error fetching category data:', error);
@@ -60,7 +65,7 @@ const GalleryCategory = () => {
 				{categoryData.images.map((image, index) => (
 					<div key={index} className="w-full h-auto">
 						<img
-							src={image}
+							src={image.url}
 							alt={`${categoryData.title} ${index}`}
 							className="w-full h-64 object-cover rounded-lg shadow-lg"
 						/>

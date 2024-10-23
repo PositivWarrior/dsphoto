@@ -13,7 +13,29 @@ const GalleryPage = () => {
 					'http://localhost:8000/api/images',
 				);
 				const data = await response.json();
-				setGalleryData(data);
+
+				// Group images by category
+				const groupedData = data.reduce((acc, image) => {
+					// Ensure category is valid
+					const category = image.category || 'unknown';
+					if (!acc[category]) {
+						acc[category] = [];
+					}
+					acc[category].push(image);
+					return acc;
+				}, {});
+
+				const formattedData = Object.keys(groupedData).map(
+					(category) => ({
+						id: category,
+						title:
+							category.charAt(0).toUpperCase() +
+							category.slice(1),
+						images: groupedData[category],
+					}),
+				);
+
+				setGalleryData(formattedData);
 				setLoading(false);
 			} catch (error) {
 				console.error('Error fetching gallery data:', error);
@@ -41,7 +63,7 @@ const GalleryPage = () => {
 							className="relative block group"
 						>
 							<img
-								src={section.images[0]} // Display the first image of each category
+								src={section.images[0].url} // Display the first image of each category
 								alt={section.title}
 								className="w-full h-64 object-cover rounded-lg shadow-lg transition-transform transform group-hover:scale-105"
 							/>
