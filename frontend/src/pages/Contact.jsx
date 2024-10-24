@@ -20,11 +20,17 @@ const Contact = () => {
 	const sendEmail = (e) => {
 		e.preventDefault();
 
+		const templateParams = {
+			from_name: formData.name,
+			from_email: formData.email,
+			message: formData.message,
+		};
+
 		emailjs
 			.send(
 				'service_rn45rec', //  Service ID
 				'template_dewkewe', // Template ID
-				formData,
+				templateParams, // Template parameters
 				'ouIL0a7IpDVcizQLE', // Public Key
 			)
 			.then(
