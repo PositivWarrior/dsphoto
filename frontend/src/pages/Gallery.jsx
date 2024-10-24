@@ -50,8 +50,10 @@ const GalleryPage = () => {
 	}
 
 	return (
-		<div id="gallery" className="py-12 bg-gray-100 mt-10">
-			<div className="max-w-7xl mx-auto px-4">
+		<div id="gallery" className="py-12 bg-gray-100 mt-20">
+			{' '}
+			{/* Add extra margin to push gallery below the navbar */}
+			<div className="max-w-7xl mx-auto px-4 py-10 mt-10">
 				<h1 className="text-4xl font-bold text-center mb-12">
 					Explore my latest works
 				</h1>
