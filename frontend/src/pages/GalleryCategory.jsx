@@ -1,4 +1,3 @@
-// src/pages/GalleryCategory.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Carousel from '../components/Carousel';
@@ -48,9 +47,6 @@ const GalleryCategory = () => {
 		);
 	}
 
-	// Get the first 5 images for the carousel
-	const carouselImages = categoryData.images.slice(0, 5);
-
 	return (
 		<div className="max-w-7xl mx-auto px-4 py-10 mt-10">
 			<h2 className="text-4xl font-bold text-center mb-6 capitalize">
@@ -58,7 +54,9 @@ const GalleryCategory = () => {
 			</h2>
 
 			{/* Carousel */}
-			{carouselImages.length > 0 && <Carousel images={carouselImages} />}
+			{categoryData.images.length > 0 && (
+				<Carousel images={categoryData.images} />
+			)}
 
 			{/* Image grid */}
 			{/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">

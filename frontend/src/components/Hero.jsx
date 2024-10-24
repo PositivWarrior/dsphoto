@@ -6,14 +6,18 @@ const Hero = () => {
 
 	return (
 		<div
-			className="relative h-screen bg-cover bg-center"
+			className="relative h-screen bg-cover bg-center flex items-start pt-36"
 			style={{
 				backgroundImage: `url('https://0d7a648345.clvaw-cdnwnd.com/d558e59b0128d2ae079b0ab4f69601a0/200000738-cea37cea38/700/4T5A8707FB.webp?ph=0d7a648345')`,
-				marginTop: '4rem', // Adjust the margin-top based on your navbar height
 			}}
 		>
+			{/* Adding a top margin directly to the image */}
 			<div className="absolute inset-0 bg-[#D19C6A] bg-opacity-60"></div>
-			<div className="absolute inset-0 flex items-center justify-center">
+
+			{/* Content with margin from the top */}
+			<div className="absolute inset-0 flex items-center justify-center mt-20">
+				{' '}
+				{/* Pushes content down */}
 				<div className="text-center text-white">
 					<h1 className="text-6xl font-heading">
 						Capturing Moments that Matter
