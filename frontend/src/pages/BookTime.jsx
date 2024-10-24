@@ -11,7 +11,7 @@ const BookTime = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		// EmailJS configuration with template parameters
+		// Template parameters for EmailJS
 		const templateParams = {
 			from_name: name,
 			from_email: email,
@@ -22,10 +22,10 @@ const BookTime = () => {
 		// Send email using EmailJS
 		try {
 			await emailjs.send(
-				'service_rn45rec',
-				'template_t3sedmj',
-				templateParams,
-				'ouIL0a7IpDVcizQLE',
+				'service_rn45rec', // EmailJS service ID
+				'template_t3sedmj', // EmailJS template ID
+				templateParams, // Template parameters
+				'ouIL0a7IpDVcizQLE', // Public Key (User ID)
 			);
 			setStatus('Bookingforespørsel sendt!');
 		} catch (error) {
@@ -34,15 +34,8 @@ const BookTime = () => {
 			return;
 		}
 
-		// Send booking request to the backend
+		// Send booking request to the backend (if necessary)
 		try {
-			console.log('Sending booking to backend:', {
-				name,
-				email,
-				date,
-				message,
-			});
-
 			const response = await fetch('http://localhost:8000/api/bookings', {
 				method: 'POST',
 				headers: {
@@ -57,8 +50,7 @@ const BookTime = () => {
 			});
 
 			if (!response.ok) {
-				// Handle error responses
-				const errorText = await response.text(); // Check the response body if not valid JSON
+				const errorText = await response.text();
 				throw new Error(`Feil ${response.status}: ${errorText}`);
 			}
 
