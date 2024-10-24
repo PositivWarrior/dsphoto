@@ -85,7 +85,7 @@ const Admin = () => {
 					{bookings.map((booking) => (
 						<li
 							key={booking._id}
-							className="mb-4 p-4 bg-white shadow-lg rounded-lg"
+							className="mb-4 p-4 bg-white shadow-lg rounded-lg py-10 mt-10"
 						>
 							<p>
 								<strong>Name:</strong> {booking.name}
@@ -132,7 +132,7 @@ const Admin = () => {
 	};
 
 	return (
-		<div className="min-h-screen grid grid-cols-1 md:grid-cols-4 mt-10">
+		<div className="min-h-screen grid grid-cols-1 md:grid-cols-4 mt-10 py-10">
 			{/* Sidebar */}
 			<aside className="bg-gray-800 text-white py-8 md:min-h-screen">
 				<div className="px-6">
