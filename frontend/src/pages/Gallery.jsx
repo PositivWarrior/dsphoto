@@ -1,3 +1,4 @@
+// src/pages/GalleryPage.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -5,7 +6,6 @@ const GalleryPage = () => {
 	const [galleryData, setGalleryData] = useState([]);
 	const [loading, setLoading] = useState(true);
 
-	// Fetch images from the backend API
 	useEffect(() => {
 		const fetchGalleryData = async () => {
 			try {
@@ -16,8 +16,7 @@ const GalleryPage = () => {
 
 				// Group images by category
 				const groupedData = data.reduce((acc, image) => {
-					// Ensure category is valid
-					const category = image.category;
+					const category = image.category || 'unknown';
 					if (!acc[category]) {
 						acc[category] = [];
 					}
@@ -50,27 +49,34 @@ const GalleryPage = () => {
 	}
 
 	return (
-		<div id="gallery" className="py-12 bg-gray-100 mt-20">
-			{' '}
-			{/* Add extra margin to push gallery below the navbar */}
-			<div className="max-w-7xl mx-auto px-4 py-10 mt-10">
+		<div id="gallery" className="py-12 bg-gray-100 mt-10">
+			<div className="max-w-7xl mx-auto px-4">
 				<h1 className="text-4xl font-bold text-center mb-12">
 					Explore my latest works
 				</h1>
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 					{galleryData.map((section) => (
 						<Link
-							to={`/gallery/${section.id}`} // Use Link for navigation
+							to={`/gallery/${section.id}`}
 							key={section.id}
-							className="relative block group"
+							className="relative block group rounded-lg overflow-hidden shadow-lg transform transition-transform hover:scale-105"
 						>
-							<img
-								src={section.images[0].url} // Display the first image of each category
-								alt={section.title}
-								className="w-full h-64 object-cover rounded-lg shadow-lg transition-transform transform group-hover:scale-105"
-							/>
-							<div className="absolute inset-0 bg-black bg-opacity-0 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-								<h3 className="text-2xl font-bold text-white">
+							{/* Display the image */}
+							{section.images && section.images.length > 0 ? (
+								<img
+									src={section.images[0].url}
+									alt={section.title}
+									className="w-full h-64 object-cover"
+								/>
+							) : (
+								<div className="w-full h-64 bg-gray-300 flex items-center justify-center">
+									<p>No image available</p>
+								</div>
+							)}
+
+							{/* Gallery title - visible at the top */}
+							<div className="absolute top-0 left-0 right-0 bg-black bg-opacity-50 py-2 text-center">
+								<h3 className="text-xl italic font-semibold text-white">
 									{section.title}
 								</h3>
 							</div>

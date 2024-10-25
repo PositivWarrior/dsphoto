@@ -1,3 +1,4 @@
+// src/pages/GalleryCategory.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Carousel from '../components/Carousel';
@@ -7,7 +8,6 @@ const GalleryCategory = () => {
 	const [categoryData, setCategoryData] = useState(null);
 	const [loading, setLoading] = useState(true);
 
-	// Fetch images for the selected category
 	useEffect(() => {
 		const fetchCategoryData = async () => {
 			try {
@@ -16,7 +16,7 @@ const GalleryCategory = () => {
 				);
 				const data = await response.json();
 
-				// Find the category data based on the URL parameter
+				// Filter images by selected category
 				const categoryInfo = data.filter(
 					(image) => image.category === category,
 				);
@@ -59,17 +59,26 @@ const GalleryCategory = () => {
 			)}
 
 			{/* Image grid */}
-			{/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
 				{categoryData.images.map((image, index) => (
-					<div key={index} className="w-full h-auto">
+					<div
+						key={index}
+						className="relative block group rounded-lg overflow-hidden shadow-lg transform transition-transform hover:scale-105"
+					>
 						<img
 							src={image.url}
 							alt={`${categoryData.title} ${index}`}
-							className="w-full h-64 object-cover rounded-lg shadow-lg"
+							className="w-full h-64 object-cover"
 						/>
+						{/* Image Title */}
+						<div className="absolute top-0 left-0 right-0 bg-black bg-opacity-50 py-2 text-center">
+							<h3 className="text-xl italic font-semibold text-white">
+								{categoryData.title}
+							</h3>
+						</div>
 					</div>
 				))}
-			</div> */}
+			</div>
 		</div>
 	);
 };
