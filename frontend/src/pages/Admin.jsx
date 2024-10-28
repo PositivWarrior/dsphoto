@@ -143,7 +143,7 @@ const Admin = () => {
 	};
 
 	return (
-		<div className="min-h-screen grid grid-cols-1 md:grid-cols-4 mt-20 py-10">
+		<div className="min-h-screen grid grid-cols-1 md:grid-cols-4 mt-10 py-10">
 			<aside className="bg-gray-800 text-white py-8 md:min-h-screen">
 				<div className="px-6">
 					<h2 className="text-3xl font-bold mb-8">Admin Panel</h2>

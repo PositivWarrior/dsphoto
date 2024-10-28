@@ -13,6 +13,7 @@ const AdminGalleryOrder = () => {
 					'http://localhost:8000/api/images/categories',
 				);
 				const data = await response.json();
+
 				setCategories(data.categories || []);
 			} catch (error) {
 				console.error('Error fetching categories:', error);
@@ -28,7 +29,6 @@ const AdminGalleryOrder = () => {
 			);
 			const data = await response.json();
 
-			// Filter and sort images by category
 			const filteredImages = data.filter(
 				(image) => image.category === category,
 			);
@@ -41,7 +41,7 @@ const AdminGalleryOrder = () => {
 			setSelectedCategory(category);
 		} catch (error) {
 			console.error('Error fetching images:', error);
-			setImages([]); // Reset images on error
+			setImages([]);
 		}
 	};
 
@@ -88,7 +88,8 @@ const AdminGalleryOrder = () => {
 
 			{selectedCategory && (
 				<DragDropContext onDragEnd={handleDragEnd}>
-					<Droppable droppableId="images">
+					{/* Using a unique droppableId for each selectedCategory */}
+					<Droppable droppableId={`droppable-${selectedCategory}`}>
 						{(provided) => (
 							<ul
 								{...provided.droppableProps}
@@ -97,9 +98,12 @@ const AdminGalleryOrder = () => {
 							>
 								{images && images.length > 0 ? (
 									images.map((image, index) => (
+										// Check for unique keys and draggableIds
 										<Draggable
-											key={image._id} // Ensures unique key for each Draggable item
-											draggableId={image._id} // Unique draggable ID based on _id
+											key={image._id || `image-${index}`}
+											draggableId={`draggable-${
+												image._id || index
+											}`}
 											index={index}
 										>
 											{(provided) => (
