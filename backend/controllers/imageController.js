@@ -20,29 +20,6 @@ export const getImages = async (req, res) => {
 			title: image.title,
 		}));
 
-		// const images = await s3
-		// 	.listObjectsV2({
-		// 		Bucket: process.env.AWS_BUCKET_NAME,
-		// 		Prefix: `images/`,
-		// 	})
-		// 	.promise();
-
-		// const imageUrls = await Promise.all(
-		// 	images.Contents.map(async (image) => {
-		// 		// Fetch object metadata to retrieve category
-		// 		const metadata = await s3
-		// 			.headObject({
-		// 				Bucket: process.env.AWS_BUCKET_NAME,
-		// 				Key: image.Key,
-		// 			})
-		// 			.promise();
-
-		// 		return {
-		// 			url: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${image.Key}`,
-		// 			category: metadata.Metadata.category || 'unknown', // Retrieve category from metadata
-		// 		};
-		// 	}),
-		// );
 		res.status(200).json(imageUrls);
 	} catch (error) {
 		console.error('Error fetching images from S3:', error);
@@ -76,4 +53,20 @@ export const uploadImage = async (req, res) => {
 	}
 };
 
-export default { getImages, uploadImage };
+// controllers/imageController.js
+export const reorderImages = async (req, res) => {
+	const { category, order } = req.body; // `order` is an array of image IDs
+
+	try {
+		// Update each image with a new order based on its position in the array
+		for (let i = 0; i < order.length; i++) {
+			await Image.findByIdAndUpdate(order[i], { order: i });
+		}
+		res.status(200).json({ message: 'Order updated successfully' });
+	} catch (error) {
+		console.error('Error updating order:', error);
+		res.status(500).json({ message: 'Error updating order' });
+	}
+};
+
+export default { getImages, uploadImage, reorderImages };

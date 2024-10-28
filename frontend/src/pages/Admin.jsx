@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import UploadForm from '../components/UploadForm';
+import AdminGalleryOrder from '../components/AdminGalleryOrder';
 import { useNavigate } from 'react-router-dom';
 
 const Admin = () => {
 	const navigate = useNavigate();
 	const [bookings, setBookings] = useState([]);
-	const [view, setView] = useState('bookings'); // Control the view
+	const [view, setView] = useState('bookings');
 
 	const handleLogout = () => {
 		localStorage.removeItem('token');
@@ -13,7 +14,6 @@ const Admin = () => {
 	};
 
 	useEffect(() => {
-		// Fetch all bookings from the API
 		const fetchBookings = async () => {
 			const response = await fetch('http://localhost:8000/api/bookings', {
 				headers: {
@@ -79,61 +79,71 @@ const Admin = () => {
 
 	// Rendering the content based on the selected view
 	const renderContent = () => {
-		if (view === 'bookings') {
-			return (
-				<ul>
-					{bookings.map((booking) => (
-						<li
-							key={booking._id}
-							className="mb-4 p-4 bg-white shadow-lg rounded-lg py-10 mt-10"
-						>
-							<p>
-								<strong>Name:</strong> {booking.name}
-							</p>
-							<p>
-								<strong>Email:</strong> {booking.email}
-							</p>
-							<p>
-								<strong>Date:</strong> {booking.date}
-							</p>
-							<p>
-								<strong>Message:</strong> {booking.message}
-							</p>
-							<p>
-								<strong>Status:</strong> {booking.status}
-							</p>
-							<div className="mt-4">
-								{/* Accept Button */}
-								<button
-									className="mr-4 bg-green-500 text-white px-4 py-2 rounded"
-									onClick={() =>
-										handleAction(booking._id, 'accepted')
-									}
-								>
-									Accept
-								</button>
-								{/* Decline Button (also deletes the booking) */}
-								<button
-									className="bg-red-500 text-white px-4 py-2 rounded"
-									onClick={() =>
-										handleAction(booking._id, 'declined')
-									}
-								>
-									Decline
-								</button>
-							</div>
-						</li>
-					))}
-				</ul>
-			);
-		} else if (view === 'upload') {
-			return <UploadForm />;
+		switch (view) {
+			case 'bookings':
+				return (
+					<ul>
+						{bookings.map((booking) => (
+							<li
+								key={booking._id}
+								className="mb-4 p-4 bg-white shadow-lg rounded-lg py-10 mt-10"
+							>
+								<p>
+									<strong>Name:</strong> {booking.name}
+								</p>
+								<p>
+									<strong>Email:</strong> {booking.email}
+								</p>
+								<p>
+									<strong>Date:</strong> {booking.date}
+								</p>
+								<p>
+									<strong>Message:</strong> {booking.message}
+								</p>
+								<p>
+									<strong>Status:</strong> {booking.status}
+								</p>
+								<div className="mt-4">
+									{/* Accept Button */}
+									<button
+										className="mr-4 bg-green-500 text-white px-4 py-2 rounded"
+										onClick={() =>
+											handleAction(
+												booking._id,
+												'accepted',
+											)
+										}
+									>
+										Accept
+									</button>
+									{/* Decline Button (also deletes the booking) */}
+									<button
+										className="bg-red-500 text-white px-4 py-2 rounded"
+										onClick={() =>
+											handleAction(
+												booking._id,
+												'declined',
+											)
+										}
+									>
+										Decline
+									</button>
+								</div>
+							</li>
+						))}
+					</ul>
+				);
+			case 'upload':
+				return <UploadForm />;
+			case 'manageGalleries':
+				return <AdminGalleryOrder />;
+			default:
+				return null;
 		}
 	};
 
 	return (
 		<div className="min-h-screen grid grid-cols-1 md:grid-cols-4 mt-10 py-10">
-			{/* Sidebar */}
 			<aside className="bg-gray-800 text-white py-8 md:min-h-screen">
 				<div className="px-6">
 					<h2 className="text-3xl font-bold mb-8">Admin Panel</h2>
@@ -151,6 +161,12 @@ const Admin = () => {
 							Upload Images
 						</button>
 						<button
+							onClick={() => setView('manageGalleries')}
+							className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+						>
+							Manage Galleries
+						</button>
+						<button
 							onClick={handleLogout}
 							className="block w-full text-left px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg"
 						>
@@ -160,10 +176,13 @@ const Admin = () => {
 				</div>
 			</aside>
 
-			{/* Main Content */}
 			<main className="col-span-3 p-8 bg-gray-100">
 				<h2 className="text-4xl font-bold mb-6">
-					{view === 'bookings' ? 'Bookings' : 'Upload Images'}
+					{view === 'bookings'
+						? 'Bookings'
+						: view === 'upload'
+						? 'Upload Images'
+						: 'Manage Galleries'}
 				</h2>
 				{renderContent()}
 			</main>
