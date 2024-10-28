@@ -1,31 +1,48 @@
-// src/components/GalleryOrder.jsx
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-const GalleryOrder = () => {
+const AdminGalleryOrder = () => {
 	const [categories, setCategories] = useState([]);
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const [images, setImages] = useState([]);
 
 	useEffect(() => {
 		const fetchCategories = async () => {
-			const response = await fetch(
-				'http://localhost:8000/api/categories',
-			); // API endpoint for categories
-			const data = await response.json();
-			setCategories(data.categories);
+			try {
+				const response = await fetch(
+					'http://localhost:8000/api/images/categories',
+				);
+				const data = await response.json();
+				setCategories(data.categories || []);
+			} catch (error) {
+				console.error('Error fetching categories:', error);
+			}
 		};
-
 		fetchCategories();
 	}, []);
 
 	const fetchImages = async (category) => {
-		const response = await fetch(
-			`http://localhost:8000/api/images?category=${category}`,
-		);
-		const data = await response.json();
-		setImages(data.images);
-		setSelectedCategory(category);
+		try {
+			const response = await fetch(
+				`http://localhost:8000/api/images?category=${category}`,
+			);
+			const data = await response.json();
+
+			// Filter and sort images by category
+			const filteredImages = data.filter(
+				(image) => image.category === category,
+			);
+
+			const sortedImages = filteredImages.sort(
+				(a, b) => (a.order ?? 0) - (b.order ?? 0),
+			);
+
+			setImages(sortedImages);
+			setSelectedCategory(category);
+		} catch (error) {
+			console.error('Error fetching images:', error);
+			setImages([]); // Reset images on error
+		}
 	};
 
 	const handleDragEnd = async (result) => {
@@ -36,21 +53,23 @@ const GalleryOrder = () => {
 		reorderedImages.splice(result.destination.index, 0, movedImage);
 		setImages(reorderedImages);
 
-		// Save reordered images
-		await fetch('http://localhost:8000/api/images/order', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				category: selectedCategory,
-				images: reorderedImages.map((image) => image._id),
-			}),
-		});
+		try {
+			await fetch('http://localhost:8000/api/images/order', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					category: selectedCategory,
+					images: reorderedImages.map((image) => image._id),
+				}),
+			});
+		} catch (error) {
+			console.error('Error updating image order:', error);
+		}
 	};
 
 	return (
 		<div className="space-y-4">
 			<h3 className="text-2xl font-bold mb-4">Reorder Images</h3>
-			{/* Category Selection */}
 			<div className="space-x-2">
 				{categories.map((category) => (
 					<button
@@ -67,7 +86,6 @@ const GalleryOrder = () => {
 				))}
 			</div>
 
-			{/* Image Drag-and-Drop List */}
 			{selectedCategory && (
 				<DragDropContext onDragEnd={handleDragEnd}>
 					<Droppable droppableId="images">
@@ -77,29 +95,35 @@ const GalleryOrder = () => {
 								ref={provided.innerRef}
 								className="bg-white rounded-lg shadow-lg p-4 space-y-4"
 							>
-								{images.map((image, index) => (
-									<Draggable
-										key={image._id}
-										draggableId={image._id}
-										index={index}
-									>
-										{(provided) => (
-											<li
-												ref={provided.innerRef}
-												{...provided.draggableProps}
-												{...provided.dragHandleProps}
-												className="p-2 border rounded-md flex items-center space-x-4"
-											>
-												<img
-													src={image.url}
-													alt={image.title}
-													className="w-16 h-16 object-cover rounded-md"
-												/>
-												<span>{image.title}</span>
-											</li>
-										)}
-									</Draggable>
-								))}
+								{images && images.length > 0 ? (
+									images.map((image, index) => (
+										<Draggable
+											key={image._id} // Ensures unique key for each Draggable item
+											draggableId={image._id} // Unique draggable ID based on _id
+											index={index}
+										>
+											{(provided) => (
+												<li
+													ref={provided.innerRef}
+													{...provided.draggableProps}
+													{...provided.dragHandleProps}
+													className="p-2 border rounded-md flex items-center space-x-4"
+												>
+													<img
+														src={image.url}
+														alt={image.title}
+														className="w-16 h-16 object-cover rounded-md"
+													/>
+													<span>{image.title}</span>
+												</li>
+											)}
+										</Draggable>
+									))
+								) : (
+									<p className="text-gray-500">
+										No images available for this category.
+									</p>
+								)}
 								{provided.placeholder}
 							</ul>
 						)}
@@ -110,4 +134,4 @@ const GalleryOrder = () => {
 	);
 };
 
-export default GalleryOrder;
+export default AdminGalleryOrder;

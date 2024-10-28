@@ -14,7 +14,7 @@ const GalleryPage = () => {
 				);
 				const data = await response.json();
 
-				// Group images by category
+				// Group images by category and ensure correct order if provided
 				const groupedData = data.reduce((acc, image) => {
 					const category = image.category || 'unknown';
 					if (!acc[category]) {
@@ -24,13 +24,16 @@ const GalleryPage = () => {
 					return acc;
 				}, {});
 
+				// Sort each category by `order` property if it exists
 				const formattedData = Object.keys(groupedData).map(
 					(category) => ({
 						id: category,
 						title:
 							category.charAt(0).toUpperCase() +
 							category.slice(1),
-						images: groupedData[category],
+						images: groupedData[category].sort(
+							(a, b) => (a.order ?? 0) - (b.order ?? 0),
+						),
 					}),
 				);
 
@@ -49,7 +52,7 @@ const GalleryPage = () => {
 	}
 
 	return (
-		<div id="gallery" className="py-12 bg-gray-100 mt-10">
+		<div id="gallery" className="py-12 bg-gray-100 mt-20">
 			<div className="max-w-7xl mx-auto px-4">
 				<h1 className="text-4xl font-bold text-center mb-12">
 					Explore my latest works

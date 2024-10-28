@@ -18,6 +18,7 @@ const imageSchema = mongoose.Schema(
 			required: true,
 		},
 		tags: [String],
+		order: { type: Number, default: 0 },
 	},
 	{
 		timestamps: true,
