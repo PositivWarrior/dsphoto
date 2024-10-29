@@ -12,7 +12,7 @@ const s3 = new aws.S3({
 
 export const getImages = async (req, res) => {
 	try {
-		const images = await Image.find().sort({ order: 1 }); // Ensure images are ordered by `order`
+		const images = await Image.find().sort({ order: 1 });
 
 		const imageUrls = images.map((image) => ({
 			id: image._id,
@@ -47,7 +47,7 @@ export const uploadImage = async (req, res) => {
 			description,
 			imageUrl,
 			category,
-			order: imageCount, // Set order as the last position in the category
+			order: imageCount,
 		});
 
 		const savedImage = await newImage.save();
@@ -58,13 +58,14 @@ export const uploadImage = async (req, res) => {
 };
 // controllers/imageController.js
 export const reorderImages = async (req, res) => {
-	const { category, images } = req.body; // `images` is an array of image IDs in the new order
+	const { category, images } = req.body;
 
 	try {
-		// Loop through the image IDs and set their `order` field based on the new order
-		for (let i = 0; i < images.length; i++) {
-			await Image.findByIdAndUpdate(images[i], { order: i });
-		}
+		await Promise.all(
+			images.map((imageId, index) =>
+				Image.findByIdAndUpdate(imageId, { order: index }),
+			),
+		);
 		res.status(200).json({ message: 'Order updated successfully' });
 	} catch (error) {
 		console.error('Error updating image order:', error);

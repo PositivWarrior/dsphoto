@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import {
+	arrayMove,
+	SortableContext,
+	verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const AdminGalleryOrder = () => {
 	const [categories, setCategories] = useState([]);
@@ -13,7 +20,6 @@ const AdminGalleryOrder = () => {
 					'http://localhost:8000/api/images/categories',
 				);
 				const data = await response.json();
-
 				setCategories(data.categories || []);
 			} catch (error) {
 				console.error('Error fetching categories:', error);
@@ -29,15 +35,11 @@ const AdminGalleryOrder = () => {
 			);
 			const data = await response.json();
 
-			const filteredImages = data.filter(
-				(image) => image.category === category,
-			);
+			const filteredImages = data
+				.filter((image) => image.category === category)
+				.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-			const sortedImages = filteredImages.sort(
-				(a, b) => (a.order ?? 0) - (b.order ?? 0),
-			);
-
-			setImages(sortedImages);
+			setImages(filteredImages);
 			setSelectedCategory(category);
 		} catch (error) {
 			console.error('Error fetching images:', error);
@@ -45,25 +47,34 @@ const AdminGalleryOrder = () => {
 		}
 	};
 
-	const handleDragEnd = async (result) => {
-		if (!result.destination) return;
+	const handleDragEnd = async (event) => {
+		const { active, over } = event;
+		if (!over) return;
 
-		const reorderedImages = Array.from(images);
-		const [movedImage] = reorderedImages.splice(result.source.index, 1);
-		reorderedImages.splice(result.destination.index, 0, movedImage);
-		setImages(reorderedImages);
+		if (active.id !== over.id) {
+			const oldIndex = images.findIndex(
+				(image) => image._id === active.id,
+			);
+			const newIndex = images.findIndex((image) => image._id === over.id);
+			const reorderedImages = arrayMove(images, oldIndex, newIndex);
+			setImages(reorderedImages);
 
-		try {
-			await fetch('http://localhost:8000/api/images/order', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					category: selectedCategory,
-					images: reorderedImages.map((image) => image._id),
-				}),
-			});
-		} catch (error) {
-			console.error('Error updating image order:', error);
+			try {
+				const token = localStorage.getItem('token');
+				await fetch('http://localhost:8000/api/images/reorder', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify({
+						category: selectedCategory,
+						images: reorderedImages.map((image) => image._id),
+					}),
+				});
+			} catch (error) {
+				console.error('Error updating image order:', error);
+			}
 		}
 	};
 
@@ -87,54 +98,57 @@ const AdminGalleryOrder = () => {
 			</div>
 
 			{selectedCategory && (
-				<DragDropContext onDragEnd={handleDragEnd}>
-					{/* Using a unique droppableId for each selectedCategory */}
-					<Droppable droppableId={`droppable-${selectedCategory}`}>
-						{(provided) => (
-							<ul
-								{...provided.droppableProps}
-								ref={provided.innerRef}
-								className="bg-white rounded-lg shadow-lg p-4 space-y-4"
-							>
-								{images && images.length > 0 ? (
-									images.map((image, index) => (
-										// Check for unique keys and draggableIds
-										<Draggable
-											key={image._id || `image-${index}`}
-											draggableId={`draggable-${
-												image._id || index
-											}`}
-											index={index}
-										>
-											{(provided) => (
-												<li
-													ref={provided.innerRef}
-													{...provided.draggableProps}
-													{...provided.dragHandleProps}
-													className="p-2 border rounded-md flex items-center space-x-4"
-												>
-													<img
-														src={image.url}
-														alt={image.title}
-														className="w-16 h-16 object-cover rounded-md"
-													/>
-													<span>{image.title}</span>
-												</li>
-											)}
-										</Draggable>
-									))
-								) : (
-									<p className="text-gray-500">
-										No images available for this category.
-									</p>
-								)}
-								{provided.placeholder}
-							</ul>
+				<DndContext
+					collisionDetection={closestCenter}
+					onDragEnd={handleDragEnd}
+				>
+					<SortableContext
+						items={images.map(
+							(image) => image._id || `fallback-${image.url}`,
 						)}
-					</Droppable>
-				</DragDropContext>
+						strategy={verticalListSortingStrategy}
+					>
+						<ul className="bg-white rounded-lg shadow-lg p-4 space-y-4">
+							{images.map((image, index) => (
+								<SortableItem
+									key={image._id || `fallback-${index}`}
+									id={image._id || `fallback-${index}`}
+									image={image}
+								/>
+							))}
+						</ul>
+					</SortableContext>
+				</DndContext>
 			)}
 		</div>
+	);
+};
+
+// Sortable item component
+const SortableItem = ({ id, image }) => {
+	const { attributes, listeners, setNodeRef, transform, transition } =
+		useSortable({ id });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	};
+
+	return (
+		<li
+			ref={setNodeRef}
+			style={style}
+			{...attributes}
+			{...listeners}
+			className="p-2 border rounded-md flex items-center space-x-4"
+		>
+			<img
+				src={image.url}
+				alt={image.title}
+				className="w-16 h-16 object-cover rounded-md"
+			/>
+			<span>{image.title}</span>
+		</li>
 	);
 };
 
