@@ -128,7 +128,7 @@ const AdminGalleryOrder = () => {
 
 			{selectedCategory && (
 				<DndProvider backend={HTML5Backend}>
-					<ul className="grid grid-cols-3 gap-4 bg-white rounded-lg shadow-lg p-4">
+					<ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 bg-white rounded-lg shadow-lg p-4">
 						{reorderedImages.map((image, index) => (
 							<SortableItem
 								key={image.id || `fallback-${index}`}
