@@ -71,11 +71,11 @@ const GalleryCategory = () => {
 							className="w-full h-64 object-cover"
 						/>
 						{/* Image Title */}
-						<div className="absolute top-0 left-0 right-0 bg-black bg-opacity-50 py-2 text-center">
+						{/* <div className="absolute top-0 left-0 right-0 bg-black bg-opacity-50 py-2 text-center">
 							<h3 className="text-xl italic font-semibold text-white">
 								{categoryData.title}
 							</h3>
-						</div>
+						</div> */}
 					</div>
 				))}
 			</div>

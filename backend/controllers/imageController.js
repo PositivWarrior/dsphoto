@@ -60,11 +60,19 @@ export const uploadImage = async (req, res) => {
 export const reorderImages = async (req, res) => {
 	const { category, images } = req.body;
 
+	console.log(`Received reorder request for category ${category}`);
+	console.log('Received images:', images);
+
 	try {
 		await Promise.all(
-			images.map((imageId, index) =>
-				Image.findByIdAndUpdate(imageId, { order: index }),
-			),
+			images.map((imageId, index) => {
+				if (imageId) {
+					console.log(`Updating image ${imageId} to order ${index}`);
+					return Image.findByIdAndUpdate(imageId, { order: index });
+				} else {
+					console.warn(`Invalid image ID at index ${index}`);
+				}
+			}),
 		);
 		res.status(200).json({ message: 'Order updated successfully' });
 	} catch (error) {

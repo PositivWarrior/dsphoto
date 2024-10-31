@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import {
-	arrayMove,
-	SortableContext,
-	verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
+const ItemType = 'IMAGE';
 
 const AdminGalleryOrder = () => {
 	const [categories, setCategories] = useState([]);
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const [images, setImages] = useState([]);
+	const [reorderedImages, setReorderedImages] = useState([]);
 
 	useEffect(() => {
 		const fetchCategories = async () => {
@@ -35,11 +32,15 @@ const AdminGalleryOrder = () => {
 			);
 			const data = await response.json();
 
+			// Log fetched data to confirm the format
+			console.log('Fetched images for category:', category, data);
+
 			const filteredImages = data
 				.filter((image) => image.category === category)
 				.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
 			setImages(filteredImages);
+			setReorderedImages(filteredImages); // Initialize reorderedImages with fetched data
 			setSelectedCategory(category);
 		} catch (error) {
 			console.error('Error fetching images:', error);
@@ -47,21 +48,18 @@ const AdminGalleryOrder = () => {
 		}
 	};
 
-	const handleDragEnd = async (event) => {
-		const { active, over } = event;
-		if (!over) return;
+	const handleReorder = (newOrder) => {
+		setReorderedImages(newOrder);
+	};
 
-		if (active.id !== over.id) {
-			const oldIndex = images.findIndex(
-				(image) => image._id === active.id,
-			);
-			const newIndex = images.findIndex((image) => image._id === over.id);
-			const reorderedImages = arrayMove(images, oldIndex, newIndex);
-			setImages(reorderedImages);
+	const handleSaveOrder = async () => {
+		try {
+			const token = localStorage.getItem('token');
+			console.log('Token retrieved:', token);
 
-			try {
-				const token = localStorage.getItem('token');
-				await fetch('http://localhost:8000/api/images/reorder', {
+			const response = await fetch(
+				'http://localhost:8000/api/images/reorder',
+				{
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -69,12 +67,24 @@ const AdminGalleryOrder = () => {
 					},
 					body: JSON.stringify({
 						category: selectedCategory,
-						images: reorderedImages.map((image) => image._id),
+						images: reorderedImages.map((image) => image.id), // Use `id` instead of `_id`
 					}),
-				});
-			} catch (error) {
-				console.error('Error updating image order:', error);
+				},
+			);
+
+			console.log('Response received:', response);
+
+			if (response.ok) {
+				alert('Order updated successfully!');
+				console.log('Order update successful');
+			} else {
+				const errorData = await response.json();
+				console.error('Failed to update order', errorData);
+				console.log('Error response data:', errorData);
 			}
+		} catch (error) {
+			console.error('Error updating image order:', error);
+			console.log('Caught error:', error);
 		}
 	};
 
@@ -98,48 +108,56 @@ const AdminGalleryOrder = () => {
 			</div>
 
 			{selectedCategory && (
-				<DndContext
-					collisionDetection={closestCenter}
-					onDragEnd={handleDragEnd}
-				>
-					<SortableContext
-						items={images.map(
-							(image) => image._id || `fallback-${image.url}`,
-						)}
-						strategy={verticalListSortingStrategy}
+				<DndProvider backend={HTML5Backend}>
+					<ul className="bg-white rounded-lg shadow-lg p-4 space-y-4">
+						{reorderedImages.map((image, index) => (
+							<SortableItem
+								key={image.id || `fallback-${index}`} // Use `id` here
+								image={image}
+								index={index}
+								images={reorderedImages}
+								onReorder={handleReorder}
+							/>
+						))}
+					</ul>
+					<button
+						onClick={handleSaveOrder}
+						className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md"
 					>
-						<ul className="bg-white rounded-lg shadow-lg p-4 space-y-4">
-							{images.map((image, index) => (
-								<SortableItem
-									key={image._id || `fallback-${index}`}
-									id={image._id || `fallback-${index}`}
-									image={image}
-								/>
-							))}
-						</ul>
-					</SortableContext>
-				</DndContext>
+						Save Changes
+					</button>
+				</DndProvider>
 			)}
 		</div>
 	);
 };
 
-// Sortable item component
-const SortableItem = ({ id, image }) => {
-	const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({ id });
+const SortableItem = ({ image, index, images, onReorder }) => {
+	const [, ref] = useDrag({
+		type: ItemType,
+		item: { index },
+	});
 
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-	};
+	const [, drop] = useDrop({
+		accept: ItemType,
+		hover: (draggedItem) => {
+			if (draggedItem.index !== index) {
+				const reorderedImages = [...images];
+				const [movedImage] = reorderedImages.splice(
+					draggedItem.index,
+					1,
+				);
+				reorderedImages.splice(index, 0, movedImage);
+
+				onReorder(reorderedImages);
+				draggedItem.index = index;
+			}
+		},
+	});
 
 	return (
 		<li
-			ref={setNodeRef}
-			style={style}
-			{...attributes}
-			{...listeners}
+			ref={(node) => ref(drop(node))}
 			className="p-2 border rounded-md flex items-center space-x-4"
 		>
 			<img
