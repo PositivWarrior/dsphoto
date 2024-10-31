@@ -178,12 +178,12 @@ const SortableItem = ({ image, index, images, onReorder, onDelete }) => {
 	return (
 		<li
 			ref={(node) => ref(drop(node))}
-			className="p-4 border rounded-lg flex flex-col items-center space-y-2 bg-gray-100 shadow-md w-40 h-48" // Fixed size for card appearance
+			className="p-4 border rounded-lg flex flex-col items-center space-y-2 bg-gray-100 shadow-md w-40 h-48"
 		>
 			<img
 				src={image.url}
 				alt={image.title}
-				className="w-32 h-32 object-cover rounded-md"
+				className="w-28 h-28 object-cover rounded-md" // Consistent size for each image
 			/>
 			<span className="text-center">{image.title}</span>
 			<button
