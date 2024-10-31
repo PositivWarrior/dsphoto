@@ -4,6 +4,7 @@ import {
 	reorderImages,
 	uploadImage,
 	getCategories,
+	deleteImage,
 } from '../controllers/imageController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import upload from '../middleware/uploadMiddleware.js';
@@ -14,5 +15,6 @@ router.get('/', getImages);
 router.get('/categories', getCategories);
 router.post('/', protect, upload.single('image'), uploadImage);
 router.post('/reorder', protect, reorderImages);
+router.delete('/:id', protect, deleteImage);
 
 export default router;

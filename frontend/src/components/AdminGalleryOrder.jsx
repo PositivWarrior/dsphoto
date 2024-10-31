@@ -8,7 +8,7 @@ const AdminGalleryOrder = () => {
 	const [categories, setCategories] = useState([]);
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const [reorderedImages, setReorderedImages] = useState([]);
-	const [successMessage, setSuccessMessage] = useState(''); // New state for success message
+	const [successMessage, setSuccessMessage] = useState('');
 
 	useEffect(() => {
 		const fetchCategories = async () => {
@@ -31,7 +31,6 @@ const AdminGalleryOrder = () => {
 				`http://localhost:8000/api/images?category=${category}`,
 			);
 			const data = await response.json();
-
 			const filteredImages = data
 				.filter((image) => image.category === category)
 				.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -68,7 +67,7 @@ const AdminGalleryOrder = () => {
 
 			if (response.ok) {
 				setSuccessMessage('Order updated successfully!');
-				setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3 seconds
+				setTimeout(() => setSuccessMessage(''), 3000);
 			} else {
 				console.error('Failed to update order');
 			}
@@ -77,9 +76,36 @@ const AdminGalleryOrder = () => {
 		}
 	};
 
+	const handleDelete = async (imageId) => {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await fetch(
+				`http://localhost:8000/api/images/${imageId}`,
+				{
+					method: 'DELETE',
+					headers: { Authorization: `Bearer ${token}` },
+				},
+			);
+
+			if (response.ok) {
+				setReorderedImages(
+					reorderedImages.filter((image) => image.id !== imageId),
+				);
+				setSuccessMessage('Image deleted successfully!');
+				setTimeout(() => setSuccessMessage(''), 3000);
+			} else {
+				console.error('Failed to delete image');
+			}
+		} catch (error) {
+			console.error('Error deleting image:', error);
+		}
+	};
+
 	return (
 		<div className="space-y-4">
-			<h3 className="text-2xl font-bold mb-4">Reorder Images</h3>
+			<h3 className="text-2xl font-bold mb-4">
+				Reorder and Manage Images
+			</h3>
 			<div className="space-x-2">
 				{categories.map((category) => (
 					<button
@@ -102,7 +128,7 @@ const AdminGalleryOrder = () => {
 
 			{selectedCategory && (
 				<DndProvider backend={HTML5Backend}>
-					<ul className="bg-white rounded-lg shadow-lg p-4 space-y-4">
+					<ul className="bg-white rounded-lg shadow-lg p-4 space-y-2">
 						{reorderedImages.map((image, index) => (
 							<SortableItem
 								key={image.id || `fallback-${index}`}
@@ -110,6 +136,7 @@ const AdminGalleryOrder = () => {
 								index={index}
 								images={reorderedImages}
 								onReorder={handleReorder}
+								onDelete={handleDelete}
 							/>
 						))}
 					</ul>
@@ -125,7 +152,7 @@ const AdminGalleryOrder = () => {
 	);
 };
 
-const SortableItem = ({ image, index, images, onReorder }) => {
+const SortableItem = ({ image, index, images, onReorder, onDelete }) => {
 	const [, ref] = useDrag({
 		type: ItemType,
 		item: { index },
@@ -151,14 +178,22 @@ const SortableItem = ({ image, index, images, onReorder }) => {
 	return (
 		<li
 			ref={(node) => ref(drop(node))}
-			className="p-2 border rounded-md flex items-center space-x-4"
+			className="p-2 border rounded-md flex items-center justify-between space-x-4"
 		>
-			<img
-				src={image.url}
-				alt={image.title}
-				className="w-16 h-16 object-cover rounded-md"
-			/>
-			<span>{image.title}</span>
+			<div className="flex items-center space-x-4">
+				<img
+					src={image.url}
+					alt={image.title}
+					className="w-12 h-12 object-cover rounded-md" // Smaller image size
+				/>
+				<span>{image.title}</span>
+			</div>
+			<button
+				onClick={() => onDelete(image.id)}
+				className="text-red-600 hover:text-red-800 font-bold"
+			>
+				Delete
+			</button>
 		</li>
 	);
 };

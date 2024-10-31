@@ -94,4 +94,36 @@ export const getCategories = async (req, res) => {
 	}
 };
 
-export default { getImages, uploadImage, reorderImages, getCategories };
+export const deleteImage = async (req, res) => {
+	const { id } = req.params;
+
+	try {
+		const image = await Image.findById(id);
+		if (!image) {
+			return res.status(404).json({ message: 'Image not found' });
+		}
+
+		// Delete the file from S3
+		await s3.send(
+			new DeleteObjectCommand({
+				Bucket: process.env.AWS_BUCKET_NAME,
+				Key: image.imageUrl.split('/').pop(), // Extract the filename from the URL
+			}),
+		);
+
+		// Delete the image record from the database
+		await Image.findByIdAndDelete(id);
+		res.status(200).json({ message: 'Image deleted successfully' });
+	} catch (error) {
+		console.error('Error deleting image:', error);
+		res.status(500).json({ message: 'Error deleting image' });
+	}
+};
+
+export default {
+	getImages,
+	uploadImage,
+	reorderImages,
+	getCategories,
+	deleteImage,
+};
