@@ -128,7 +128,7 @@ const AdminGalleryOrder = () => {
 
 			{selectedCategory && (
 				<DndProvider backend={HTML5Backend}>
-					<ul className="bg-white rounded-lg shadow-lg p-4 space-y-2">
+					<ul className="grid grid-cols-3 gap-4 bg-white rounded-lg shadow-lg p-4">
 						{reorderedImages.map((image, index) => (
 							<SortableItem
 								key={image.id || `fallback-${index}`}
@@ -178,16 +178,14 @@ const SortableItem = ({ image, index, images, onReorder, onDelete }) => {
 	return (
 		<li
 			ref={(node) => ref(drop(node))}
-			className="p-2 border rounded-md flex items-center justify-between space-x-4"
+			className="p-4 border rounded-lg flex flex-col items-center space-y-2 bg-gray-100 shadow-md w-40 h-48" // Fixed size for card appearance
 		>
-			<div className="flex items-center space-x-4">
-				<img
-					src={image.url}
-					alt={image.title}
-					className="w-12 h-12 object-cover rounded-md" // Smaller image size
-				/>
-				<span>{image.title}</span>
-			</div>
+			<img
+				src={image.url}
+				alt={image.title}
+				className="w-32 h-32 object-cover rounded-md"
+			/>
+			<span className="text-center">{image.title}</span>
 			<button
 				onClick={() => onDelete(image.id)}
 				className="text-red-600 hover:text-red-800 font-bold"
