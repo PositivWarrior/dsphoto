@@ -6,7 +6,9 @@ import { useNavigate } from 'react-router-dom';
 const Admin = () => {
 	const navigate = useNavigate();
 	const [bookings, setBookings] = useState([]);
-	const [view, setView] = useState('bookings');
+	const [view, setView] = useState(
+		localStorage.getItem('adminView') || 'bookings',
+	); // Initialize with stored view
 
 	const handleLogout = () => {
 		localStorage.removeItem('token');
@@ -26,6 +28,12 @@ const Admin = () => {
 
 		fetchBookings();
 	}, []);
+
+	// Update the view and store it in localStorage
+	const changeView = (newView) => {
+		setView(newView);
+		localStorage.setItem('adminView', newView);
+	};
 
 	const handleAction = async (bookingId, status) => {
 		if (status === 'declined') {
@@ -104,7 +112,6 @@ const Admin = () => {
 									<strong>Status:</strong> {booking.status}
 								</p>
 								<div className="mt-4">
-									{/* Accept Button */}
 									<button
 										className="mr-4 bg-green-500 text-white px-4 py-2 rounded"
 										onClick={() =>
@@ -116,7 +123,6 @@ const Admin = () => {
 									>
 										Accept
 									</button>
-									{/* Decline Button (also deletes the booking) */}
 									<button
 										className="bg-red-500 text-white px-4 py-2 rounded"
 										onClick={() =>
@@ -149,19 +155,19 @@ const Admin = () => {
 					<h2 className="text-3xl font-bold mb-8">Admin Panel</h2>
 					<nav className="space-y-4">
 						<button
-							onClick={() => setView('bookings')}
+							onClick={() => changeView('bookings')}
 							className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
 						>
 							Bookings
 						</button>
 						<button
-							onClick={() => setView('upload')}
+							onClick={() => changeView('upload')}
 							className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
 						>
 							Upload Images
 						</button>
 						<button
-							onClick={() => setView('manageGalleries')}
+							onClick={() => changeView('manageGalleries')}
 							className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
 						>
 							Manage Galleries

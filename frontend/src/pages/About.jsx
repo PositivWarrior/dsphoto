@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
 
 const AboutPage = () => {
 	return (
@@ -18,8 +20,9 @@ const AboutPage = () => {
 					<h2 className="text-4xl font-bold text-gray-800 mb-6">
 						Om Meg
 					</h2>
-					<p className="text-lg text-gray-600">
-						Hei! Jeg heter Dawid. Jeg er 37 år gammel og det er
+					<p className="text-lg text-gray-600 mb-6">
+						Hei!
+						<br /> Jeg heter Dawid. Jeg er 37 år gammel og det er
 						utrolig kjekt at du besøker siden min! <br />
 						Jeg elsker natur, rock'n'roll og gitaren min, men av
 						alle interesser er fotografien den største. Jeg bor
@@ -38,6 +41,26 @@ const AboutPage = () => {
 						behov, komme med innspill... slik at vi kan sammen skape
 						en vakker og varig minne i bilder.
 					</p>
+
+					{/* Social Media Icons */}
+					<div className="flex space-x-6 mt-4">
+						<a
+							href="https://www.instagram.com/yourusername"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-gray-500 hover:text-pink-600"
+						>
+							<FontAwesomeIcon icon={faInstagram} size="2x" />
+						</a>
+						<a
+							href="https://www.facebook.com/yourusername"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-gray-500 hover:text-blue-600"
+						>
+							<FontAwesomeIcon icon={faFacebook} size="2x" />
+						</a>
+					</div>
 				</div>
 			</div>
 		</section>

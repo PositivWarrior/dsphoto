@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
 
 const About = () => {
 	return (
@@ -13,6 +15,26 @@ const About = () => {
 					historie gjennom mitt kameraobjektiv, enten det er
 					bryllupsdagen din, et portrett eller et personlig prosjekt.
 				</p>
+
+				{/* Centered Social Media Icons */}
+				<div className="flex justify-center space-x-6 mt-4">
+					<a
+						href="https://www.instagram.com/yourusername"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-gray-500 hover:text-pink-600"
+					>
+						<FontAwesomeIcon icon={faInstagram} size="2x" />
+					</a>
+					<a
+						href="https://www.facebook.com/yourusername"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-gray-500 hover:text-blue-600"
+					>
+						<FontAwesomeIcon icon={faFacebook} size="2x" />
+					</a>
+				</div>
 			</div>
 		</section>
 	);
