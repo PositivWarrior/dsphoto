@@ -12,20 +12,19 @@ const GalleryCategory = () => {
 		const fetchCategoryData = async () => {
 			try {
 				const response = await fetch(
-					'http://localhost:8000/api/images',
+					`http://localhost:8000/api/images?category=${category}`,
 				);
 				const data = await response.json();
 
-				// Filter images by selected category
-				const categoryInfo = data.filter(
-					(image) => image.category === category,
-				);
-				if (categoryInfo.length > 0) {
-					setCategoryData({
-						title: category,
-						images: categoryInfo,
-					});
-				}
+				// Format and sort images by order
+				const formattedCategoryData = {
+					title: category.charAt(0).toUpperCase() + category.slice(1),
+					images: data.sort(
+						(a, b) => (a.order ?? 0) - (b.order ?? 0),
+					),
+				};
+
+				setCategoryData(formattedCategoryData);
 				setLoading(false);
 			} catch (error) {
 				console.error('Error fetching category data:', error);
@@ -35,9 +34,7 @@ const GalleryCategory = () => {
 		fetchCategoryData();
 	}, [category]);
 
-	if (loading) {
-		return <div>Loading...</div>;
-	}
+	if (loading) return <div>Loading...</div>;
 
 	if (!categoryData) {
 		return (
@@ -57,28 +54,6 @@ const GalleryCategory = () => {
 			{categoryData.images.length > 0 && (
 				<Carousel images={categoryData.images} />
 			)}
-
-			{/* Image grid */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
-				{categoryData.images.map((image, index) => (
-					<div
-						key={index}
-						className="relative block group rounded-lg overflow-hidden shadow-lg transform transition-transform hover:scale-105"
-					>
-						<img
-							src={image.url}
-							alt={`${categoryData.title} ${index}`}
-							className="w-full h-64 object-cover"
-						/>
-						{/* Image Title */}
-						{/* <div className="absolute top-0 left-0 right-0 bg-black bg-opacity-50 py-2 text-center">
-							<h3 className="text-xl italic font-semibold text-white">
-								{categoryData.title}
-							</h3>
-						</div> */}
-					</div>
-				))}
-			</div>
 		</div>
 	);
 };

@@ -7,8 +7,8 @@ const ItemType = 'IMAGE';
 const AdminGalleryOrder = () => {
 	const [categories, setCategories] = useState([]);
 	const [selectedCategory, setSelectedCategory] = useState(null);
-	const [images, setImages] = useState([]);
 	const [reorderedImages, setReorderedImages] = useState([]);
+	const [successMessage, setSuccessMessage] = useState(''); // New state for success message
 
 	useEffect(() => {
 		const fetchCategories = async () => {
@@ -32,19 +32,15 @@ const AdminGalleryOrder = () => {
 			);
 			const data = await response.json();
 
-			// Log fetched data to confirm the format
-			console.log('Fetched images for category:', category, data);
-
 			const filteredImages = data
 				.filter((image) => image.category === category)
 				.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-			setImages(filteredImages);
-			setReorderedImages(filteredImages); // Initialize reorderedImages with fetched data
+			setReorderedImages(filteredImages);
 			setSelectedCategory(category);
 		} catch (error) {
 			console.error('Error fetching images:', error);
-			setImages([]);
+			setReorderedImages([]);
 		}
 	};
 
@@ -55,8 +51,6 @@ const AdminGalleryOrder = () => {
 	const handleSaveOrder = async () => {
 		try {
 			const token = localStorage.getItem('token');
-			console.log('Token retrieved:', token);
-
 			const response = await fetch(
 				'http://localhost:8000/api/images/reorder',
 				{
@@ -67,24 +61,19 @@ const AdminGalleryOrder = () => {
 					},
 					body: JSON.stringify({
 						category: selectedCategory,
-						images: reorderedImages.map((image) => image.id), // Use `id` instead of `_id`
+						images: reorderedImages.map((image) => image.id),
 					}),
 				},
 			);
 
-			console.log('Response received:', response);
-
 			if (response.ok) {
-				alert('Order updated successfully!');
-				console.log('Order update successful');
+				setSuccessMessage('Order updated successfully!');
+				setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3 seconds
 			} else {
-				const errorData = await response.json();
-				console.error('Failed to update order', errorData);
-				console.log('Error response data:', errorData);
+				console.error('Failed to update order');
 			}
 		} catch (error) {
 			console.error('Error updating image order:', error);
-			console.log('Caught error:', error);
 		}
 	};
 
@@ -107,12 +96,16 @@ const AdminGalleryOrder = () => {
 				))}
 			</div>
 
+			{successMessage && (
+				<p className="text-green-600 font-semibold">{successMessage}</p>
+			)}
+
 			{selectedCategory && (
 				<DndProvider backend={HTML5Backend}>
 					<ul className="bg-white rounded-lg shadow-lg p-4 space-y-4">
 						{reorderedImages.map((image, index) => (
 							<SortableItem
-								key={image.id || `fallback-${index}`} // Use `id` here
+								key={image.id || `fallback-${index}`}
 								image={image}
 								index={index}
 								images={reorderedImages}

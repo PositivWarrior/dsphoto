@@ -6,16 +6,16 @@ const GalleryPage = () => {
 	const [loading, setLoading] = useState(true);
 
 	const fetchGalleryData = async () => {
-		console.log('Fetching gallery data...');
 		try {
 			const response = await fetch('http://localhost:8000/api/images');
 			const data = await response.json();
 
-			console.log('Data fetched successfully:', data);
-
+			// Group images by category and remove any duplicate entries
+			const uniqueCategories = new Set(); // To track unique categories
 			const groupedData = data.reduce((acc, image) => {
 				const category = image.category || 'unknown';
-				if (!acc[category]) {
+				if (!uniqueCategories.has(category)) {
+					uniqueCategories.add(category);
 					acc[category] = [];
 				}
 				acc[category].push(image);
@@ -30,11 +30,8 @@ const GalleryPage = () => {
 				),
 			}));
 
-			console.log('Formatted data:', formattedData);
-
 			setGalleryData(formattedData);
 			setLoading(false);
-			console.log('Gallery data set successfully.');
 		} catch (error) {
 			console.error('Error fetching gallery data:', error);
 		}
@@ -45,11 +42,8 @@ const GalleryPage = () => {
 	}, []);
 
 	if (loading) {
-		console.log('Loading...');
 		return <div>Loading...</div>;
 	}
-
-	console.log('Rendering gallery page with data:', galleryData);
 
 	return (
 		<div id="gallery" className="py-12 bg-gray-100 mt-20">
@@ -75,6 +69,11 @@ const GalleryPage = () => {
 									<p>No image available</p>
 								</div>
 							)}
+							<div className="absolute top-0 left-0 right-0 bg-black bg-opacity-50 py-2 text-center">
+								<h3 className="text-xl italic font-semibold text-white">
+									{section.title}
+								</h3>
+							</div>
 						</Link>
 					))}
 				</div>
