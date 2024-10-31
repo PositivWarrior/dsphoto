@@ -1,4 +1,3 @@
-// src/components/GallerySections.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -74,9 +73,9 @@ const GallerySections = () => {
 								</div>
 							)}
 
-							{/* Gallery title - visible at the top */}
-							<div className="absolute top-0 left-0 right-0 bg-black bg-opacity-50 py-2 text-center">
-								<h3 className="text-xl italic font-semibold text-white">
+							{/* Centered Category Title */}
+							<div className="absolute inset-0 flex items-center justify-center">
+								<h3 className="dancing-script-gallery-title text-4xl md:text-6xl text-white text-center drop-shadow-lg">
 									{section.title}
 								</h3>
 							</div>

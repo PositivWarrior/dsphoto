@@ -36,3 +36,10 @@
 		transform: rotate(360deg);
 	}
 }
+
+.dancing-script-gallery-title {
+	font-family: 'Dancing Script', cursive;
+	font-optical-sizing: auto;
+	font-weight: 700;
+	font-style: normal;
+}
