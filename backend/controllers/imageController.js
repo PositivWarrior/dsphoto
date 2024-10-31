@@ -1,20 +1,22 @@
 import Image from '../models/imageModel.js';
-import aws from 'aws-sdk';
+import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const s3 = new aws.S3({
-	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3 = new S3Client({
 	region: process.env.AWS_REGION,
+	credentials: {
+		accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+	},
 });
 
 // Get images with optional category filter
 export const getImages = async (req, res) => {
 	try {
 		const category = req.query.category;
-		const filter = category ? { category } : {}; // Filter by category if provided
+		const filter = category ? { category } : {};
 		const images = await Image.find(filter).sort({ order: 1 });
 
 		const imageUrls = images.map((image) => ({
@@ -47,7 +49,7 @@ export const uploadImage = async (req, res) => {
 		const newImage = new Image({
 			title,
 			description,
-			imageUrl: req.file.location, // Assuming `imageUrl` is derived from file upload
+			imageUrl: req.file.location, // Image URL from the uploaded file
 			category,
 			order: imageCount,
 		});
