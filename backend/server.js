@@ -11,6 +11,7 @@ import connectDB from './config/db.js';
 import imageRoutes from './routes/imageRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +29,7 @@ connectDB();
 app.use('/api/images', imageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api', bookingRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
 	res.send('DS PHOTO is on!');

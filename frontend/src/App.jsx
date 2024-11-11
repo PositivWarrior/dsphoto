@@ -10,6 +10,7 @@ import PricesPage from './pages/Prices';
 import GalleryPage from './pages/Gallery';
 import GalleryCategory from './pages/GalleryCategory';
 import AboutPage from './pages/About';
+import ReviewsPage from './pages/Reviews';
 
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -27,6 +28,7 @@ function App() {
 				<Route path="/contact" element={<ContactPage />} />
 				<Route path="/book" element={<BookTimePage />} />
 				<Route path="/prices" element={<PricesPage />} />
+				<Route path="/reviews" element={<ReviewsPage />} />
 				<Route path="/gallery" element={<GalleryPage />} />
 				<Route
 					path="/gallery/:category"

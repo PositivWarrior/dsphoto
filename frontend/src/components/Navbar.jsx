@@ -38,12 +38,7 @@ const Navbar = () => {
 						>
 							Om meg
 						</Link>
-						<Link
-							to="/contact"
-							className="text-earthyBrown hover:text-lollipop transition-colors"
-						>
-							Kontakt
-						</Link>
+
 						<Link
 							to="/book"
 							className="text-earthyBrown hover:text-lollipop transition-colors"
@@ -61,6 +56,18 @@ const Navbar = () => {
 							className="text-earthyBrown hover:text-lollipop transition-colors"
 						>
 							Galleriet
+						</Link>
+						<Link
+							to="/reviews"
+							className="text-earthyBrown hover:text-lollipop transition-colors"
+						>
+							Omtaler
+						</Link>
+						<Link
+							to="/contact"
+							className="text-earthyBrown hover:text-lollipop transition-colors"
+						>
+							Kontakt
 						</Link>
 					</div>
 					{/* Add a mobile menu button for smaller screens */}
