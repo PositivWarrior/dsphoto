@@ -1,4 +1,3 @@
-// src/pages/ReviewsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
@@ -13,7 +12,6 @@ const ReviewsPage = () => {
 	const [error, setError] = useState('');
 
 	useEffect(() => {
-		// Fetch all reviews
 		const fetchReviews = async () => {
 			try {
 				const response = await fetch(
@@ -25,7 +23,6 @@ const ReviewsPage = () => {
 				console.error('Error fetching reviews:', error);
 			}
 		};
-
 		fetchReviews();
 	}, []);
 
@@ -39,14 +36,12 @@ const ReviewsPage = () => {
 			setError('Please fill in all fields and provide a rating.');
 			return;
 		}
-
 		try {
 			const response = await fetch('http://localhost:8000/api/reviews', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(newReview),
 			});
-
 			if (response.ok) {
 				const addedReview = await response.json();
 				setReviews([...reviews, addedReview]);
@@ -61,20 +56,24 @@ const ReviewsPage = () => {
 	};
 
 	return (
-		<section id="reviews" className="py-12 bg-gray-100">
-			<div className="max-w-5xl mx-auto px-4">
-				<h1 className="text-4xl font-bold text-center mb-8">Reviews</h1>
+		<section id="reviews" className="py-20 bg-white text-center">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<h2 className="text-4xl font-bold text-gray-800 mb-8">
+					Reviews
+				</h2>
 
 				{/* Review Submission Form */}
-				<form onSubmit={handleAddReview} className="mb-8">
-					<h2 className="text-2xl font-semibold mb-4">
+				<form
+					onSubmit={handleAddReview}
+					className="max-w-lg mx-auto mb-10"
+				>
+					<h3 className="text-2xl font-semibold mb-4">
 						Leave a Review
-					</h2>
+					</h3>
 					<div className="mb-4">
-						<label className="block text-gray-700">Author</label>
 						<input
 							type="text"
-							className="w-full p-2 border border-gray-300 rounded"
+							placeholder="Your Name"
 							value={newReview.author}
 							onChange={(e) =>
 								setNewReview({
@@ -82,12 +81,13 @@ const ReviewsPage = () => {
 									author: e.target.value,
 								})
 							}
+							className="w-full p-4 border border-gray-300 rounded-lg"
+							required
 						/>
 					</div>
 					<div className="mb-4">
-						<label className="block text-gray-700">Review</label>
 						<textarea
-							className="w-full p-2 border border-gray-300 rounded"
+							placeholder="Your Review"
 							value={newReview.text}
 							onChange={(e) =>
 								setNewReview({
@@ -95,16 +95,21 @@ const ReviewsPage = () => {
 									text: e.target.value,
 								})
 							}
+							className="w-full p-4 border border-gray-300 rounded-lg"
+							rows="5"
+							required
 						/>
 					</div>
 					<div className="mb-4">
-						<label className="block text-gray-700">Rating</label>
-						<div className="flex space-x-1">
+						<label className="block text-gray-700 font-medium mb-2">
+							Rating
+						</label>
+						<div className="flex justify-center space-x-2">
 							{[1, 2, 3, 4, 5].map((star) => (
 								<FontAwesomeIcon
 									key={star}
 									icon={faStar}
-									className={`cursor-pointer ${
+									className={`cursor-pointer text-2xl ${
 										star <= newReview.rating
 											? 'text-yellow-500'
 											: 'text-gray-300'
@@ -114,30 +119,39 @@ const ReviewsPage = () => {
 							))}
 						</div>
 					</div>
-					{error && <p className="text-red-600 mb-4">{error}</p>}
+					{error && <p className="text-red-500 mb-4">{error}</p>}
 					<button
 						type="submit"
-						className="px-4 py-2 bg-blue-500 text-white rounded"
+						className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600"
 					>
 						Submit Review
 					</button>
 				</form>
 
 				{/* Display Reviews */}
-				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="mt-10 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 					{reviews.map((review, index) => (
 						<div
 							key={index}
-							className="p-6 bg-white rounded shadow"
+							className="p-6 bg-gray-100 rounded-lg shadow-md"
 						>
-							<h3 className="text-lg font-semibold">
+							<h4 className="text-lg font-semibold text-gray-800">
 								{review.author}
-							</h3>
-							<p className="text-yellow-500">
-								{'★'.repeat(review.rating)}{' '}
-								{'☆'.repeat(5 - review.rating)}
-							</p>
-							<p className="text-gray-700 mt-2">{review.text}</p>
+							</h4>
+							<div className="flex justify-center my-2">
+								{[...Array(5)].map((_, i) => (
+									<FontAwesomeIcon
+										key={i}
+										icon={faStar}
+										className={
+											i < review.rating
+												? 'text-yellow-500'
+												: 'text-gray-300'
+										}
+									/>
+								))}
+							</div>
+							<p className="text-gray-700">{review.text}</p>
 						</div>
 					))}
 				</div>
