@@ -74,16 +74,16 @@
 
           MONGO_URI=mongodb+srv://kacpermargol:GOhK1uGCnCuD46bH@dsphoto.frnfj.mongodb.net/?retryWrites=true&w=majority&appName=dsphoto
           MONGO_USSER=kacpermargol
-          MONGO_PASS=GOhK1uGCnCuD46bH
+          MONGO_PASS=
 
     # JWT Secret Key
 
-          JWT_SECRET=Niepokonani8
+          JWT_SECRET=
 
     # AWS S3 Configuration
 
           AWS_ACCESS_KEY_ID=AKIAZ7SAKWFJ7KXEQIO3
-          AWS_SECRET_ACCESS_KEY=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
+          AWS_SECRET_ACCESS_KEY=
           AWS_BUCKET_NAME=ds-photo
           AWS_REGION=eu-north-1
 
