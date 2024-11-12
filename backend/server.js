@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 	res.send('DS PHOTO is on!');
 });
 
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/assets', express.static(path.join(__dirname, '/assets')));
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
