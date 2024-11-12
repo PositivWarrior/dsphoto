@@ -9,7 +9,7 @@ const AboutPage = () => {
 				{/* Image on the left side */}
 				<div className="md:w-1/2 mb-8 md:mb-0">
 					<img
-						src="https://0d7a648345.clvaw-cdnwnd.com/d558e59b0128d2ae079b0ab4f69601a0/200000738-cea37cea38/700/4T5A8707FB.webp?ph=0d7a648345"
+						src="http://localhost:8000/assets/Dawid_hero.jpg"
 						alt="Fotograf"
 						className="w-full h-auto rounded-lg shadow-lg"
 					/>
