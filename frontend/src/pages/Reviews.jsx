@@ -20,7 +20,7 @@ const ReviewsPage = () => {
 				const data = await response.json();
 				setReviews(data.reviews || []);
 			} catch (error) {
-				console.error('Error fetching reviews:', error);
+				console.error('Feil ved henting av anmeldelser:', error);
 			}
 		};
 		fetchReviews();
@@ -33,7 +33,7 @@ const ReviewsPage = () => {
 	const handleAddReview = async (e) => {
 		e.preventDefault();
 		if (!newReview.author || !newReview.rating || !newReview.text) {
-			setError('Please fill in all fields and provide a rating.');
+			setError('Vennligst fyll inn alle felter og gi en vurdering.');
 			return;
 		}
 		try {
@@ -48,10 +48,10 @@ const ReviewsPage = () => {
 				setNewReview({ author: '', rating: 0, text: '' });
 				setError('');
 			} else {
-				console.error('Failed to add review');
+				console.error('Kunne ikke legge til anmeldelsen');
 			}
 		} catch (error) {
-			console.error('Error adding review:', error);
+			console.error('Feil ved innsending av anmeldelse:', error);
 		}
 	};
 
@@ -59,21 +59,20 @@ const ReviewsPage = () => {
 		<section id="reviews" className="py-20 bg-white text-center">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<h2 className="text-4xl font-bold text-gray-800 mb-8">
-					Reviews
+					Omtaler
 				</h2>
 
-				{/* Review Submission Form */}
 				<form
 					onSubmit={handleAddReview}
 					className="max-w-lg mx-auto mb-10"
 				>
 					<h3 className="text-2xl font-semibold mb-4">
-						Leave a Review
+						Legg igjen en omtale
 					</h3>
 					<div className="mb-4">
 						<input
 							type="text"
-							placeholder="Your Name"
+							placeholder="Ditt navn"
 							value={newReview.author}
 							onChange={(e) =>
 								setNewReview({
@@ -87,7 +86,7 @@ const ReviewsPage = () => {
 					</div>
 					<div className="mb-4">
 						<textarea
-							placeholder="Your Review"
+							placeholder="Din anmeldelse"
 							value={newReview.text}
 							onChange={(e) =>
 								setNewReview({
@@ -102,7 +101,7 @@ const ReviewsPage = () => {
 					</div>
 					<div className="mb-4">
 						<label className="block text-gray-700 font-medium mb-2">
-							Rating
+							Vurdering
 						</label>
 						<div className="flex justify-center space-x-2">
 							{[1, 2, 3, 4, 5].map((star) => (
@@ -124,11 +123,10 @@ const ReviewsPage = () => {
 						type="submit"
 						className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600"
 					>
-						Submit Review
+						Send inn omtale
 					</button>
 				</form>
 
-				{/* Display Reviews */}
 				<div className="mt-10 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 					{reviews.map((review, index) => (
 						<div
