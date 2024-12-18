@@ -56,7 +56,7 @@ const Contact = () => {
 					Kontakt
 				</h2>
 				<p className="text-lg text-gray-600 mb-4">
-					Har du noen spørsmål? Ta gjerne kontakt med oss.
+					Har du noen spørsmål? Ta gjerne kontakt med meg.
 				</p>
 				<form onSubmit={sendEmail} className="max-w-lg mx-auto">
 					<div className="mb-4">

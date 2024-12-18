@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Carousel from '../components/Carousel';
+import { Helmet } from 'react-helmet';
 
 const GalleryCategory = () => {
 	const { category } = useParams();
@@ -12,7 +13,7 @@ const GalleryCategory = () => {
 		const fetchCategoryData = async () => {
 			try {
 				const response = await fetch(
-					`http://localhost:8000/api/images?category=${category}`,
+					`https://localhost:8000/api/images?category=${category}`,
 				);
 				const data = await response.json();
 
@@ -48,6 +49,13 @@ const GalleryCategory = () => {
 		<div className="max-w-7xl mx-auto px-4 py-10 mt-10">
 			<h2 className="text-4xl font-bold text-center mb-6 capitalize">
 				{categoryData.title} Gallery
+				<Helmet>
+					<title>{`${categoryData.title} Galleri | Dawid Siedlec`}</title>
+					<meta
+						name="description"
+						content={`Utforsk ${categoryData.title}-bilder av høy kvalitet.`}
+					/>
+				</Helmet>
 			</h2>
 
 			{/* Carousel */}

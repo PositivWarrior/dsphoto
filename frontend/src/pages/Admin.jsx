@@ -17,11 +17,16 @@ const Admin = () => {
 
 	useEffect(() => {
 		const fetchBookings = async () => {
-			const response = await fetch('http://localhost:8000/api/bookings', {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('token')}`,
+			const response = await fetch(
+				'https://localhost:8000/api/bookings',
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem(
+							'token',
+						)}`,
+					},
 				},
-			});
+			);
 			const data = await response.json();
 			setBookings(data.bookings);
 		};
@@ -39,14 +44,17 @@ const Admin = () => {
 		if (status === 'declined') {
 			// If status is 'declined', delete the booking
 			try {
-				await fetch(`http://localhost:8000/api/bookings/${bookingId}`, {
-					method: 'DELETE',
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem(
-							'token',
-						)}`,
+				await fetch(
+					`https://localhost:8000/api/bookings/${bookingId}`,
+					{
+						method: 'DELETE',
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem(
+								'token',
+							)}`,
+						},
 					},
-				});
+				);
 				// Remove the booking from the state
 				setBookings((prevBookings) =>
 					prevBookings.filter((booking) => booking._id !== bookingId),
@@ -58,7 +66,7 @@ const Admin = () => {
 			// If status is 'accepted', update the booking status
 			try {
 				const response = await fetch(
-					`http://localhost:8000/api/bookings/${bookingId}`,
+					`https://localhost:8000/api/bookings/${bookingId}`,
 					{
 						method: 'PATCH',
 						headers: {

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import { Helmet } from 'react-helmet';
+
 const GalleryPage = () => {
 	const [galleryData, setGalleryData] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	const fetchGalleryData = async () => {
 		try {
-			const response = await fetch('http://localhost:8000/api/images');
+			const response = await fetch('https://localhost:8000/api/images');
 			const data = await response.json();
 
 			// Group images by category and remove any duplicate entries
@@ -49,7 +51,14 @@ const GalleryPage = () => {
 		<div id="gallery" className="py-12 bg-gray-100 mt-20">
 			<div className="max-w-7xl mx-auto px-4">
 				<h1 className="text-4xl font-bold text-center mb-12">
-					Explore my latest works
+					Utforsk Arbeidet Mitt
+					<Helmet>
+						<title>Utforsk Arbeidet Mitt</title>
+						<meta
+							name="description"
+							content="Se mine nyeste fotografier i bryllup, natur, portrett, og mer."
+						/>
+					</Helmet>
 				</h1>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 					{galleryData.map((section) => (

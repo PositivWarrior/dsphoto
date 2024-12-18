@@ -37,7 +37,7 @@ const ReviewsPage = () => {
 			return;
 		}
 		try {
-			const response = await fetch('http://localhost:8000/api/reviews', {
+			const response = await fetch('https://localhost:8000/api/reviews', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(newReview),
