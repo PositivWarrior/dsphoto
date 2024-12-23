@@ -64,7 +64,7 @@ const GallerySections = () => {
 							{section.images && section.images.length > 0 ? (
 								<img
 									src={section.images[0].url}
-									alt={section.title}
+									alt={`Preview of ${section.title} gallery`}
 									className="w-full h-64 object-cover"
 								/>
 							) : (
@@ -75,9 +75,9 @@ const GallerySections = () => {
 
 							{/* Centered Category Title */}
 							<div className="absolute inset-0 flex items-center justify-center">
-								<h3 className="dancing-script-gallery-title text-4xl md:text-6xl text-white text-center drop-shadow-lg">
+								<h2 className="dancing-script-gallery-title text-4xl md:text-6xl text-white text-center drop-shadow-lg">
 									{section.title}
-								</h3>
+								</h2>
 							</div>
 						</Link>
 					))}

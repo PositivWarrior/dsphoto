@@ -137,7 +137,7 @@ const Carousel = ({ images }) => {
 					>
 						<img
 							src={image.url}
-							alt={`grid ${index}`}
+							alt={image.title || `Gallery image ${index + 1}`}
 							className="w-full h-64 object-cover rounded-lg shadow-lg"
 						/>
 					</div>

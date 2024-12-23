@@ -23,6 +23,7 @@ const About = () => {
 						target="_blank"
 						rel="noopener noreferrer"
 						className="text-gray-500 hover:text-pink-600"
+						aria-label="Follow us on Instagram"
 					>
 						<FontAwesomeIcon icon={faInstagram} size="2x" />
 					</a>
@@ -31,6 +32,7 @@ const About = () => {
 						target="_blank"
 						rel="noopener noreferrer"
 						className="text-gray-500 hover:text-blue-600"
+						aria-label="Follow us on Facebook"
 					>
 						<FontAwesomeIcon icon={faFacebook} size="2x" />
 					</a>

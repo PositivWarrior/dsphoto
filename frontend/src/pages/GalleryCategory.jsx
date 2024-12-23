@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Carousel from '../components/Carousel';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const GalleryCategory = () => {
 	const { category } = useParams();
 	const [categoryData, setCategoryData] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const isAdminRoute = window.location.pathname.includes('/admin'); // Check if we're in admin route
 
 	useEffect(() => {
 		const fetchCategoryData = async () => {
@@ -50,10 +51,14 @@ const GalleryCategory = () => {
 			<h2 className="text-4xl font-bold text-center mb-6 capitalize">
 				{categoryData.title} Gallery
 				<Helmet>
-					<title>{`${categoryData.title} Galleri | Dawid Siedlec`}</title>
+					<title>
+						{isAdminRoute 
+							? 'Admin Panel | Dawid Siedlec' 
+							: `${categoryData?.title} Galleri | Dawid Siedlec`}
+					</title>
 					<meta
 						name="description"
-						content={`Utforsk ${categoryData.title}-bilder av høy kvalitet.`}
+						content={`Utforsk ${categoryData?.title}-bilder av høy kvalitet.`}
 					/>
 				</Helmet>
 			</h2>

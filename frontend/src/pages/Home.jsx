@@ -5,7 +5,7 @@ import About from '../components/About';
 import GallerySections from '../components/GallerySections';
 import Footer from '../components/Footer';
 
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
 	return (
