@@ -3,6 +3,9 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
+import http from 'http';
+import https from 'https';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 import connectDB from './config/db.js';
@@ -37,5 +40,24 @@ app.get('/', (req, res) => {
 
 app.use('/assets', express.static(path.join(__dirname, '/assets')));
 
+// Check if SSL key and cert are available for HTTPS
+const useHttps =
+	process.env.NODE_ENV === 'production' ||
+	(fs.existsSync(process.env.SSL_KEY_PATH) &&
+		fs.existsSync(process.env.SSL_CERT_PATH));
+const server = useHttps
+	? https.createServer(
+			{
+				key: fs.readFileSync(process.env.SSL_KEY_PATH),
+				cert: fs.readFileSync(process.env.SSL_CERT_PATH),
+			},
+			app,
+	  )
+	: http.createServer(app);
+
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () =>
+	console.log(
+		`Server running on ${useHttps ? 'HTTPS' : 'HTTP'} on port ${PORT}`,
+	),
+);
