@@ -8,14 +8,12 @@ const Hero = () => {
 		<div
 			className="relative h-screen bg-cover bg-center flex items-start md:h-[150vh]"
 			style={{
-				backgroundImage:
-					"url('http://localhost:8000/assets/Dawid_hero.jpg')",
+				backgroundImage: "url('http://localhost:8000/assets/Dawid_hero.jpg')"
 			}}
 		>
 			<div className="absolute inset-0 bg-[#D19C6A] bg-opacity-60"></div>
 
 			<div className="absolute inset-0 flex items-center justify-center">
-				{' '}
 				<div className="text-center text-white">
 					<h1 className="text-6xl font-heading">
 						Capturing Moments that Matters

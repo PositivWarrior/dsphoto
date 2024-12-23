@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
+import { API } from '../api';
 
 const GallerySections = () => {
 	const [galleryData, setGalleryData] = useState([]);
@@ -9,10 +10,8 @@ const GallerySections = () => {
 	useEffect(() => {
 		const fetchGalleryData = async () => {
 			try {
-				const response = await fetch(
-					'http://localhost:8000/api/images',
-				);
-				const data = await response.json();
+				const response = await API.get('/images');
+				const data = response.data;
 
 				// Group images by category
 				const groupedData = data.reduce((acc, image) => {
@@ -35,9 +34,10 @@ const GallerySections = () => {
 				);
 
 				setGalleryData(formattedData);
-				setLoading(false);
 			} catch (error) {
 				console.error('Error fetching gallery data:', error);
+			} finally {
+				setLoading(false);
 			}
 		};
 

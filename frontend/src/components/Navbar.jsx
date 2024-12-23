@@ -3,22 +3,32 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
 	const [isScrolled, setIsScrolled] = useState(false);
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	// Add scroll event listener
 	useEffect(() => {
 		const handleScroll = () => {
-			// Set isScrolled to true if the user has scrolled down 50px or more
 			setIsScrolled(window.scrollY > 50);
 		};
 
-		// Attach the scroll event listener
 		window.addEventListener('scroll', handleScroll);
-
-		// Clean up the event listener on component unmount
 		return () => {
 			window.removeEventListener('scroll', handleScroll);
 		};
 	}, []);
+
+	const toggleMobileMenu = () => {
+		setIsMobileMenuOpen(!isMobileMenuOpen);
+	};
+
+	const navLinks = [
+		{ to: '/about', text: 'Om meg' },
+		{ to: '/book', text: 'Bestill time' },
+		{ to: '/prices', text: 'Priser' },
+		{ to: '/gallery', text: 'Galleriet' },
+		{ to: '/reviews', text: 'Omtaler' },
+		{ to: '/contact', text: 'Kontakt' },
+	];
 
 	return (
 		<nav
@@ -31,50 +41,63 @@ const Navbar = () => {
 					<div className="text-2xl font-heading text-lollipop">
 						<Link to="/">DS Photo</Link>
 					</div>
-					<div className="hidden md:flex space-x-6">
-						<Link
-							to="/about"
-							className="text-earthyBrown hover:text-lollipop transition-colors"
-						>
-							Om meg
-						</Link>
 
-						<Link
-							to="/book"
-							className="text-earthyBrown hover:text-lollipop transition-colors"
-						>
-							Bestill time
-						</Link>
-						<Link
-							to="/prices"
-							className="text-earthyBrown hover:text-lollipop transition-colors"
-						>
-							Priser
-						</Link>
-						<Link
-							to="/gallery"
-							className="text-earthyBrown hover:text-lollipop transition-colors"
-						>
-							Galleriet
-						</Link>
-						<Link
-							to="/reviews"
-							className="text-earthyBrown hover:text-lollipop transition-colors"
-						>
-							Omtaler
-						</Link>
-						<Link
-							to="/contact"
-							className="text-earthyBrown hover:text-lollipop transition-colors"
-						>
-							Kontakt
-						</Link>
+					{/* Desktop Menu */}
+					<div className="hidden md:flex space-x-6">
+						{navLinks.map((link) => (
+							<Link
+								key={link.to}
+								to={link.to}
+								className="text-earthyBrown hover:text-lollipop transition-colors"
+							>
+								{link.text}
+							</Link>
+						))}
 					</div>
-					{/* Add a mobile menu button for smaller screens */}
+
+					{/* Mobile Menu Button */}
 					<div className="md:hidden">
-						<button className="text-lollipop">Menu</button>
+						<button
+							onClick={toggleMobileMenu}
+							className="text-earthyBrown hover:text-lollipop p-2"
+							aria-label="Toggle menu"
+						>
+							<svg
+								className="h-6 w-6"
+								fill="none"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								{isMobileMenuOpen ? (
+									<path d="M6 18L18 6M6 6l12 12" />
+								) : (
+									<path d="M4 6h16M4 12h16M4 18h16" />
+								)}
+							</svg>
+						</button>
 					</div>
 				</div>
+
+				{/* Mobile Menu */}
+				{isMobileMenuOpen && (
+					<div className="md:hidden">
+						<div className="px-2 pt-2 pb-3 space-y-1 bg-neutralGray/50 rounded-b-lg">
+							{navLinks.map((link) => (
+								<Link
+									key={link.to}
+									to={link.to}
+									className="block px-3 py-2 text-earthyBrown hover:text-lollipop transition-colors"
+									onClick={() => setIsMobileMenuOpen(false)}
+								>
+									{link.text}
+								</Link>
+							))}
+						</div>
+					</div>
+				)}
 			</div>
 		</nav>
 	);

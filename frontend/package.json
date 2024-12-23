@@ -25,10 +25,10 @@
 		"web-vitals": "^2.1.4"
 	},
 	"scripts": {
-		"start": "craco start",
-		"build": "GENERATE_SOURCEMAP=false craco build",
-		"test": "react-scripts test",
-		"eject": "react-scripts eject",
+		"start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
 		"analyze": "ANALYZE=true craco build"
 	},
 	"eslintConfig": {
@@ -52,8 +52,10 @@
 	"devDependencies": {
 		"@craco/craco": "^7.1.0",
 		"autoprefixer": "^10.4.20",
+		"compression-webpack-plugin": "^11.1.0",
 		"postcss": "^8.4.47",
 		"tailwindcss": "^3.4.13",
-		"terser-webpack-plugin": "^5.3.11"
+		"terser-webpack-plugin": "^5.3.11",
+		"webpack-bundle-analyzer": "^4.10.2"
 	}
 }

@@ -15,7 +15,7 @@ const GalleryCategory = () => {
 		const fetchCategoryData = async () => {
 			try {
 				const response = await fetch(
-					`https://localhost:8000/api/images?category=${category}`,
+					`http://localhost:8000/api/images?category=${category}`,
 				);
 				const data = await response.json();
 

@@ -22,7 +22,7 @@ const Admin = () => {
 			try {
 				setIsLoading(true);
 				const response = await fetch(
-					'https://localhost:8000/api/bookings',
+					'http://localhost:8000/api/bookings',
 					{
 						headers: {
 							Authorization: `Bearer ${localStorage.getItem(

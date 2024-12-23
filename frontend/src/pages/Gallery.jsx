@@ -10,7 +10,7 @@ const GalleryPage = () => {
 
 	const fetchGalleryData = async () => {
 		try {
-			const response = await fetch('https://localhost:8000/api/images');
+			const response = await fetch('http://localhost:8000/api/images');
 			const data = await response.json();
 
 			// Group images by category and remove any duplicate entries
