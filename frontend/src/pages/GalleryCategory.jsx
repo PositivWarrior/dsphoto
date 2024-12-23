@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Carousel from '../components/Carousel';
 import { Helmet } from 'react-helmet-async';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const GalleryCategory = () => {
 	const { category } = useParams();
@@ -36,7 +37,7 @@ const GalleryCategory = () => {
 		fetchCategoryData();
 	}, [category]);
 
-	if (loading) return <div>Loading...</div>;
+	if (loading) return <LoadingSpinner />;
 
 	if (!categoryData) {
 		return (

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import LoadingSpinner from './LoadingSpinner';
 
 const GallerySections = () => {
 	const [galleryData, setGalleryData] = useState([]);
@@ -44,7 +45,7 @@ const GallerySections = () => {
 	}, []);
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return <LoadingSpinner />;
 	}
 
 	return (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import LoadingSpinner from './LoadingSpinner';
 
 const ItemType = 'IMAGE';
 
@@ -9,10 +10,12 @@ const AdminGalleryOrder = () => {
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const [reorderedImages, setReorderedImages] = useState([]);
 	const [successMessage, setSuccessMessage] = useState('');
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
+				setIsLoading(true);
 				const response = await fetch(
 					'http://localhost:8000/api/images/categories',
 				);
@@ -20,10 +23,16 @@ const AdminGalleryOrder = () => {
 				setCategories(data.categories || []);
 			} catch (error) {
 				console.error('Error fetching categories:', error);
+			} finally {
+				setIsLoading(false);
 			}
 		};
 		fetchCategories();
 	}, []);
+
+	if (isLoading) {
+		return <LoadingSpinner />;
+	}
 
 	const fetchImages = async (category) => {
 		try {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Helmet } from 'react-helmet-async';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const GalleryPage = () => {
 	const [galleryData, setGalleryData] = useState([]);
@@ -44,7 +45,7 @@ const GalleryPage = () => {
 	}, []);
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return <LoadingSpinner />;
 	}
 
 	return (

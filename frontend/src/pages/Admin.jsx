@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import UploadForm from '../components/UploadForm';
 import AdminGalleryOrder from '../components/AdminGalleryOrder';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Admin = () => {
 	const navigate = useNavigate();
@@ -9,6 +10,7 @@ const Admin = () => {
 	const [view, setView] = useState(
 		localStorage.getItem('adminView') || 'bookings',
 	); // Initialize with stored view
+	const [isLoading, setIsLoading] = useState(true);
 
 	const handleLogout = () => {
 		localStorage.removeItem('token');
@@ -17,18 +19,25 @@ const Admin = () => {
 
 	useEffect(() => {
 		const fetchBookings = async () => {
-			const response = await fetch(
-				'https://localhost:8000/api/bookings',
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem(
-							'token',
-						)}`,
+			try {
+				setIsLoading(true);
+				const response = await fetch(
+					'https://localhost:8000/api/bookings',
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem(
+								'token',
+							)}`,
+						},
 					},
-				},
-			);
-			const data = await response.json();
-			setBookings(data.bookings);
+				);
+				const data = await response.json();
+				setBookings(data.bookings);
+			} catch (error) {
+				console.error('Error fetching bookings:', error);
+			} finally {
+				setIsLoading(false);
+			}
 		};
 
 		fetchBookings();
@@ -155,6 +164,11 @@ const Admin = () => {
 				return null;
 		}
 	};
+
+	// Add loading check before the main render
+	if (isLoading) {
+		return <LoadingSpinner />;
+	}
 
 	return (
 		<div className="min-h-screen grid grid-cols-1 md:grid-cols-4 mt-10 py-10">
