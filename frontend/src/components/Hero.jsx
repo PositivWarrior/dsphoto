@@ -8,7 +8,7 @@ const Hero = () => {
 		<div
 			className="relative h-screen bg-cover bg-center flex items-start md:h-[150vh]"
 			style={{
-				backgroundImage: `url('${process.env.REACT_APP_API_URL}/assets/Dawid_hero.jpg')`,
+				backgroundImage: `url('https://dsphoto.onrender.com/assets/Dawid_hero.jpg')`,
 			}}
 		>
 			<div className="absolute inset-0 bg-[#D19C6A] bg-opacity-60"></div>

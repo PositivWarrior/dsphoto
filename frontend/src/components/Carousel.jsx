@@ -115,7 +115,15 @@ const Carousel = ({ images }) => {
 				{/* Controls */}
 				<button
 					onClick={prevSlide}
-					className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-100 rounded-full p-2"
+					className="
+					absolute 
+					top-1/2 
+					left-4 
+					transform -translate-y-1/2 
+					bg-white 
+					bg-opacity-50 
+					hover:bg-opacity-100 
+					rounded-full p-2"
 				>
 					←
 				</button>
