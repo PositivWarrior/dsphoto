@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import {
-	BrowserRouter,
+	BrowserRouter as Router,
 	Routes,
 	Route,
 	useLocation,
@@ -16,84 +16,49 @@ import './App.css';
 import './index.css';
 
 // Lazy load components with prefetch
-const Home = lazy(() =>
-	import('./pages/Home').then((module) => ({ default: module.default })),
-);
-const Login = lazy(() =>
-	import('./pages/Login').then((module) => ({ default: module.default })),
-);
-const ContactPage = lazy(() =>
-	import('./pages/Contact').then((module) => ({
-		default: module.default || module,
-	})),
-);
-const BookTimePage = lazy(() =>
-	import('./pages/BookTime').then((module) => ({ default: module.default })),
-);
-const PricesPage = lazy(() =>
-	import('./pages/Prices').then((module) => ({ default: module.default })),
-);
-const GalleryPage = lazy(() =>
-	import('./pages/Gallery').then((module) => ({ default: module.default })),
-);
-const GalleryCategory = lazy(() =>
-	import('./pages/GalleryCategory').then((module) => ({
-		default: module.default,
-	})),
-);
-const AboutPage = lazy(() =>
-	import('./pages/About').then((module) => ({ default: module.default })),
-);
-const ReviewsPage = lazy(() =>
-	import('./pages/Reviews').then((module) => ({
-		default: module.default || module,
-	})),
-);
+const Home = lazy(() => import('./pages/Home'));
+const Login = lazy(() => import('./pages/Login'));
+const ContactPage = lazy(() => import('./pages/Contact'));
+const BookTimePage = lazy(() => import('./pages/BookTime'));
+const PricesPage = lazy(() => import('./pages/Prices'));
+const GalleryPage = lazy(() => import('./pages/Gallery'));
+const GalleryCategory = lazy(() => import('./pages/GalleryCategory'));
+const AboutPage = lazy(() => import('./pages/About'));
+const ReviewsPage = lazy(() => import('./pages/Reviews'));
 
-// function ScrollToTop() {
-// 	const location = useLocation();
-// 	const navigate = useNavigate();
+// ✅ FIXED: Move `ScrollToTop` inside the Router
+function ScrollToTop() {
+	const location = useLocation();
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [location.pathname]);
+	return null;
+}
 
-// 	useEffect(() => {
-// 		window.scrollTo(0, 0);
-// 		document.dispatchEvent(new Event('navigation-change'));
-// 	}, [location.pathname]);
-
-// 	return null;
-// }
-
-// // Detect browser back button
-// useEffect(() => {
-// 	const handlePopState = () => {
-// 		navigate(0); // Force refresh on back navigation
-// 	};
-// 	window.addEventListener('popstate', handlePopState);
-// 	return () => window.removeEventListener('popstate', handlePopState);
-// }, [navigate]);
+// ✅ FIXED: Handle browser back button
+function BackButtonFix() {
+	const navigate = useNavigate();
+	useEffect(() => {
+		const handlePopState = () => {
+			navigate(0); // Force refresh on back navigation
+		};
+		window.addEventListener('popstate', handlePopState);
+		return () => window.removeEventListener('popstate', handlePopState);
+	}, [navigate]);
+	return null;
+}
 
 function App() {
-	const location = useLocation();
-	const navigate = useNavigate(); // ✅ FIXED: Defined navigate correctly inside the function
-
-	useEffect(() => {
-		// Scroll to top when navigating
-		window.scrollTo(0, 0);
-
-		// Trigger a "soft refresh" (re-fetch data) instead of a full reload
-		document.dispatchEvent(new Event('navigation-change'));
-
-		// ✅ FIXED: Back button issue
-		window.onpopstate = () => {
-			navigate(location.pathname, { replace: true });
-		};
-	}, [location.pathname, navigate]); // ✅ FIXED: Now inside `useEffect`
-
 	return (
-		<BrowserRouter>
+		<Router>
 			<ScrollToTop />
+			<BackButtonFix />
 			<Suspense fallback={<LoadingSpinner />}>
 				<Routes>
+					{/* Admin route without Layout */}
 					<Route path="/admin" element={<Admin />} />
+
+					{/* All other routes with Layout */}
 					<Route element={<Layout />}>
 						<Route path="/" element={<Home />} />
 						<Route path="/login" element={<Login />} />
@@ -110,7 +75,7 @@ function App() {
 					</Route>
 				</Routes>
 			</Suspense>
-		</BrowserRouter>
+		</Router>
 	);
 }
 
