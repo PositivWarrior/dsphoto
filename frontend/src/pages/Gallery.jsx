@@ -44,11 +44,23 @@ const GalleryPage = () => {
 
 	useEffect(() => {
 		fetchGalleryData();
-	}, []);
 
-	if (loading) {
-		return <LoadingSpinner />;
-	}
+		if (loading) {
+			return <LoadingSpinner />;
+		}
+
+		// Listen for navigation change event (back button)
+		const handleNavigationChange = () => fetchGalleryData();
+
+		document.addEventListener('navigation-change', handleNavigationChange);
+
+		return () => {
+			document.removeEventListener(
+				'navigation-change',
+				handleNavigationChange,
+			);
+		};
+	}, []);
 
 	return (
 		<div id="gallery" className="py-12 bg-gray-100 mt-20">

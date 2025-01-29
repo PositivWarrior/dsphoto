@@ -24,9 +24,12 @@ function App() {
 	const location = useLocation();
 
 	useEffect(() => {
-		// Force a reload when navigating back/forward
-		window.location.reload();
-	}, [location.pathname]);
+		// Scroll to top when navigating
+		window.scrollTo(0, 0);
+
+		// Trigger a "soft refresh" (re-fetch data) instead of a full reload
+		document.dispatchEvent(new Event('navigation-change'));
+	}, [location.pathname]); // Runs when the URL changes
 
 	return (
 		<BrowserRouter>
