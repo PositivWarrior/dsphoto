@@ -9,7 +9,7 @@ const AboutPage = () => {
 				{/* Image on the left side */}
 				<div className="md:w-1/2 mb-8 md:mb-0">
 					<img
-						src={`url('https://dsphoto.onrender.com/api/assets/Dawid_hero.jpg')`}
+						src="https://dsphoto.onrender.com/assets/Dawid_hero.jpg"
 						alt="Fotograf"
 						className="w-full h-auto rounded-lg shadow-lg"
 					/>
