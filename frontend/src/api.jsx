@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const API = axios.create({
-	baseURL: 'https://dsphoto.onrender.com',
+	baseURL: 'https://dsphoto.onrender.com/api',
 });
 
 API.interceptors.request.use((req) => {
