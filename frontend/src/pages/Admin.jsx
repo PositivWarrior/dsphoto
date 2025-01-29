@@ -3,19 +3,36 @@ import UploadForm from '../components/UploadForm';
 import AdminGalleryOrder from '../components/AdminGalleryOrder';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { jwtDecode } from 'jwt-decode';
 
 const Admin = () => {
-	const navigate = useNavigate();
 	const [bookings, setBookings] = useState([]);
 	const [view, setView] = useState(
 		localStorage.getItem('adminView') || 'bookings',
 	); // Initialize with stored view
 	const [isLoading, setIsLoading] = useState(true);
+	const [adminName, setAdminName] = useState('');
+	const navigate = useNavigate();
 
 	const handleLogout = () => {
 		localStorage.removeItem('token');
 		navigate('/login');
 	};
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		if (token) {
+			try {
+				const decoded = jwtDecode(token);
+				setAdminName(decoded.name);
+			} catch (error) {
+				console.error('Error decoding token:', error);
+				navigate('/login');
+			}
+		} else {
+			navigate('/login');
+		}
+	}, [navigate]);
 
 	useEffect(() => {
 		const fetchBookings = async () => {
@@ -171,10 +188,11 @@ const Admin = () => {
 	}
 
 	return (
-		<div className="min-h-screen grid grid-cols-1 md:grid-cols-4 mt-10 py-10">
+		<div className="min-h-screen grid grid-cols-1 md:grid-cols-4">
 			<aside className="bg-gray-800 text-white py-8 md:min-h-screen">
 				<div className="px-6">
-					<h2 className="text-3xl font-bold mb-8">Admin Panel</h2>
+					<h2 className="text-3xl font-bold mb-2">Admin Panel</h2>
+					<p className="text-gray-400 mb-8">Welcome {adminName}</p>
 					<nav className="space-y-4">
 						<button
 							onClick={() => changeView('bookings')}
