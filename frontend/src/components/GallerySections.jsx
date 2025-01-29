@@ -10,7 +10,7 @@ const GallerySections = () => {
 	useEffect(() => {
 		const fetchGalleryData = async () => {
 			try {
-				const response = await API.get('/images');
+				const response = await API.get('/api/images');
 				const data = response.data;
 
 				// Group images by category

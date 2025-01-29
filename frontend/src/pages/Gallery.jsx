@@ -45,22 +45,19 @@ const GalleryPage = () => {
 	useEffect(() => {
 		fetchGalleryData();
 
-		if (loading) {
-			return <LoadingSpinner />;
-		}
-
-		// Listen for navigation change event (back button)
-		const handleNavigationChange = () => fetchGalleryData();
-
-		document.addEventListener('navigation-change', handleNavigationChange);
+		// Handle back button navigation issue
+		window.onpopstate = () => {
+			window.location.reload();
+		};
 
 		return () => {
-			document.removeEventListener(
-				'navigation-change',
-				handleNavigationChange,
-			);
+			window.onpopstate = null;
 		};
 	}, []);
+
+	if (loading) {
+		return <LoadingSpinner />;
+	}
 
 	return (
 		<div id="gallery" className="py-12 bg-gray-100 mt-20">

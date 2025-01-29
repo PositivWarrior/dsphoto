@@ -16,7 +16,7 @@ const Hero = () => {
 			<div className="absolute inset-0 flex items-center justify-center">
 				<div className="text-center text-white">
 					<h1 className="text-6xl font-heading">
-						Capturing Moments that Matters
+						Capturing Moments that Matter
 					</h1>
 					<p className="mt-4 text-xl font-body">
 						Let me tell your story through timeless photography.
