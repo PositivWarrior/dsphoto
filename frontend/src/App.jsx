@@ -1,15 +1,7 @@
-import React, { Suspense, lazy, useEffect } from 'react';
-import {
-	BrowserRouter,
-	Routes,
-	Route,
-	useLocation,
-	useNavigate,
-} from 'react-router-dom';
-import Navbar from './components/Navbar';
-import ProtectedRoute from './components/ProtectedRoute';
-import LoadingSpinner from './components/LoadingSpinner';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import LoadingSpinner from './components/LoadingSpinner';
 import Admin from './pages/Admin';
 
 import './App.css';
@@ -26,30 +18,9 @@ const GalleryCategory = lazy(() => import('./pages/GalleryCategory'));
 const AboutPage = lazy(() => import('./pages/About'));
 const ReviewsPage = lazy(() => import('./pages/Reviews'));
 
-// ✅ FIXED: `useNavigate` is now inside `ScrollToTop`
-const ScrollToTop = () => {
-	const location = useLocation();
-	const navigate = useNavigate(); // ✅ useNavigate is now inside a component
-
-	useEffect(() => {
-		window.scrollTo(0, 0);
-		document.dispatchEvent(new Event('navigation-change'));
-
-		// ✅ Fix: Handle Back Button Navigation
-		const handlePopState = () => {
-			navigate(location.pathname, { replace: true });
-		};
-		window.addEventListener('popstate', handlePopState);
-		return () => window.removeEventListener('popstate', handlePopState);
-	}, [location.pathname, navigate]);
-
-	return null;
-};
-
 function App() {
 	return (
 		<BrowserRouter>
-			<ScrollToTop />
 			<Suspense fallback={<LoadingSpinner />}>
 				<Routes>
 					<Route path="/admin" element={<Admin />} />
