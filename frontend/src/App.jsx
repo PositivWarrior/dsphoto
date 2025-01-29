@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -21,6 +21,13 @@ const AboutPage = lazy(() => import('./pages/About'));
 const ReviewsPage = lazy(() => import('./pages/Reviews'));
 
 function App() {
+	const location = useLocation();
+
+	useEffect(() => {
+		// Force a reload when navigating back/forward
+		window.location.reload();
+	}, [location.pathname]);
+
 	return (
 		<BrowserRouter>
 			<Suspense fallback={<LoadingSpinner />}>
