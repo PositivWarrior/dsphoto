@@ -31,7 +31,8 @@
 	"scripts": {
 		"start": "nodemon server.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"reset-password": "node scripts/resetAdminPassword.js"
+		"reset-password": "node scripts/resetAdminPassword.js",
+		"build": "echo 'No build step needed for backend'"
 	},
 	"keywords": [],
 	"author": "",
