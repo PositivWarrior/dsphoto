@@ -1,5 +1,11 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import {
+	BrowserRouter,
+	Routes,
+	Route,
+	useLocation,
+	useNavigate,
+} from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -44,28 +50,44 @@ const ReviewsPage = lazy(() =>
 	})),
 );
 
-function ScrollToTop() {
-	const location = useLocation();
-	const navigate = useNavigate();
+// function ScrollToTop() {
+// 	const location = useLocation();
+// 	const navigate = useNavigate();
 
-	useEffect(() => {
-		window.scrollTo(0, 0);
-		document.dispatchEvent(new Event('navigation-change'));
-	}, [location.pathname]);
+// 	useEffect(() => {
+// 		window.scrollTo(0, 0);
+// 		document.dispatchEvent(new Event('navigation-change'));
+// 	}, [location.pathname]);
 
-	return null;
-}
+// 	return null;
+// }
 
-// Detect browser back button
-useEffect(() => {
-	const handlePopState = () => {
-		navigate(0); // Force refresh on back navigation
-	};
-	window.addEventListener('popstate', handlePopState);
-	return () => window.removeEventListener('popstate', handlePopState);
-}, [navigate]);
+// // Detect browser back button
+// useEffect(() => {
+// 	const handlePopState = () => {
+// 		navigate(0); // Force refresh on back navigation
+// 	};
+// 	window.addEventListener('popstate', handlePopState);
+// 	return () => window.removeEventListener('popstate', handlePopState);
+// }, [navigate]);
 
 function App() {
+	const location = useLocation();
+	const navigate = useNavigate(); // ✅ FIXED: Defined navigate correctly inside the function
+
+	useEffect(() => {
+		// Scroll to top when navigating
+		window.scrollTo(0, 0);
+
+		// Trigger a "soft refresh" (re-fetch data) instead of a full reload
+		document.dispatchEvent(new Event('navigation-change'));
+
+		// ✅ FIXED: Back button issue
+		window.onpopstate = () => {
+			navigate(location.pathname, { replace: true });
+		};
+	}, [location.pathname, navigate]); // ✅ FIXED: Now inside `useEffect`
+
 	return (
 		<BrowserRouter>
 			<ScrollToTop />
