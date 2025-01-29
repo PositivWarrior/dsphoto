@@ -15,7 +15,7 @@ const GalleryCategory = () => {
 		const fetchCategoryData = async () => {
 			try {
 				const response = await fetch(
-					`${process.env.REACT_APP_API_URL}/images?category=${category}`,
+					`${process.env.REACT_APP_API_URL}/api/images?category=${category}`,
 				);
 				const data = await response.json();
 

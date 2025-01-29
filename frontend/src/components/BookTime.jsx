@@ -43,18 +43,21 @@ const BookTime = () => {
 				message,
 			});
 
-			const response = await fetch('http://localhost:8000/bookings', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
+			const response = await fetch(
+				`${process.env.REACT_APP_API_URL}/api/bookings`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						name,
+						email,
+						date,
+						message,
+					}),
 				},
-				body: JSON.stringify({
-					name,
-					email,
-					date,
-					message,
-				}),
-			});
+			);
 
 			if (response.ok) {
 				setStatus('Booking request successfully saved!');
