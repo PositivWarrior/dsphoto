@@ -19,7 +19,7 @@ const About = () => {
 				{/* Centered Social Media Icons */}
 				<div className="flex justify-center space-x-6 mt-4">
 					<a
-						href="https://www.instagram.com/yourusername"
+						href="https://www.instagram.com/fotods.no/"
 						target="_blank"
 						rel="noopener noreferrer"
 						className="text-gray-500 hover:text-pink-600"
@@ -28,7 +28,7 @@ const About = () => {
 						<FontAwesomeIcon icon={faInstagram} size="2x" />
 					</a>
 					<a
-						href="https://www.facebook.com/yourusername"
+						href="https://www.facebook.com/fotods.no"
 						target="_blank"
 						rel="noopener noreferrer"
 						className="text-gray-500 hover:text-blue-600"

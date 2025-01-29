@@ -9,7 +9,7 @@ const AboutPage = () => {
 				{/* Image on the left side */}
 				<div className="md:w-1/2 mb-8 md:mb-0">
 					<img
-						src="http://localhost:8000/assets/Dawid_hero.jpg"
+						src="`${process.env.REACT_APP_API_URL}/assets/Dawid_hero.jpg`"
 						alt="Fotograf"
 						className="w-full h-auto rounded-lg shadow-lg"
 					/>
@@ -45,7 +45,7 @@ const AboutPage = () => {
 					{/* Social Media Icons */}
 					<div className="flex space-x-6 mt-4">
 						<a
-							href="https://www.instagram.com/yourusername"
+							href="https://www.instagram.com/fotods.no/"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="text-gray-500 hover:text-pink-600"
@@ -53,7 +53,7 @@ const AboutPage = () => {
 							<FontAwesomeIcon icon={faInstagram} size="2x" />
 						</a>
 						<a
-							href="https://www.facebook.com/yourusername"
+							href="https://www.facebook.com/fotods.no"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="text-gray-500 hover:text-blue-600"

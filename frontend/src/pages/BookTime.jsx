@@ -37,7 +37,7 @@ const BookTime = () => {
 		// Send booking request to the backend (if necessary)
 		try {
 			const response = await fetch(
-				'https://localhost:8000/api/bookings',
+				`${process.env.REACT_APP_API_URL}/api/bookings`,
 				{
 					method: 'POST',
 					headers: {

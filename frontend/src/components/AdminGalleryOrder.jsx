@@ -17,7 +17,7 @@ const AdminGalleryOrder = () => {
 			try {
 				setIsLoading(true);
 				const response = await fetch(
-					'http://localhost:8000/api/images/categories',
+					`${process.env.REACT_APP_API_URL}/images/categories`,
 				);
 				const data = await response.json();
 				setCategories(data.categories || []);
@@ -37,7 +37,7 @@ const AdminGalleryOrder = () => {
 	const fetchImages = async (category) => {
 		try {
 			const response = await fetch(
-				`http://localhost:8000/api/images?category=${category}`,
+				`${process.env.REACT_APP_API_URL}/images?category=${category}`,
 			);
 			const data = await response.json();
 			const filteredImages = data
@@ -60,7 +60,7 @@ const AdminGalleryOrder = () => {
 		try {
 			const token = localStorage.getItem('token');
 			const response = await fetch(
-				'http://localhost:8000/api/images/reorder',
+				`${process.env.REACT_APP_API_URL}/images/reorder`,
 				{
 					method: 'POST',
 					headers: {
@@ -89,7 +89,7 @@ const AdminGalleryOrder = () => {
 		try {
 			const token = localStorage.getItem('token');
 			const response = await fetch(
-				`http://localhost:8000/api/images/${imageId}`,
+				`${process.env.REACT_APP_API_URL}/images/${imageId}`,
 				{
 					method: 'DELETE',
 					headers: { Authorization: `Bearer ${token}` },

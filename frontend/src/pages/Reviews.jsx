@@ -15,7 +15,7 @@ const ReviewsPage = () => {
 		const fetchReviews = async () => {
 			try {
 				const response = await fetch(
-					'http://localhost:8000/api/reviews',
+					`${process.env.REACT_APP_API_URL}/reviews`,
 				);
 				const data = await response.json();
 				setReviews(data.reviews || []);
@@ -37,11 +37,14 @@ const ReviewsPage = () => {
 			return;
 		}
 		try {
-			const response = await fetch('https://localhost:8000/api/reviews', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(newReview),
-			});
+			const response = await fetch(
+				`${process.env.REACT_APP_API_URL}/reviews`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(newReview),
+				},
+			);
 			if (response.ok) {
 				const addedReview = await response.json();
 				setReviews([...reviews, addedReview]);

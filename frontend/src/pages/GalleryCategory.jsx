@@ -15,7 +15,7 @@ const GalleryCategory = () => {
 		const fetchCategoryData = async () => {
 			try {
 				const response = await fetch(
-					`http://localhost:8000/api/images?category=${category}`,
+					`${process.env.REACT_APP_API_URL}/images?category=${category}`,
 				);
 				const data = await response.json();
 
@@ -53,8 +53,8 @@ const GalleryCategory = () => {
 				{categoryData.title} Gallery
 				<Helmet>
 					<title>
-						{isAdminRoute 
-							? 'Admin Panel | Dawid Siedlec' 
+						{isAdminRoute
+							? 'Admin Panel | Dawid Siedlec'
 							: `${categoryData?.title} Galleri | Dawid Siedlec`}
 					</title>
 					<meta
