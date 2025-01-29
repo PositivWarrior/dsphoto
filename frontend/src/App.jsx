@@ -27,13 +27,24 @@ const AboutPage = lazy(() => import('./pages/About'));
 const ReviewsPage = lazy(() => import('./pages/Reviews'));
 
 // ✅ FIXED: Move `ScrollToTop` inside the Router
-function ScrollToTop() {
+const ScrollToTop = () => {
 	const location = useLocation();
+	const navigate = useNavigate(); // ✅ Defined inside a component
+
 	useEffect(() => {
 		window.scrollTo(0, 0);
-	}, [location.pathname]);
+		document.dispatchEvent(new Event('navigation-change'));
+
+		// ✅ Fix: Handle Back Button
+		const handlePopState = () => {
+			navigate(location.pathname, { replace: true });
+		};
+		window.addEventListener('popstate', handlePopState);
+		return () => window.removeEventListener('popstate', handlePopState);
+	}, [location.pathname, navigate]);
+
 	return null;
-}
+};
 
 // ✅ FIXED: Handle browser back button
 function BackButtonFix() {
