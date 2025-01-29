@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import {
-	BrowserRouter as Router,
+	BrowserRouter,
 	Routes,
 	Route,
 	useLocation,
@@ -15,7 +15,7 @@ import Admin from './pages/Admin';
 import './App.css';
 import './index.css';
 
-// Lazy load components with prefetch
+// Lazy load components
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
 const ContactPage = lazy(() => import('./pages/Contact'));
@@ -26,16 +26,16 @@ const GalleryCategory = lazy(() => import('./pages/GalleryCategory'));
 const AboutPage = lazy(() => import('./pages/About'));
 const ReviewsPage = lazy(() => import('./pages/Reviews'));
 
-// ✅ FIXED: Move `ScrollToTop` inside the Router
+// ✅ FIXED: `useNavigate` is now inside `ScrollToTop`
 const ScrollToTop = () => {
 	const location = useLocation();
-	const navigate = useNavigate(); // ✅ Defined inside a component
+	const navigate = useNavigate(); // ✅ useNavigate is now inside a component
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 		document.dispatchEvent(new Event('navigation-change'));
 
-		// ✅ Fix: Handle Back Button
+		// ✅ Fix: Handle Back Button Navigation
 		const handlePopState = () => {
 			navigate(location.pathname, { replace: true });
 		};
@@ -46,30 +46,13 @@ const ScrollToTop = () => {
 	return null;
 };
 
-// ✅ FIXED: Handle browser back button
-function BackButtonFix() {
-	const navigate = useNavigate();
-	useEffect(() => {
-		const handlePopState = () => {
-			navigate(0); // Force refresh on back navigation
-		};
-		window.addEventListener('popstate', handlePopState);
-		return () => window.removeEventListener('popstate', handlePopState);
-	}, [navigate]);
-	return null;
-}
-
 function App() {
 	return (
-		<Router>
+		<BrowserRouter>
 			<ScrollToTop />
-			<BackButtonFix />
 			<Suspense fallback={<LoadingSpinner />}>
 				<Routes>
-					{/* Admin route without Layout */}
 					<Route path="/admin" element={<Admin />} />
-
-					{/* All other routes with Layout */}
 					<Route element={<Layout />}>
 						<Route path="/" element={<Home />} />
 						<Route path="/login" element={<Login />} />
@@ -86,7 +69,7 @@ function App() {
 					</Route>
 				</Routes>
 			</Suspense>
-		</Router>
+		</BrowserRouter>
 	);
 }
 
