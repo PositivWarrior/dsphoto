@@ -20,25 +20,24 @@ const GalleryCategory = lazy(() => import('./pages/GalleryCategory'));
 const AboutPage = lazy(() => import('./pages/About'));
 const ReviewsPage = lazy(() => import('./pages/Reviews'));
 
-function App() {
+function ScrollToTop() {
 	const location = useLocation();
 
 	useEffect(() => {
-		// Scroll to top when navigating
 		window.scrollTo(0, 0);
-
-		// Trigger a "soft refresh" (re-fetch data) instead of a full reload
 		document.dispatchEvent(new Event('navigation-change'));
-	}, [location.pathname]); // Runs when the URL changes
+	}, [location.pathname]);
 
+	return null;
+}
+
+function App() {
 	return (
 		<BrowserRouter>
+			<ScrollToTop />
 			<Suspense fallback={<LoadingSpinner />}>
 				<Routes>
-					{/* Admin route without Layout */}
 					<Route path="/admin" element={<Admin />} />
-
-					{/* All other routes with Layout */}
 					<Route element={<Layout />}>
 						<Route path="/" element={<Home />} />
 						<Route path="/login" element={<Login />} />
