@@ -9,7 +9,7 @@ const AboutPage = () => {
 				{/* Image on the left side */}
 				<div className="md:w-1/2 mb-8 md:mb-0">
 					<img
-						src="`${process.env.REACT_APP_API_URL}/assets/Dawid_hero.jpg`"
+						src={`${process.env.REACT_APP_API_URL}/assets/Dawid_hero.jpg`}
 						alt="Fotograf"
 						className="w-full h-auto rounded-lg shadow-lg"
 					/>
