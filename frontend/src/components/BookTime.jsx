@@ -44,7 +44,7 @@ const BookTime = () => {
 			});
 
 			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/api/bookings`,
+				`${process.env.REACT_APP_API_URL}/bookings`,
 				{
 					method: 'POST',
 					headers: {

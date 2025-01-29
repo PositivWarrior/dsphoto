@@ -15,7 +15,7 @@ const ReviewsPage = () => {
 		const fetchReviews = async () => {
 			try {
 				const response = await fetch(
-					`${process.env.REACT_APP_API_URL}/api/reviews`,
+					`${process.env.REACT_APP_API_URL}/reviews`,
 				);
 				const data = await response.json();
 				setReviews(data.reviews || []);
@@ -38,7 +38,7 @@ const ReviewsPage = () => {
 		}
 		try {
 			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/api/reviews`,
+				`${process.env.REACT_APP_API_URL}/reviews`,
 				{
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },

@@ -39,7 +39,7 @@ const Admin = () => {
 			try {
 				setIsLoading(true);
 				const response = await fetch(
-					`${process.env.REACT_APP_API_URL}/api/bookings`,
+					`${process.env.REACT_APP_API_URL}/bookings`,
 					{
 						headers: {
 							Authorization: `Bearer ${localStorage.getItem(
@@ -71,7 +71,7 @@ const Admin = () => {
 			// If status is 'declined', delete the booking
 			try {
 				await fetch(
-					`${process.env.REACT_APP_API_URL}/api/bookings/${bookingId}`,
+					`${process.env.REACT_APP_API_URL}/bookings/${bookingId}`,
 					{
 						method: 'DELETE',
 						headers: {
@@ -92,7 +92,7 @@ const Admin = () => {
 			// If status is 'accepted', update the booking status
 			try {
 				const response = await fetch(
-					`${process.env.REACT_APP_API_URL}/api/bookings/${bookingId}`,
+					`${process.env.REACT_APP_API_URL}/bookings/${bookingId}`,
 					{
 						method: 'PATCH',
 						headers: {

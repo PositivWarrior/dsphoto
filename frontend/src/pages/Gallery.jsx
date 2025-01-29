@@ -11,7 +11,7 @@ const GalleryPage = () => {
 	const fetchGalleryData = async () => {
 		try {
 			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/api/images`,
+				`${process.env.REACT_APP_API_URL}/images`,
 			);
 			const data = await response.json();
 

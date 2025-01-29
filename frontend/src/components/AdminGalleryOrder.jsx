@@ -37,7 +37,7 @@ const AdminGalleryOrder = () => {
 	const fetchImages = async (category) => {
 		try {
 			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/api/images?category=${category}`,
+				`${process.env.REACT_APP_API_URL}/images?category=${category}`,
 			);
 			const data = await response.json();
 			const filteredImages = data
