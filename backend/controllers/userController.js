@@ -3,10 +3,18 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 // Generate JWT token
-const generateToken = (id) => {
-	return jwt.sign({ id }, process.env.JWT_SECRET, {
-		expiresIn: '30d',
-	});
+const generateToken = (user) => {
+	return jwt.sign(
+		{
+			id: user._id,
+			name: user.name,
+			isAdmin: user.isAdmin,
+		},
+		process.env.JWT_SECRET,
+		{
+			expiresIn: '30d',
+		},
+	);
 };
 
 export const registerUser = async (req, res) => {
@@ -41,7 +49,7 @@ export const registerUser = async (req, res) => {
 				name: user.name,
 				email: user.email,
 				isAdmin: user.isAdmin,
-				token: generateToken(user._id),
+				token: generateToken(user),
 			});
 		} else {
 			res.status(400).json({ message: 'Invalid user data' });
@@ -56,13 +64,11 @@ export const loginUser = async (req, res) => {
 		const { email, password } = req.body;
 		const user = await User.findOne({ email });
 
-		// Add logging to debug
 		console.log('Login attempt:', { email, userFound: !!user });
 
 		if (user && (await user.matchPassword(password))) {
-			const token = generateToken(user._id);
+			const token = generateToken(user);
 
-			// Add more detailed user info in response
 			res.json({
 				_id: user._id,
 				name: user.name,

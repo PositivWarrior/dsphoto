@@ -18,6 +18,7 @@ const Admin = () => {
 
 	const handleLogout = () => {
 		localStorage.removeItem('token');
+		localStorage.removeItem('userInfo');
 		navigate('/login');
 	};
 
@@ -31,7 +32,7 @@ const Admin = () => {
 			if (token) {
 				try {
 					const decoded = jwtDecode(token);
-					setAdminName(decoded.name || 'Admin');
+					setAdminName(decoded.name);
 				} catch (error) {
 					console.error('Error decoding token:', error);
 					navigate('/login');
