@@ -4,6 +4,8 @@ import AdminGalleryOrder from '../components/AdminGalleryOrder';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { jwtDecode } from 'jwt-decode';
+import { Helmet } from 'react-helmet-async';
+import ImageList from '../components/ImageList';
 
 const Admin = () => {
 	const [bookings, setBookings] = useState([]);
@@ -177,6 +179,8 @@ const Admin = () => {
 				return <UploadForm />;
 			case 'manageGalleries':
 				return <AdminGalleryOrder />;
+			case 'imageList':
+				return <ImageList />;
 			default:
 				return null;
 		}
@@ -188,50 +192,74 @@ const Admin = () => {
 	}
 
 	return (
-		<div className="min-h-screen grid grid-cols-1 md:grid-cols-4">
-			<aside className="bg-gray-800 text-white py-8 md:min-h-screen">
-				<div className="px-6">
-					<h2 className="text-3xl font-bold mb-2">Admin Panel</h2>
-					<p className="text-gray-400 mb-8">Welcome {adminName}</p>
-					<nav className="space-y-4">
-						<button
-							onClick={() => changeView('bookings')}
-							className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
-						>
-							Bookings
-						</button>
-						<button
-							onClick={() => changeView('upload')}
-							className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
-						>
-							Upload Images
-						</button>
-						<button
-							onClick={() => changeView('manageGalleries')}
-							className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
-						>
-							Manage Galleries
-						</button>
-						<button
-							onClick={handleLogout}
-							className="block w-full text-left px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg"
-						>
-							Logout
-						</button>
-					</nav>
-				</div>
-			</aside>
+		<div className="container mx-auto px-4 py-8 mt-20">
+			<Helmet>
+				<title>Admin Panel | Dawid Siedlec</title>
+			</Helmet>
+			<h1 className="text-3xl font-bold text-center mb-8">Admin Panel</h1>
+			<h2 className="text-xl text-center mb-8">Welcome {adminName}</h2>
 
-			<main className="col-span-3 p-8 bg-gray-100">
-				<h2 className="text-4xl font-bold mb-6">
-					{view === 'bookings'
-						? 'Bookings'
-						: view === 'upload'
-						? 'Upload Images'
-						: 'Manage Galleries'}
-				</h2>
-				{renderContent()}
-			</main>
+			<div className="space-y-8">
+				<div className="min-h-screen grid grid-cols-1 md:grid-cols-4">
+					<aside className="bg-gray-800 text-white py-8 md:min-h-screen">
+						<div className="px-6">
+							<h2 className="text-3xl font-bold mb-2">
+								Admin Panel
+							</h2>
+							<p className="text-gray-400 mb-8">
+								Welcome {adminName}
+							</p>
+							<nav className="space-y-4">
+								<button
+									onClick={() => changeView('bookings')}
+									className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+								>
+									Bookings
+								</button>
+								<button
+									onClick={() => changeView('upload')}
+									className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+								>
+									Upload Images
+								</button>
+								<button
+									onClick={() =>
+										changeView('manageGalleries')
+									}
+									className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+								>
+									Manage Galleries
+								</button>
+								<button
+									onClick={() => changeView('imageList')}
+									className="block w-full text-left px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+								>
+									Image List
+								</button>
+								<button
+									onClick={handleLogout}
+									className="block w-full text-left px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg"
+								>
+									Logout
+								</button>
+							</nav>
+						</div>
+					</aside>
+
+					<main className="col-span-3 p-8 bg-gray-100">
+						<h2 className="text-4xl font-bold mb-6">
+							{view === 'bookings'
+								? 'Bookings'
+								: view === 'upload'
+								? 'Upload Images'
+								: view === 'manageGalleries'
+								? 'Manage Galleries'
+								: 'Image List'}
+						</h2>
+						{renderContent()}
+					</main>
+				</div>
+			</div>
 		</div>
 	);
 };
