@@ -17,3 +17,5 @@ export const fetchImages = () => API.get('/images');
 export const uploadImage = (formData) => API.post('/images', formData);
 
 export const loginUser = (loginData) => API.post('/users/login', loginData);
+
+export const deleteImage = (imageId) => API.delete(`/images/${imageId}`);
