@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { Helmet } from 'react-helmet-async';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -8,6 +8,7 @@ import { API } from '../api';
 const GalleryPage = () => {
 	const [galleryData, setGalleryData] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const location = useLocation();
 
 	const fetchGalleryData = async () => {
 		try {
@@ -44,16 +45,7 @@ const GalleryPage = () => {
 
 	useEffect(() => {
 		fetchGalleryData();
-
-		// Handle back button navigation issue
-		window.onpopstate = () => {
-			window.location.reload();
-		};
-
-		return () => {
-			window.onpopstate = null;
-		};
-	}, []);
+	}, [location.pathname]);
 
 	if (loading) {
 		return <LoadingSpinner />;

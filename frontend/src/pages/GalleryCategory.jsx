@@ -1,6 +1,6 @@
 // src/pages/GalleryCategory.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import Carousel from '../components/Carousel';
 import { Helmet } from 'react-helmet-async';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -10,7 +10,8 @@ const GalleryCategory = () => {
 	const { category } = useParams();
 	const [categoryData, setCategoryData] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const isAdminRoute = window.location.pathname.includes('/admin'); // Check if we're in admin route
+	const location = useLocation(); // Add this
+	const isAdminRoute = location.pathname.includes('/admin'); // Check if we're in admin route
 
 	useEffect(() => {
 		const fetchCategoryData = async () => {
@@ -34,7 +35,7 @@ const GalleryCategory = () => {
 		};
 
 		fetchCategoryData();
-	}, [category]);
+	}, [category, location.pathname]); // Add location.pathname as dependency
 
 	if (loading) return <LoadingSpinner />;
 
