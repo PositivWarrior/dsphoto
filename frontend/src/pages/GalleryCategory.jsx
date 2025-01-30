@@ -13,7 +13,7 @@ const GalleryCategory = () => {
 	const [categoryData, setCategoryData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [displayedImages, setDisplayedImages] = useState([]);
-	const [showMore, setShowMore] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
 	const location = useLocation(); // Add this
 	const isAdminRoute = location.pathname.includes('/admin'); // Check if we're in admin route
 
@@ -42,12 +42,19 @@ const GalleryCategory = () => {
 		};
 
 		fetchCategoryData();
+		setCurrentPage(1); // Reset page when category changes
 	}, [category, location.pathname]); // Add location.pathname as dependency
 
 	const handleShowMore = () => {
-		setShowMore(true);
-		setDisplayedImages(categoryData.images);
+		const nextPage = currentPage + 1;
+		const startIndex = 0;
+		const endIndex = nextPage * IMAGES_PER_PAGE;
+
+		setDisplayedImages(categoryData.images.slice(startIndex, endIndex));
+		setCurrentPage(nextPage);
 	};
+
+	const hasMoreImages = categoryData?.images.length > displayedImages.length;
 
 	if (loading) return <LoadingSpinner />;
 
@@ -82,13 +89,14 @@ const GalleryCategory = () => {
 			)}
 
 			{/* Show More Button */}
-			{!showMore && categoryData.images.length > IMAGES_PER_PAGE && (
+			{hasMoreImages && (
 				<div className="text-center mt-8">
 					<button
 						onClick={handleShowMore}
 						className="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
 					>
-						Vis mer
+						Vis {IMAGES_PER_PAGE} mer ({displayedImages.length} av{' '}
+						{categoryData.images.length})
 					</button>
 				</div>
 			)}
