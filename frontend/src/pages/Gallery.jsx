@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { Helmet } from 'react-helmet-async';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { API } from '../api';
 
 const GalleryPage = () => {
 	const [galleryData, setGalleryData] = useState([]);
@@ -10,10 +11,8 @@ const GalleryPage = () => {
 
 	const fetchGalleryData = async () => {
 		try {
-			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/images`,
-			);
-			const data = await response.json();
+			const response = await API.get('/images');
+			const data = response.data;
 
 			// Group images by category and remove any duplicate entries
 			const uniqueCategories = new Set(); // To track unique categories
@@ -36,9 +35,10 @@ const GalleryPage = () => {
 			}));
 
 			setGalleryData(formattedData);
-			setLoading(false);
 		} catch (error) {
 			console.error('Error fetching gallery data:', error);
+		} finally {
+			setLoading(false);
 		}
 	};
 

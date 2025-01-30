@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Carousel from '../components/Carousel';
 import { Helmet } from 'react-helmet-async';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { API } from '../api'; // Import the API instance
 
 const GalleryCategory = () => {
 	const { category } = useParams();
@@ -14,10 +15,8 @@ const GalleryCategory = () => {
 	useEffect(() => {
 		const fetchCategoryData = async () => {
 			try {
-				const response = await fetch(
-					`${process.env.REACT_APP_API_URL}/images?category=${category}`,
-				);
-				const data = await response.json();
+				const response = await API.get(`/images?category=${category}`); // Use API instance
+				const data = response.data; // Access data from response.data
 
 				// Format and sort images by order
 				const formattedCategoryData = {
