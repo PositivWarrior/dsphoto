@@ -6,10 +6,14 @@ import { Helmet } from 'react-helmet-async';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { API } from '../api'; // Import the API instance
 
+const IMAGES_PER_PAGE = 6; // Adjust this number as needed
+
 const GalleryCategory = () => {
 	const { category } = useParams();
 	const [categoryData, setCategoryData] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [displayedImages, setDisplayedImages] = useState([]);
+	const [showMore, setShowMore] = useState(false);
 	const location = useLocation(); // Add this
 	const isAdminRoute = location.pathname.includes('/admin'); // Check if we're in admin route
 
@@ -28,6 +32,9 @@ const GalleryCategory = () => {
 				};
 
 				setCategoryData(formattedCategoryData);
+				setDisplayedImages(
+					formattedCategoryData.images.slice(0, IMAGES_PER_PAGE),
+				);
 				setLoading(false);
 			} catch (error) {
 				console.error('Error fetching category data:', error);
@@ -36,6 +43,11 @@ const GalleryCategory = () => {
 
 		fetchCategoryData();
 	}, [category, location.pathname]); // Add location.pathname as dependency
+
+	const handleShowMore = () => {
+		setShowMore(true);
+		setDisplayedImages(categoryData.images);
+	};
 
 	if (loading) return <LoadingSpinner />;
 
@@ -65,8 +77,20 @@ const GalleryCategory = () => {
 			</h2>
 
 			{/* Carousel */}
-			{categoryData.images.length > 0 && (
-				<Carousel images={categoryData.images} />
+			{displayedImages.length > 0 && (
+				<Carousel images={displayedImages} />
+			)}
+
+			{/* Show More Button */}
+			{!showMore && categoryData.images.length > IMAGES_PER_PAGE && (
+				<div className="text-center mt-8">
+					<button
+						onClick={handleShowMore}
+						className="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+					>
+						Vis mer
+					</button>
+				</div>
 			)}
 		</div>
 	);

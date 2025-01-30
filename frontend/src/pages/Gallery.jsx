@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { API } from '../api';
+import ImageOptimizer from '../components/ImageOptimizer';
 
 const GalleryPage = () => {
 	const [galleryData, setGalleryData] = useState([]);
@@ -72,10 +73,11 @@ const GalleryPage = () => {
 							className="relative block group rounded-lg overflow-hidden shadow-lg transform transition-transform hover:scale-105"
 						>
 							{section.images && section.images.length > 0 ? (
-								<img
+								<ImageOptimizer
 									src={section.images[0].url}
 									alt={section.title}
 									className="w-full h-64 object-cover"
+									sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 								/>
 							) : (
 								<div className="w-full h-64 bg-gray-300 flex items-center justify-center">
