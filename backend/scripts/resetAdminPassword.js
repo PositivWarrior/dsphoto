@@ -36,11 +36,11 @@ const resetPassword = async () => {
 			console.log(`${index + 1}. ${user.name} (${user.email})`);
 		});
 
-		// Ask which user to reset
+		// Ask which user to update
 		const userIndex =
 			parseInt(
 				await question(
-					'\nEnter the number of the user to reset (or 0 to exit): ',
+					'\nEnter the number of the user to update (or 0 to exit): ',
 				),
 			) - 1;
 
@@ -55,30 +55,35 @@ const resetPassword = async () => {
 		}
 
 		const selectedUser = adminUsers[userIndex];
-		console.log(`\nResetting password for ${selectedUser.name}`);
-		console.log('Current password hash:', selectedUser.password);
+		console.log(`\nUpdating user ${selectedUser.name}`);
 
-		const newPassword = await question('Enter new password: ');
-		const confirmPassword = await question('Confirm new password: ');
-
-		if (newPassword !== confirmPassword) {
-			console.log('Passwords do not match');
-			process.exit(1);
+		// Ask for new name
+		const newName = await question(
+			'Enter new name (or press enter to keep current): ',
+		);
+		if (newName) {
+			selectedUser.name = newName;
 		}
 
-		// Set the password and let the mongoose pre-save middleware handle the hashing
-		selectedUser.password = newPassword;
+		// Ask for new password
+		const updatePassword = await question(
+			'Do you want to update password? (y/n): ',
+		);
+		if (updatePassword.toLowerCase() === 'y') {
+			const newPassword = await question('Enter new password: ');
+			const confirmPassword = await question('Confirm new password: ');
+
+			if (newPassword !== confirmPassword) {
+				console.log('Passwords do not match');
+				process.exit(1);
+			}
+
+			selectedUser.password = newPassword;
+		}
+
 		await selectedUser.save();
+		console.log('User updated successfully!');
 
-		// Verify the save
-		const updatedUser = await User.findOne({ email: selectedUser.email });
-		console.log('Saved password hash:', updatedUser.password);
-
-		// Test password verification using the model's method
-		const testMatch = await updatedUser.matchPassword(newPassword);
-		console.log('Verification test:', testMatch ? 'SUCCESS' : 'FAILED');
-
-		console.log('Password reset complete!');
 		mongoose.connection.close();
 		process.exit(0);
 	} catch (error) {
