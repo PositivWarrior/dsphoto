@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { loginUser } from '../api';
 import { useNavigate } from 'react-router-dom';
+import API from '../services/API';
 
 const Login = () => {
 	const [email, setEmail] = useState('');
@@ -10,12 +11,26 @@ const Login = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-
 		try {
-			const { data } = await loginUser({ email, password });
+			const response = await API.post('/users/login', {
+				email,
+				password,
+			});
+			const data = response.data;
+
 			localStorage.setItem('token', data.token);
+			localStorage.setItem(
+				'userInfo',
+				JSON.stringify({
+					name: data.name,
+					email: data.email,
+					isAdmin: data.isAdmin,
+				}),
+			);
+
 			navigate('/admin');
-		} catch (err) {
+		} catch (error) {
+			console.error('Login error:', error);
 			setError('Invalid email or password');
 		}
 	};

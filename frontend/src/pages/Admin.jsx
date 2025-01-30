@@ -22,17 +22,23 @@ const Admin = () => {
 	};
 
 	useEffect(() => {
-		const token = localStorage.getItem('token');
-		if (token) {
-			try {
-				const decoded = jwtDecode(token);
-				setAdminName(decoded.name);
-			} catch (error) {
-				console.error('Error decoding token:', error);
+		const userInfo = localStorage.getItem('userInfo');
+		if (userInfo) {
+			const { name } = JSON.parse(userInfo);
+			setAdminName(name);
+		} else {
+			const token = localStorage.getItem('token');
+			if (token) {
+				try {
+					const decoded = jwtDecode(token);
+					setAdminName(decoded.name || 'Admin');
+				} catch (error) {
+					console.error('Error decoding token:', error);
+					navigate('/login');
+				}
+			} else {
 				navigate('/login');
 			}
-		} else {
-			navigate('/login');
 		}
 	}, [navigate]);
 

@@ -56,18 +56,28 @@ export const loginUser = async (req, res) => {
 		const { email, password } = req.body;
 		const user = await User.findOne({ email });
 
+		// Add logging to debug
+		console.log('Login attempt:', { email, userFound: !!user });
+
 		if (user && (await user.matchPassword(password))) {
+			const token = generateToken(user._id);
+
+			// Add more detailed user info in response
 			res.json({
 				_id: user._id,
 				name: user.name,
 				email: user.email,
 				isAdmin: user.isAdmin,
-				token: generateToken(user._id),
+				token,
 			});
 		} else {
-			res.status(401).json({ message: 'Invalid email or password' });
+			res.status(401).json({
+				message: 'Invalid email or password',
+				debug: { emailExists: !!user },
+			});
 		}
 	} catch (error) {
-		res.status(500).json({ message: 'Server error' });
+		console.error('Login error:', error);
+		res.status(500).json({ message: 'Server error', error: error.message });
 	}
 };
