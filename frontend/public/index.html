@@ -58,9 +58,28 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
 		<title>React App</title>
-		<link rel="preconnect" href="https://ds-photo.s3.eu-north-1.amazonaws.com" />
+		<link
+			rel="preconnect"
+			href="https://ds-photo.s3.eu-north-1.amazonaws.com"
+		/>
 		<link rel="preconnect" href="http://localhost:8000" />
-		<link rel="dns-prefetch" href="https://ds-photo.s3.eu-north-1.amazonaws.com" />
+		<link
+			rel="dns-prefetch"
+			href="https://ds-photo.s3.eu-north-1.amazonaws.com"
+		/>
+		<!-- Preload the Dancing Script font -->
+		<link
+			rel="preload"
+			href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap"
+			as="style"
+			onload="this.onload=null;this.rel='stylesheet'"
+		/>
+		<noscript>
+			<link
+				href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap"
+				rel="stylesheet"
+			/>
+		</noscript>
 	</head>
 	<body>
 		<noscript>You need to enable JavaScript to run this app.</noscript>

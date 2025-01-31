@@ -29,6 +29,15 @@ const Hero = () => {
 					</button>
 				</div>
 			</div>
+
+			<img
+				src={heroImage}
+				alt="Hero"
+				className="w-full h-full object-cover"
+				loading="eager"
+				priority="true"
+				fetchpriority="high"
+			/>
 		</div>
 	);
 };

@@ -5,6 +5,7 @@ import cors from 'cors';
 import path from 'path';
 import http from 'http';
 import { fileURLToPath } from 'url';
+import compression from 'compression';
 
 import connectDB from './config/db.js';
 
@@ -20,6 +21,8 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 const app = express();
+
+app.use(compression());
 
 app.use(
 	cors({
