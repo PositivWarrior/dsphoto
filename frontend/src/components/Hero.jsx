@@ -3,14 +3,18 @@ import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
 	const navigate = useNavigate();
+	const heroImageUrl = 'https://dsphoto.onrender.com/assets/Dawid_hero.jpg';
 
 	return (
-		<div
-			className="relative h-screen bg-cover bg-center flex items-start md:h-[150vh]"
-			style={{
-				backgroundImage: `url('https://dsphoto.onrender.com/assets/Dawid_hero.jpg')`,
-			}}
-		>
+		<div className="relative h-screen bg-cover bg-center flex items-start md:h-[150vh]">
+			<img
+				src={heroImageUrl}
+				alt="Hero background"
+				className="absolute inset-0 w-full h-full object-cover"
+				loading="eager"
+				fetchpriority="high"
+			/>
+
 			<div className="absolute inset-0 bg-[#D19C6A] bg-opacity-60"></div>
 
 			<div className="absolute inset-0 flex items-center justify-center">
@@ -29,15 +33,6 @@ const Hero = () => {
 					</button>
 				</div>
 			</div>
-
-			<img
-				src={heroImage}
-				alt="Hero"
-				className="w-full h-full object-cover"
-				loading="eager"
-				priority="true"
-				fetchpriority="high"
-			/>
 		</div>
 	);
 };
