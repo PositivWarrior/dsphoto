@@ -11,7 +11,7 @@ const Footer = () => {
 					</p>
 					<div className="mt-4 space-x-6">
 						<a
-							href="https://positivwarrior.github.io/Portfolio/"
+							href="https://kacpermargol.eu/"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
