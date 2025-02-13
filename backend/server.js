@@ -26,7 +26,12 @@ app.use(compression());
 
 app.use(
 	cors({
-		origin: ['https://dsphoto.vercel.app', 'http://localhost:3000'],
+		origin: [
+			'https://dsphoto.vercel.app',
+			'http://localhost:3000',
+			'https://fotods.no',
+			'https://www.fotods.no',
+		],
 		credentials: true,
 	}),
 );
@@ -35,16 +40,35 @@ app.use(express.urlencoded({ extended: true }));
 
 connectDB();
 
-app.use('/api/images', imageRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api', bookingRoutes);
-app.use('/api/reviews', reviewRoutes);
+app.use('/images', imageRoutes);
+app.use('/users', userRoutes);
+app.use('/bookings', bookingRoutes);
+app.use('/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
-	res.send('DS PHOTO is on!');
+	res.json({ message: 'DS PHOTO API is running' });
+});
+
+// Add this after your other routes
+app.get('/debug', (req, res) => {
+	res.json({
+		message: 'Debug endpoint working',
+		time: new Date().toISOString(),
+		mongodb:
+			mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+	});
 });
 
 app.use('/assets', express.static(path.join(__dirname, '/assets')));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+	console.error('Server Error:', err.stack);
+	res.status(500).json({
+		message: 'Internal Server Error',
+		error: process.env.NODE_ENV === 'development' ? err.message : undefined,
+	});
+});
 
 const PORT = process.env.PORT || 8000;
 const server = http.createServer(app);
