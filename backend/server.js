@@ -6,8 +6,8 @@ import path from 'path';
 import http from 'http';
 import { fileURLToPath } from 'url';
 import compression from 'compression';
-
 import connectDB from './config/db.js';
+import mongoose from 'mongoose';
 
 // Import routes
 import imageRoutes from './routes/imageRoutes.js';
@@ -22,24 +22,63 @@ dotenv.config();
 
 const app = express();
 
-app.use(compression());
+// Connect to MongoDB first
+await connectDB();
 
+// CORS configuration - place this BEFORE any routes
+app.use((req, res, next) => {
+	const allowedOrigins = ['https://fotods.no', 'https://www.fotods.no'];
+	const origin = req.headers.origin;
+
+	if (process.env.NODE_ENV === 'development') {
+		res.header('Access-Control-Allow-Origin', '*');
+	} else if (allowedOrigins.includes(origin)) {
+		res.header('Access-Control-Allow-Origin', origin);
+	}
+
+	res.header(
+		'Access-Control-Allow-Methods',
+		'GET, POST, PUT, DELETE, OPTIONS',
+	);
+	res.header(
+		'Access-Control-Allow-Headers',
+		'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+	);
+	res.header('Access-Control-Allow-Credentials', 'true');
+
+	// Handle preflight requests
+	if (req.method === 'OPTIONS') {
+		return res.status(200).end();
+	}
+
+	next();
+});
+
+// Keep your existing CORS middleware as well
 app.use(
 	cors({
-		origin: [
-			'https://dsphoto.vercel.app',
-			'http://localhost:3000',
-			'https://fotods.no',
-			'https://www.fotods.no',
-		],
+		origin:
+			process.env.NODE_ENV === 'development'
+				? [
+						'https://fotods.no',
+						'https://www.fotods.no',
+						'http://localhost:3000',
+						'http://localhost:8000',
+				  ]
+				: ['https://fotods.no', 'https://www.fotods.no'],
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
 		credentials: true,
+		optionsSuccessStatus: 200,
 	}),
 );
+
+// Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(compression());
+app.use(bodyParser.json());
 
-connectDB();
-
+// Routes
 app.use('/images', imageRoutes);
 app.use('/users', userRoutes);
 app.use('/bookings', bookingRoutes);
@@ -63,7 +102,11 @@ app.use('/assets', express.static(path.join(__dirname, '/assets')));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-	console.error('Server Error:', err.stack);
+	console.error('Server Error:', {
+		message: err.message,
+		stack: err.stack,
+		mongoState: mongoose.connection.readyState,
+	});
 	res.status(500).json({
 		message: 'Internal Server Error',
 		error: process.env.NODE_ENV === 'development' ? err.message : undefined,
@@ -74,5 +117,11 @@ const PORT = process.env.PORT || 8000;
 const server = http.createServer(app);
 
 server.listen(PORT, () => {
-	console.log(`Server running on HTTP port ${PORT}`);
+	console.log(`Server running on port ${PORT}`);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+	console.error('Unhandled Rejection:', err);
+	server.close(() => process.exit(1));
 });

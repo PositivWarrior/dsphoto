@@ -1,8 +1,38 @@
- RewriteEngine On
-      RewriteCond %{HTTPS} off
-      RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-      
-      # Existing rules
-      RewriteCond %{REQUEST_FILENAME} !-f
-      RewriteCond %{REQUEST_FILENAME} !-d
-      RewriteRule ^(.*)$ index.php [QSA,L]
+DirectoryIndex disabled
+RewriteEngine On
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Allow access to the Node.js application
+<Files "server.js">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Node.js Reverse Proxy
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ http://127.0.0.1:8000/$1 [P,L]
+
+# Set headers for CORS
+Header set Access-Control-Allow-Origin "https://fotods.no"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+Header set Access-Control-Allow-Credentials "true"
+
+# Handle proxy errors
+ProxyPassReverse / http://127.0.0.1:8000/
+ProxyPreserveHost On
+
+# Enable mod_proxy
+<IfModule mod_proxy.c>
+    ProxyPass / http://127.0.0.1:8000/
+    ProxyPassReverse / http://127.0.0.1:8000/
+</IfModule>
+
+# Handle errors
+ErrorDocument 403 "Access Denied. Please contact administrator."
+ErrorDocument 503 "Application Error. Please try again later."
