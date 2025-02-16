@@ -1,24 +1,42 @@
 #!/bin/bash
 
-# Navigate to application directory
-cd /home/u432051507/domains/fotods.no/public_html/api
+# Log file for debugging
+LOGFILE="/home/u432051507/startup.log"
+touch "$LOGFILE"
+chmod 644 "$LOGFILE"
 
-# Install PM2 globally if not already installed
-npm install pm2 -g
+# Function to log messages
+log_message() {
+    echo "$(date): $1" >> "$LOGFILE"
+}
 
-# Start the application with PM2
-pm2 describe dsphoto-api > /dev/null
-RUNNING=$?
+# Function to start the application
+start_application() {
+    cd /home/u432051507/domains/fotods.no/public_html/api
+    if ! command -v pm2 &> /dev/null; then
+        log_message "Installing PM2..."
+        npm install pm2@latest -g
+    fi
 
-if [ $RUNNING -eq 0 ]; then
-    echo "Restarting existing PM2 process..."
-    pm2 restart dsphoto-api
-else
-    echo "Starting new PM2 process..."
-    pm2 start server.js --name dsphoto-api
-fi
+    log_message "Starting application..."
+    pm2 delete dsphoto-api 2>/dev/null || true
+    pm2 start ecosystem.config.cjs
+    pm2 save --force
+}
 
-# Save process list
-pm2 save
+# Function to check if application is running
+check_application() {
+    if ! curl -s http://localhost:8000/debug > /dev/null; then
+        log_message "Application not responding, restarting..."
+        start_application
+    fi
+}
 
-echo "PM2 process started and saved" 
+# Initial start
+start_application
+
+# Monitor and restart if needed
+while true; do
+    check_application
+    sleep 60  # Check every minute
+done 

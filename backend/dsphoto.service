@@ -1,0 +1,14 @@
+[Unit]
+Description=DS Photo API Service
+After=network.target
+
+[Service]
+Type=simple
+User=u432051507
+WorkingDirectory=/home/u432051507/domains/fotods.no/public_html/api
+ExecStart=/bin/bash /home/u432051507/domains/fotods.no/public_html/api/scripts/startup.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target 

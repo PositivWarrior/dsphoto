@@ -29,6 +29,7 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
+		"postbuild": "cp public/Dawid_hero.jpg build/",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"analyze": "ANALYZE=true craco build"

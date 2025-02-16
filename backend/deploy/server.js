@@ -26,18 +26,24 @@ const app = express();
 await connectDB();
 
 // CORS configuration
-const corsOptions = {
-	origin: ['https://fotods.no', 'https://www.fotods.no'],
-	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-	allowedHeaders: ['Content-Type', 'Authorization'],
-	credentials: true,
-	optionsSuccessStatus: 200,
-};
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', 'https://fotods.no');
+	res.header(
+		'Access-Control-Allow-Methods',
+		'GET, POST, PUT, DELETE, OPTIONS',
+	);
+	res.header(
+		'Access-Control-Allow-Headers',
+		'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+	);
+	res.header('Access-Control-Allow-Credentials', 'true');
 
-app.use(cors(corsOptions));
-
-// Handle preflight requests
-app.options('*', cors(corsOptions));
+	// Handle preflight
+	if (req.method === 'OPTIONS') {
+		return res.status(200).end();
+	}
+	next();
+});
 
 // Force HTTPS
 app.use((req, res, next) => {
@@ -75,6 +81,17 @@ app.get('/debug', (req, res) => {
 
 app.use('/assets', express.static(path.join(__dirname, '/assets')));
 
+// Add MongoDB connection handling
+mongoose.connection.on('disconnected', () => {
+	console.log('MongoDB disconnected! Attempting to reconnect...');
+	setTimeout(connectDB, 5000); // Try to reconnect after 5 seconds
+});
+
+mongoose.connection.on('error', (err) => {
+	console.error('MongoDB connection error:', err);
+	setTimeout(connectDB, 5000); // Try to reconnect after 5 seconds
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
 	console.error('Server Error:', {
@@ -95,8 +112,15 @@ server.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
 
-// Handle unhandled promise rejections
+// Update the error handling at the bottom
 process.on('unhandledRejection', (err) => {
 	console.error('Unhandled Rejection:', err);
-	server.close(() => process.exit(1));
+	// Don't exit the process, just log the error
+	console.error('Process will continue running...');
+});
+
+process.on('uncaughtException', (err) => {
+	console.error('Uncaught Exception:', err);
+	// Don't exit the process, just log the error
+	console.error('Process will continue running...');
 });

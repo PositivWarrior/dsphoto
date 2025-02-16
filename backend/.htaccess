@@ -5,11 +5,11 @@ RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Enable CORS
-Header set Access-Control-Allow-Origin "https://fotods.no"
-Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-Header set Access-Control-Allow-Credentials "true"
+# Enable CORS Headers
+Header always set Access-Control-Allow-Origin "https://fotods.no"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+Header always set Access-Control-Allow-Credentials "true"
 
 # Handle OPTIONS method
 RewriteCond %{REQUEST_METHOD} OPTIONS

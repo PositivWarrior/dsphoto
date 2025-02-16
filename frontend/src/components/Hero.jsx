@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
 	const navigate = useNavigate();
-	const heroImageUrl = 'https://dsphoto.onrender.com/assets/Dawid_hero.jpg';
+	const heroImageUrl = 'https://api.fotods.no/assets/Dawid_hero.jpg';
 
 	return (
 		<div className="relative h-screen bg-cover bg-center flex items-start md:h-[150vh]">
