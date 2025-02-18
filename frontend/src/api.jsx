@@ -3,15 +3,27 @@ import axios from 'axios';
 export const API = axios.create({
 	baseURL: process.env.REACT_APP_API_URL || 'https://api.fotods.no',
 	timeout: 10000,
+	withCredentials: true,
+	headers: {
+		'Content-Type': 'application/json',
+		Accept: 'application/json',
+	},
 });
 
-API.interceptors.request.use((req) => {
-	console.log('Making request to:', req.url); // Debug log
-	if (localStorage.getItem('token')) {
-		req.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
-	}
-	return req;
-});
+API.interceptors.request.use(
+	(req) => {
+		console.log('Making request to:', req.url); // Debug log
+		if (localStorage.getItem('token')) {
+			req.headers.Authorization = `Bearer ${localStorage.getItem(
+				'token',
+			)}`;
+		}
+		return req;
+	},
+	(error) => {
+		return Promise.reject(error);
+	},
+);
 
 API.interceptors.response.use(
 	(response) => response,

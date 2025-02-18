@@ -1,40 +1,60 @@
+# Enable rewrite engine and options
+
 DirectoryIndex disabled
 RewriteEngine On
+Options +FollowSymLinks
 
 # Force HTTPS
+
 RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteRule ^(.\*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Enable CORS Headers
-Header always set Access-Control-Allow-Origin "https://fotods.no"
-Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-Header always set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-Header always set Access-Control-Allow-Credentials "true"
-Header always set Access-Control-Max-Age "3600"
-Header always set Vary "Origin"
+# Set CORS headers for all requests
 
-# Handle OPTIONS preflight requests
+Header set Access-Control-Allow-Origin "https://fotods.no"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+Header set Access-Control-Allow-Credentials "true"
+Header set Access-Control-Max-Age "3600"
+
+# Handle OPTIONS method
+
 RewriteCond %{REQUEST_METHOD} OPTIONS
-RewriteRule ^(.*)$ - [R=200,L]
+RewriteRule .\* - [R=200,L]
+
+# If OPTIONS request, return 200 OK with CORS headers
+
+SetEnvIf Request_Method OPTIONS CORS=true
+Header always set Access-Control-Allow-Origin "https://fotods.no" env=CORS
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" env=CORS
+Header always set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization" env=CORS
+Header always set Access-Control-Allow-Credentials "true" env=CORS
+Header always set Access-Control-Max-Age "3600" env=CORS
 
 # If the request is for a static file, serve it directly
+
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
 # Proxy all other requests to Node.js app
-RewriteRule ^(.*)$ http://127.0.0.1:8000/$1 [P,L]
+
+RewriteRule ^(.\*)$ http://127.0.0.1:8000/$1 [P,L,E=noabort:1]
 
 # Handle proxy errors
+
 ProxyPassReverse / http://127.0.0.1:8000/
 ProxyPreserveHost On
 
 # Enable mod_proxy
+
 <IfModule mod_proxy.c>
     ProxyPass / http://127.0.0.1:8000/
     ProxyPassReverse / http://127.0.0.1:8000/
+    ProxyRequests Off
 </IfModule>
 
 # Handle errors
+
 ErrorDocument 403 "Access Denied. Please contact administrator."
 ErrorDocument 503 "Application Error. Please try again later."
