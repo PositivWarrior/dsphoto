@@ -26,25 +26,27 @@ const app = express();
 await connectDB();
 
 // CORS configuration
-app.use(
-	cors({
-		origin: 'https://fotods.no',
-		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-		allowedHeaders: [
-			'Origin',
-			'X-Requested-With',
-			'Content-Type',
-			'Accept',
-			'Authorization',
-		],
-		credentials: true,
-		preflightContinue: false,
-		optionsSuccessStatus: 204,
-	}),
-);
+const corsOptions = {
+	origin: 'https://fotods.no',
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: [
+		'Origin',
+		'X-Requested-With',
+		'Content-Type',
+		'Accept',
+		'Authorization',
+	],
+	credentials: true,
+	optionsSuccessStatus: 204,
+	exposedHeaders: ['ETag'],
+	maxAge: 86400,
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
 // Handle preflight requests
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
 // Middleware
 app.use(express.json());

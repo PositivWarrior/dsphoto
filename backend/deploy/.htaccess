@@ -11,25 +11,16 @@ RewriteRule ^(.\*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Set CORS headers for all requests
 
-Header set Access-Control-Allow-Origin "https://fotods.no"
-Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-Header set Access-Control-Allow-Credentials "true"
-Header set Access-Control-Max-Age "3600"
+Header always set Access-Control-Allow-Origin "https://fotods.no"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+Header always set Access-Control-Allow-Credentials "true"
+Header always set Vary "Origin, Accept-Encoding"
 
-# Handle OPTIONS method
+# Handle OPTIONS preflight requests first
 
 RewriteCond %{REQUEST_METHOD} OPTIONS
-RewriteRule .\* - [R=200,L]
-
-# If OPTIONS request, return 200 OK with CORS headers
-
-SetEnvIf Request_Method OPTIONS CORS=true
-Header always set Access-Control-Allow-Origin "https://fotods.no" env=CORS
-Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" env=CORS
-Header always set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization" env=CORS
-Header always set Access-Control-Allow-Credentials "true" env=CORS
-Header always set Access-Control-Max-Age "3600" env=CORS
+RewriteRule ^(.\*)$ - [R=204,L]
 
 # If the request is for a static file, serve it directly
 
@@ -39,7 +30,7 @@ RewriteRule ^ - [L]
 
 # Proxy all other requests to Node.js app
 
-RewriteRule ^(.\*)$ http://127.0.0.1:8000/$1 [P,L,E=noabort:1]
+RewriteRule ^(.\*)$ http://127.0.0.1:8000/$1 [P,L]
 
 # Handle proxy errors
 
