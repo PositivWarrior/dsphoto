@@ -1,11 +1,15 @@
 [Unit]
 Description=DS Photo API Service
 After=network.target
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple
 User=u432051507
 WorkingDirectory=/home/u432051507/domains/fotods.no/public_html/api
+Environment=PATH=/home/u432051507/.nvm/versions/node/v18.20.6/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PM2_HOME=/home/u432051507/.pm2
+Environment=NODE_ENV=production
 ExecStart=/bin/bash /home/u432051507/domains/fotods.no/public_html/api/scripts/startup.sh
 Restart=always
 RestartSec=10

@@ -1,0 +1,18 @@
+[Unit]
+Description=PM2 process manager for DS Photo
+After=network.target
+
+[Service]
+Type=forking
+User=u432051507
+Environment=PATH=/home/u432051507/.nvm/versions/node/v18.20.6/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PM2_HOME=/home/u432051507/.pm2
+Environment=NODE_ENV=production
+WorkingDirectory=/home/u432051507/domains/fotods.no/public_html/api
+ExecStart=/home/u432051507/.nvm/versions/node/v18.20.6/lib/node_modules/pm2/bin/pm2 resurrect
+ExecReload=/home/u432051507/.nvm/versions/node/v18.20.6/lib/node_modules/pm2/bin/pm2 reload all
+ExecStop=/home/u432051507/.nvm/versions/node/v18.20.6/lib/node_modules/pm2/bin/pm2 kill
+Restart=always
+
+[Install]
+WantedBy=multi-user.target 

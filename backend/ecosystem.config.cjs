@@ -4,7 +4,7 @@ module.exports = {
 			name: 'dsphoto-api',
 			script: 'server.js',
 			instances: 1,
-			exec_mode: 'cluster',
+			exec_mode: 'fork',
 			autorestart: true,
 			watch: false,
 			max_memory_restart: '1G',
@@ -25,6 +25,9 @@ module.exports = {
 				AWS_REGION: 'eu-north-1',
 				JWT_SECRET: 'Niepokonani8',
 			},
+			error_file: '/home/u432051507/pm2_errors.log',
+			out_file: '/home/u432051507/pm2_output.log',
+			time: true,
 		},
 	],
 };
