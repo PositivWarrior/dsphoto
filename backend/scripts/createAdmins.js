@@ -26,7 +26,10 @@ const createAdmins = async () => {
 			await newFirstAdmin.save();
 			console.log('First admin user created successfully');
 		} else {
-			console.log('First admin already exists');
+			// Update password for existing admin
+			firstAdmin.password = 'adminKacpru88';
+			await firstAdmin.save();
+			console.log('First admin password updated');
 		}
 
 		// Create second admin
@@ -43,10 +46,13 @@ const createAdmins = async () => {
 			await newSecondAdmin.save();
 			console.log('Second admin user created successfully');
 		} else {
-			console.log('Second admin already exists');
+			// Update password for existing admin
+			secondAdmin.password = 'adminDawid88';
+			await secondAdmin.save();
+			console.log('Second admin password updated');
 		}
 
-		console.log('Admin creation process completed');
+		console.log('Admin creation/update process completed');
 		process.exit(0);
 	} catch (error) {
 		console.error('Error:', error);

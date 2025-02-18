@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import LoadingSpinner from './components/LoadingSpinner';
 import Admin from './pages/Admin';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import './App.css';
 import './index.css';
@@ -23,10 +24,17 @@ function App() {
 		<BrowserRouter>
 			<Suspense fallback={<LoadingSpinner />}>
 				<Routes>
-					<Route path="/admin" element={<Admin />} />
 					<Route element={<Layout />}>
 						<Route path="/" element={<Home />} />
 						<Route path="/login" element={<Login />} />
+						<Route
+							path="/admin"
+							element={
+								<ProtectedRoute>
+									<Admin />
+								</ProtectedRoute>
+							}
+						/>
 						<Route path="/about" element={<AboutPage />} />
 						<Route path="/contact" element={<ContactPage />} />
 						<Route path="/book" element={<BookTimePage />} />
