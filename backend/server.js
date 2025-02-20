@@ -52,10 +52,6 @@ app.get('/debug', (req, res) => {
 		mongodb:
 			mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
 		environment: process.env.NODE_ENV,
-		cors: {
-			allowedOrigins: corsOptions.origin,
-			credentials: corsOptions.credentials,
-		},
 		headers: req.headers,
 		remoteAddress: req.ip,
 		hostname: req.hostname,

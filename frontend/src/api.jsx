@@ -13,7 +13,6 @@ export const API = axios.create({
 	timeout: 15000, // Increased timeout for slower connections
 	withCredentials: true,
 	headers: {
-		'Content-Type': 'application/json',
 		Accept: 'application/json',
 	},
 });
@@ -148,7 +147,11 @@ const withErrorBoundary =
 // Export API methods
 export const fetchImages = withErrorBoundary(() => API.get('/images'));
 export const uploadImage = withErrorBoundary((formData) =>
-	API.post('/images', formData),
+	API.post('/images', formData, {
+		headers: {
+			'Content-Type': 'multipart/form-data',
+		},
+	}),
 );
 export const loginUser = withErrorBoundary((loginData) =>
 	API.post('/users/login', loginData),

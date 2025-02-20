@@ -60,28 +60,56 @@ export const getImages = async (req, res) => {
 
 // Upload image
 export const uploadImage = async (req, res) => {
-	const { title, description, category } = req.body;
-
-	if (!title || !description || !category || !req.file) {
-		return res.status(400).json({
-			message: 'Please provide all required fields including the image',
-		});
-	}
-
 	try {
+		console.log('Upload request received:', {
+			body: req.body,
+			file: req.file
+				? {
+						fieldname: req.file.fieldname,
+						location: req.file.location,
+						contentType: req.file.contentType,
+				  }
+				: null,
+		});
+
+		const { title = 'Untitled', description = '', category } = req.body;
+
+		if (!category) {
+			return res.status(400).json({
+				message: 'Category is required',
+				receivedFields: Object.keys(req.body),
+			});
+		}
+
+		if (!req.file || !req.file.location) {
+			return res.status(400).json({
+				message: 'Image file is required',
+				receivedFile: req.file ? Object.keys(req.file) : null,
+			});
+		}
+
 		const imageCount = await Image.countDocuments({ category });
 		const newImage = new Image({
 			title,
 			description,
-			imageUrl: req.file.location, // Image URL from the uploaded file
+			imageUrl: req.file.location,
 			category,
 			order: imageCount,
 		});
 
 		const savedImage = await newImage.save();
+		console.log('Image saved successfully:', savedImage);
 		res.json(savedImage);
 	} catch (error) {
-		res.status(500).json({ message: 'Error uploading image' });
+		console.error('Error in uploadImage:', error);
+		res.status(500).json({
+			message: 'Error uploading image',
+			error: error.message,
+			stack:
+				process.env.NODE_ENV === 'development'
+					? error.stack
+					: undefined,
+		});
 	}
 };
 

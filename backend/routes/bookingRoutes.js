@@ -1,23 +1,24 @@
 import express from 'express';
-
-const router = express.Router();
 import {
 	createBooking,
 	getBookings,
 	updateBookingStatus,
 	deleteBooking,
 } from '../controllers/bookingController.js';
+import { protect } from '../middleware/authMiddleware.js';
+
+const router = express.Router();
 
 // POST: Create a new booking request
-router.post('/bookings', createBooking);
+router.post('/', createBooking);
 
 // GET: Fetch all booking requests (Admin view)
-router.get('/bookings', getBookings);
+router.get('/', protect, getBookings);
 
 // PATCH: Update booking status (accept/decline)
-router.patch('/bookings/:id', updateBookingStatus);
+router.patch('/:id', protect, updateBookingStatus);
 
 // DELETE: Delete a booking
-router.delete('/bookings/:id', deleteBooking);
+router.delete('/:id', protect, deleteBooking);
 
 export default router;
