@@ -28,6 +28,10 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
+# Don't proxy ACME challenge requests
+
+RewriteRule ^\.well-known/acme-challenge/ - [L]
+
 # Proxy all other requests to Node.js app
 
 RewriteRule ^(.\*)$ http://127.0.0.1:8000/$1 [P,L]

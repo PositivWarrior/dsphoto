@@ -1,2 +1,6 @@
-
 .codegpt
+# Private keys
+fotods-kp.pem
+*.pem
+*.key
+*.ppk
