@@ -25,9 +25,10 @@ const app = express();
 await connectDB();
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use(compression());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Ignore ACME challenge requests (let Nginx handle them)
 app.use('/.well-known/acme-challenge', (req, res, next) => {
