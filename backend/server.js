@@ -1,7 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import cors from 'cors';
 import path from 'path';
 import http from 'http';
 import { fileURLToPath } from 'url';
@@ -24,34 +23,6 @@ const app = express();
 
 // Connect to MongoDB first
 await connectDB();
-
-// CORS configuration
-const corsOptions = {
-	origin: [
-		'https://fotods.no',
-		'https://www.fotods.no',
-		'http://localhost:5173',
-		'http://localhost:3000',
-	],
-	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-	allowedHeaders: [
-		'Origin',
-		'X-Requested-With',
-		'Content-Type',
-		'Accept',
-		'Authorization',
-	],
-	credentials: true,
-	optionsSuccessStatus: 204,
-	exposedHeaders: ['ETag'],
-	maxAge: 86400,
-};
-
-// Apply CORS middleware
-app.use(cors(corsOptions));
-
-// Handle preflight requests
-app.options('*', cors(corsOptions));
 
 // Middleware
 app.use(express.json());
