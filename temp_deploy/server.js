@@ -27,12 +27,7 @@ await connectDB();
 
 // CORS configuration
 const corsOptions = {
-	origin: [
-		'https://fotods.no',
-		'https://www.fotods.no',
-		'http://localhost:5173',
-		'http://localhost:3000',
-	],
+	origin: ['https://fotods.no', 'http://localhost:5173'],
 	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 	allowedHeaders: [
 		'Origin',
@@ -58,11 +53,6 @@ app.use(express.json());
 app.use(compression());
 app.use(bodyParser.json());
 
-// Ignore ACME challenge requests (let Nginx handle them)
-app.use('/.well-known/acme-challenge', (req, res, next) => {
-	res.status(404).send('Not found');
-});
-
 // Routes
 app.use('/images', imageRoutes);
 app.use('/users', userRoutes);
@@ -80,14 +70,6 @@ app.get('/debug', (req, res) => {
 		time: new Date().toISOString(),
 		mongodb:
 			mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
-		environment: process.env.NODE_ENV,
-		cors: {
-			allowedOrigins: corsOptions.origin,
-			credentials: corsOptions.credentials,
-		},
-		headers: req.headers,
-		remoteAddress: req.ip,
-		hostname: req.hostname,
 	});
 });
 
@@ -120,8 +102,8 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 8000;
 const server = http.createServer(app);
 
-server.listen(PORT, '127.0.0.1', () => {
-	console.log(`Server running on localhost:${PORT}`);
+server.listen(PORT, () => {
+	console.log(`Server running on port ${PORT}`);
 });
 
 // Update the error handling at the bottom

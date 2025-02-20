@@ -6,6 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { jwtDecode } from 'jwt-decode';
 import { Helmet } from 'react-helmet-async';
 import ImageList from '../components/ImageList';
+import { API } from '../api';
 
 const Admin = () => {
 	const [bookings, setBookings] = useState([]);
@@ -47,18 +48,8 @@ const Admin = () => {
 		const fetchBookings = async () => {
 			try {
 				setIsLoading(true);
-				const response = await fetch(
-					`${process.env.REACT_APP_API_URL}/bookings`,
-					{
-						headers: {
-							Authorization: `Bearer ${localStorage.getItem(
-								'token',
-							)}`,
-						},
-					},
-				);
-				const data = await response.json();
-				setBookings(data.bookings);
+				const response = await API.get('/bookings');
+				setBookings(response.data.bookings);
 			} catch (error) {
 				console.error('Error fetching bookings:', error);
 			} finally {
@@ -77,20 +68,8 @@ const Admin = () => {
 
 	const handleAction = async (bookingId, status) => {
 		if (status === 'declined') {
-			// If status is 'declined', delete the booking
 			try {
-				await fetch(
-					`${process.env.REACT_APP_API_URL}/bookings/${bookingId}`,
-					{
-						method: 'DELETE',
-						headers: {
-							Authorization: `Bearer ${localStorage.getItem(
-								'token',
-							)}`,
-						},
-					},
-				);
-				// Remove the booking from the state
+				await API.delete(`/bookings/${bookingId}`);
 				setBookings((prevBookings) =>
 					prevBookings.filter((booking) => booking._id !== bookingId),
 				);
@@ -98,23 +77,11 @@ const Admin = () => {
 				console.error('Error deleting booking:', error);
 			}
 		} else {
-			// If status is 'accepted', update the booking status
 			try {
-				const response = await fetch(
-					`${process.env.REACT_APP_API_URL}/bookings/${bookingId}`,
-					{
-						method: 'PATCH',
-						headers: {
-							Authorization: `Bearer ${localStorage.getItem(
-								'token',
-							)}`,
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ status }),
-					},
-				);
-				const updatedBooking = await response.json();
-				// Update the booking in the state
+				const response = await API.patch(`/bookings/${bookingId}`, {
+					status,
+				});
+				const updatedBooking = response.data;
 				setBookings((prevBookings) =>
 					prevBookings.map((booking) =>
 						booking._id === updatedBooking._id

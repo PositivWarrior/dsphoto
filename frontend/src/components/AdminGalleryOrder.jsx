@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import LoadingSpinner from './LoadingSpinner';
+import { API } from '../api';
 
 const ItemType = 'IMAGE';
 
@@ -16,11 +17,8 @@ const AdminGalleryOrder = () => {
 		const fetchCategories = async () => {
 			try {
 				setIsLoading(true);
-				const response = await fetch(
-					`${process.env.REACT_APP_API_URL}/images/categories`,
-				);
-				const data = await response.json();
-				setCategories(data.categories || []);
+				const response = await API.get('/images/categories');
+				setCategories(response.data.categories || []);
 			} catch (error) {
 				console.error('Error fetching categories:', error);
 			} finally {
@@ -36,11 +34,8 @@ const AdminGalleryOrder = () => {
 
 	const fetchImages = async (category) => {
 		try {
-			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/images?category=${category}`,
-			);
-			const data = await response.json();
-			const filteredImages = data
+			const response = await API.get(`/images?category=${category}`);
+			const filteredImages = response.data
 				.filter((image) => image.category === category)
 				.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
@@ -58,27 +53,14 @@ const AdminGalleryOrder = () => {
 
 	const handleSaveOrder = async () => {
 		try {
-			const token = localStorage.getItem('token');
-			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/images/reorder`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`,
-					},
-					body: JSON.stringify({
-						category: selectedCategory,
-						images: reorderedImages.map((image) => image.id),
-					}),
-				},
-			);
+			const response = await API.post('/images/reorder', {
+				category: selectedCategory,
+				images: reorderedImages.map((image) => image.id),
+			});
 
-			if (response.ok) {
+			if (response.status === 200) {
 				setSuccessMessage('Order updated successfully!');
 				setTimeout(() => setSuccessMessage(''), 3000);
-			} else {
-				console.error('Failed to update order');
 			}
 		} catch (error) {
 			console.error('Error updating image order:', error);
@@ -87,23 +69,13 @@ const AdminGalleryOrder = () => {
 
 	const handleDelete = async (imageId) => {
 		try {
-			const token = localStorage.getItem('token');
-			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/images/${imageId}`,
-				{
-					method: 'DELETE',
-					headers: { Authorization: `Bearer ${token}` },
-				},
-			);
-
-			if (response.ok) {
+			const response = await API.delete(`/images/${imageId}`);
+			if (response.status === 200) {
 				setReorderedImages(
 					reorderedImages.filter((image) => image.id !== imageId),
 				);
 				setSuccessMessage('Image deleted successfully!');
 				setTimeout(() => setSuccessMessage(''), 3000);
-			} else {
-				console.error('Failed to delete image');
 			}
 		} catch (error) {
 			console.error('Error deleting image:', error);

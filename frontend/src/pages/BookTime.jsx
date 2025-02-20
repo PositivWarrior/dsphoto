@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
+import { API } from '../api';
 
 const BookTime = () => {
 	const [name, setName] = useState('');
@@ -34,40 +35,27 @@ const BookTime = () => {
 			return;
 		}
 
-		// Send booking request to the backend (if necessary)
+		// Send booking request to the backend
 		try {
-			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/bookings`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						name,
-						email,
-						date,
-						message,
-					}),
-				},
-			);
+			const response = await API.post('/bookings', {
+				name,
+				email,
+				date,
+				message,
+			});
 
-			if (!response.ok) {
-				const errorText = await response.text();
-				throw new Error(`Feil ${response.status}: ${errorText}`);
+			if (response.status === 200 || response.status === 201) {
+				setStatus('Bookingforespørsel lagret!');
+				// Reset form fields
+				setName('');
+				setEmail('');
+				setDate('');
+				setMessage('');
 			}
-
-			setStatus('Bookingforespørsel lagret!');
 		} catch (error) {
 			console.error('Error on sending to backend:', error);
 			setStatus('Kunne ikke lagre bookingforespørselen.');
 		}
-
-		// Reset form fields
-		setName('');
-		setEmail('');
-		setDate('');
-		setMessage('');
 	};
 
 	return (

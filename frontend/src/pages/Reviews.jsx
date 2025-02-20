@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { API } from '../api';
 
 const ReviewsPage = () => {
 	const [reviews, setReviews] = useState([]);
@@ -14,11 +15,8 @@ const ReviewsPage = () => {
 	useEffect(() => {
 		const fetchReviews = async () => {
 			try {
-				const response = await fetch(
-					`${process.env.REACT_APP_API_URL}/reviews`,
-				);
-				const data = await response.json();
-				setReviews(data.reviews || []);
+				const response = await API.get('/reviews');
+				setReviews(response.data.reviews || []);
 			} catch (error) {
 				console.error('Feil ved henting av anmeldelser:', error);
 			}
@@ -37,24 +35,15 @@ const ReviewsPage = () => {
 			return;
 		}
 		try {
-			const response = await fetch(
-				`${process.env.REACT_APP_API_URL}/reviews`,
-				{
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(newReview),
-				},
-			);
-			if (response.ok) {
-				const addedReview = await response.json();
-				setReviews([...reviews, addedReview]);
+			const response = await API.post('/reviews', newReview);
+			if (response.status === 200 || response.status === 201) {
+				setReviews([...reviews, response.data]);
 				setNewReview({ author: '', rating: 0, text: '' });
 				setError('');
-			} else {
-				console.error('Kunne ikke legge til anmeldelsen');
 			}
 		} catch (error) {
 			console.error('Feil ved innsending av anmeldelse:', error);
+			setError('Kunne ikke legge til anmeldelsen');
 		}
 	};
 
