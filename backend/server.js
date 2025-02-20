@@ -25,10 +25,35 @@ const app = express();
 await connectDB();
 
 // Middleware
+app.use(
+	compression({
+		level: 6,
+		threshold: 1000,
+		filter: (req, res) => {
+			if (req.headers['x-no-compression']) {
+				return false;
+			}
+			return compression.filter(req, res);
+		},
+	}),
+);
+
 app.use(express.json({ limit: '50mb' }));
-app.use(compression());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+// Cache control middleware
+app.use((req, res, next) => {
+	// Cache static assets for 30 days
+	if (req.url.match(/\.(css|js|jpg|jpeg|png|gif|ico|woff2|svg)$/)) {
+		res.setHeader('Cache-Control', 'public, max-age=2592000');
+		res.setHeader(
+			'Expires',
+			new Date(Date.now() + 2592000000).toUTCString(),
+		);
+	}
+	next();
+});
 
 // Ignore ACME challenge requests (let Nginx handle them)
 app.use('/.well-known/acme-challenge', (req, res, next) => {
