@@ -1,171 +1,180 @@
 # DS Photo Portfolio
 
-![DS Photo Portfolio](backend/assets/Dawid_hero.jpg)
+A professional photography portfolio website built with React and Node.js, featuring a modern UI, image gallery management, and booking system.
 
-A professional photography portfolio and management application showcasing the work of DS Photography. This full-stack application features a stunning gallery system, booking management, and an intuitive admin panel.
-
-## 🌟 Live Demo
-
--   Frontend: [https://fotods.no](https://fotods.no)
--   Backend API: [https://api.fotods.no](https://api.fotods.no)
-
-## ✨ Features
-
-### Client Features
-
--   📸 Browse categorized photo galleries with modern layouts
--   🎯 View individual categories in carousel and grid formats
--   📅 Submit and manage booking requests
--   📱 Fully responsive design for all devices
--   ✨ Beautiful animations and transitions
-
-### Admin Features
-
--   🔐 Secure admin panel access
--   📤 Drag-and-drop image upload and management
--   🗂️ Real-time gallery category management
--   📊 Booking request management system
--   🔄 Dynamic image reordering within galleries
-
-## 🛠️ Tech Stack
+## Features
 
 ### Frontend
 
--   **Framework:** React 18
--   **Styling:** Tailwind CSS
--   **State Management:** React Context
--   **Drag & Drop:** @dnd-kit/core, @dnd-kit/sortable
--   **Routing:** React Router v6
--   **HTTP Client:** Axios
--   **Icons:** Font Awesome
--   **Email Service:** EmailJS
+-   📸 Responsive image gallery with category filtering
+-   🎨 Modern, minimalist design with Tailwind CSS
+-   📱 Mobile-friendly interface
+-   🔄 Drag-and-drop image reordering (admin)
+-   📅 Booking system for photography sessions
+-   🔐 Secure admin panel
+-   🌐 SEO optimized with React Helmet
+-   ⚡ Performance optimized with code splitting and compression
 
 ### Backend
 
--   **Runtime:** Node.js
--   **Framework:** Express.js
--   **Database:** MongoDB with Mongoose
--   **File Storage:** AWS S3
--   **Authentication:** JWT (JSON Web Tokens)
--   **File Upload:** Multer, Multer-S3
--   **Security:** bcryptjs, CORS
+-   🖼️ AWS S3 image storage integration
+-   🔒 JWT authentication for admin access
+-   📊 MongoDB database for data persistence
+-   🔄 RESTful API endpoints
+-   🚀 Nginx reverse proxy with SSL
+-   📤 Image upload with size validation (up to 50MB)
+-   📝 Booking management system
 
-### DevOps & Hosting
+## Tech Stack
 
--   **Frontend Hosting:** Vercel
--   **Backend Hosting:** Render
--   **Domain & DNS:** Hostinger
--   **SSL/TLS:** Let's Encrypt
--   **Version Control:** Git
+### Frontend
 
-## 🚀 Installation
+-   React 18
+-   React Router 6
+-   Axios for API calls
+-   Tailwind CSS
+-   DND Kit for drag-and-drop
+-   EmailJS for contact forms
+
+### Backend
+
+-   Node.js with Express
+-   MongoDB with Mongoose
+-   AWS SDK for S3
+-   Multer for file uploads
+-   JWT for authentication
+-   PM2 for process management
+
+### Infrastructure
+
+-   AWS EC2 for hosting
+-   AWS S3 for image storage
+-   Nginx as reverse proxy
+-   Let's Encrypt SSL
+-   MongoDB Atlas
+
+## Getting Started
 
 ### Prerequisites
 
--   Node.js (v18 or higher)
--   MongoDB Atlas account
--   AWS S3 bucket
--   npm or yarn
+-   Node.js 18+
+-   MongoDB
+-   AWS Account with S3 bucket
+-   PM2 (for production)
 
-### Setup Steps
+### Environment Variables
 
-1. **Clone the repository**
+#### Backend (.env)
 
-    ```bash
-    git clone <https://github.com/PositivWarrior/dsphoto>
-    cd dsphoto
-    ```
-
-2. **Frontend Setup**
-
-    ```bash
-    cd frontend
-    npm install
-    cp .env.example .env
-    # Configure your environment variables
-    npm start
-    ```
-
-3. **Backend Setup**
-    ```bash
-    cd backend
-    npm install
-    cp .env.example .env
-    # Configure your environment variables
-    npm start
-    ```
-
-## 🔧 Environment Variables
-
-### Frontend (.env)
-
-```env
-REACT_APP_API_URL=http://localhost:8000
 ```
-
-### Backend (.env)
-
-```env
 PORT=8000
-MONGO_URI=your_mongodb_connection_string
+MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
-
-# AWS Configuration
 AWS_ACCESS_KEY_ID=your_aws_access_key
 AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-AWS_BUCKET_NAME=your_bucket_name
 AWS_REGION=your_aws_region
-
-# Admin Configuration
-ADMIN_SECURITY_CODE=your_admin_code
+AWS_BUCKET_NAME=your_bucket_name
+NODE_ENV=development
 ```
 
-## 📚 API Documentation
+#### Frontend (.env)
 
-### Authentication
+```
+REACT_APP_API_URL=https://api.fotods.no
+```
 
--   `POST /api/auth/login` - Admin authentication
+### Installation
 
-### Images
+1. Clone the repository:
 
--   `GET /api/images` - Get all images or filter by category
--   `POST /api/images` - Upload new image (Admin only)
--   `DELETE /api/images/:id` - Delete image (Admin only)
--   `POST /api/images/reorder` - Reorder images (Admin only)
+```bash
+git clone https://github.com/PositivWarrior/dsphoto.git
+cd dsphoto
+```
 
-### Bookings
+2. Install backend dependencies:
 
--   `POST /api/bookings` - Create booking request
--   `PATCH /api/bookings/:id` - Update booking status (Admin only)
--   `DELETE /api/bookings/:id` - Delete booking (Admin only)
+```bash
+cd backend
+npm install
+```
 
-## 🎨 Key Components
+3. Install frontend dependencies:
 
-### Frontend
+```bash
+cd ../frontend
+npm install
+```
 
--   `Navbar` - Main navigation component
--   `GallerySections` - Gallery category display
--   `GalleryCategory` - Individual category view with carousel
--   `AdminPanel` - Protected admin interface
--   `BookingForm` - Client booking interface
+4. Start development servers:
 
-### Backend
+Backend:
 
--   `ImageController` - Handles image operations
--   `BookingController` - Manages booking operations
--   `AuthMiddleware` - Handles authentication
--   `S3Service` - Manages AWS S3 operations
+```bash
+cd backend
+npm start
+```
 
-## 📝 License
+Frontend:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```bash
+cd frontend
+npm start
+```
 
-## 👥 Contributors
+### Production Deployment
 
--   Frontend Developer: [Kacper Margol]
--   Backend Developer: [Kacper Margol]
--   UI/UX Design: [Kacper Margol]
+1. Build the frontend:
 
-## 📞 Support
+```bash
+cd frontend
+npm run build
+```
 
-For support, email [kacppermargol@gmail.com] or create an issue in the repository.
+2. Deploy to AWS:
+
+```bash
+cd backend/scripts
+./sync-to-aws.sh
+```
+
+3. Configure Nginx:
+
+```bash
+./update-nginx-config.sh
+```
+
+## API Endpoints
+
+### Public
+
+-   `GET /images` - Get all images or filter by category
+-   `GET /images/categories` - Get available categories
+-   `POST /bookings` - Create a booking request
+
+### Protected (Admin)
+
+-   `POST /images` - Upload new image
+-   `DELETE /images/:id` - Delete image
+-   `POST /images/reorder` - Reorder images
+-   `GET /bookings` - Get all bookings
+-   `PATCH /bookings/:id` - Update booking status
+-   `DELETE /bookings/:id` - Delete booking
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the ISC License.
+
+## Contact
+
+Kacper Margol - [Portfolio](https://kacpermargol.eu)
+
+Project Link: [https://github.com/PositivWarrior/dsphoto](https://github.com/PositivWarrior/dsphoto)
