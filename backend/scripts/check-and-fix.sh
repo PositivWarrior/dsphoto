@@ -17,7 +17,7 @@ check_dns() {
     echo -e "${YELLOW}Checking DNS resolution for ${domain}...${NC}"
     
     # Get server's public IP
-    local server_ip=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 || echo "51.21.110.161")
+    local server_ip="51.21.110.161"
     echo -e "${YELLOW}Server IP: $server_ip${NC}"
     
     # Try multiple DNS resolvers
