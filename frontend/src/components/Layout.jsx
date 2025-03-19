@@ -1,12 +1,15 @@
-import { Outlet } from 'react-router-dom';
+import React from 'react';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
-const Layout = () => {
+const Layout = ({ children }) => {
+	console.log('Layout rendering with children:', children);
 	return (
-		<>
+		<div className="layout-container">
 			<Navbar />
-			<Outlet />
-		</>
+			<main className="main-content">{children}</main>
+			<Footer />
+		</div>
 	);
 };
 

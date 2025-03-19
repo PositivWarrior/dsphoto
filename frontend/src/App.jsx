@@ -1,54 +1,46 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import LoadingSpinner from './components/LoadingSpinner';
-import Admin from './pages/Admin';
-import ProtectedRoute from './components/ProtectedRoute';
-
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import './index.css';
 
-// Lazy load components
-const Home = lazy(() => import('./pages/Home'));
-const Login = lazy(() => import('./pages/Login'));
-const ContactPage = lazy(() => import('./pages/Contact'));
-const BookTimePage = lazy(() => import('./pages/BookTime'));
-const PricesPage = lazy(() => import('./pages/Prices'));
-const GalleryPage = lazy(() => import('./pages/Gallery'));
-const GalleryCategory = lazy(() => import('./pages/GalleryCategory'));
-const AboutPage = lazy(() => import('./pages/About'));
-const ReviewsPage = lazy(() => import('./pages/Reviews'));
+// Import components directly for now to debug
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import GalleryPage from './pages/Gallery';
+import GalleryCategory from './pages/GalleryCategory';
+import AboutPage from './pages/About';
+import ContactPage from './pages/Contact';
+import LoginPage from './pages/Login';
+import Admin from './pages/Admin';
+import BookTimePage from './pages/BookTime';
+import PricesPage from './pages/Prices';
+import ReviewsPage from './pages/Reviews';
+
+// Debug log to check rendering
+console.log('App component loading...');
 
 function App() {
+	console.log('App component rendering...');
 	return (
-		<BrowserRouter>
-			<Suspense fallback={<LoadingSpinner />}>
+		<div className="App">
+			<Layout>
 				<Routes>
-					<Route element={<Layout />}>
-						<Route path="/" element={<Home />} />
-						<Route path="/login" element={<Login />} />
-						<Route
-							path="/admin"
-							element={
-								<ProtectedRoute>
-									<Admin />
-								</ProtectedRoute>
-							}
-						/>
-						<Route path="/about" element={<AboutPage />} />
-						<Route path="/contact" element={<ContactPage />} />
-						<Route path="/book" element={<BookTimePage />} />
-						<Route path="/prices" element={<PricesPage />} />
-						<Route path="/reviews" element={<ReviewsPage />} />
-						<Route path="/gallery" element={<GalleryPage />} />
-						<Route
-							path="/gallery/:category"
-							element={<GalleryCategory />}
-						/>
-					</Route>
+					<Route path="/" element={<Home />} />
+					<Route path="/gallery" element={<GalleryPage />} />
+					<Route
+						path="/gallery/:category"
+						element={<GalleryCategory />}
+					/>
+					<Route path="/about" element={<AboutPage />} />
+					<Route path="/contact" element={<ContactPage />} />
+					<Route path="/login" element={<LoginPage />} />
+					<Route path="/admin/*" element={<Admin />} />
+					<Route path="/book" element={<BookTimePage />} />
+					<Route path="/prices" element={<PricesPage />} />
+					<Route path="/reviews" element={<ReviewsPage />} />
+					<Route path="*" element={<Navigate to="/" replace />} />
 				</Routes>
-			</Suspense>
-		</BrowserRouter>
+			</Layout>
+		</div>
 	);
 }
 

@@ -1,15 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import './index.css';
 import App from './App';
 
+// Ensure we can debug routing issues
+console.log('React app initializing with router');
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<React.StrictMode>
-		<HelmetProvider>
-			<App />
-		</HelmetProvider>
+		<BrowserRouter>
+			<HelmetProvider>
+				<App />
+			</HelmetProvider>
+		</BrowserRouter>
 	</React.StrictMode>,
 );
 

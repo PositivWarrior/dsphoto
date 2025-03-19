@@ -37,7 +37,7 @@ const GalleryCategory = () => {
 				);
 				setLoading(false);
 			} catch (error) {
-				console.error('Error fetching category data:', error);
+				console.error('Error fetching gallery data:', error);
 			}
 		};
 
@@ -79,6 +79,16 @@ const GalleryCategory = () => {
 					<meta
 						name="description"
 						content={`Utforsk ${categoryData?.title}-bilder av høy kvalitet.`}
+					/>
+					{/* Add preconnect and dns-prefetch for AWS S3 */}
+					<link
+						rel="preconnect"
+						href="https://ds-photo.s3.eu-north-1.amazonaws.com"
+						crossOrigin="anonymous"
+					/>
+					<link
+						rel="dns-prefetch"
+						href="https://ds-photo.s3.eu-north-1.amazonaws.com"
 					/>
 				</Helmet>
 			</h2>

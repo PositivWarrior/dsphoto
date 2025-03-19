@@ -3,17 +3,27 @@ import axios from 'axios';
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 
+// Choose the API base URL based on environment
 const API_URL = process.env.REACT_APP_API_URL || 'https://api.fotods.no';
-const FALLBACK_URL = API_URL.replace('https://', 'http://');
+const FALLBACK_URL = 'http://localhost:5500';
+
+// Use a proxy for image optimization if available
+const IMAGE_PROXY_URL =
+	process.env.REACT_APP_IMAGE_PROXY_URL ||
+	'https://api.fotods.no/image-proxy';
+
+// CloudFront distribution domain (when set up)
+const CLOUDFRONT_DOMAIN = process.env.REACT_APP_CLOUDFRONT_DOMAIN || '';
 
 let isConnectionIssue = false;
 
 export const API = axios.create({
 	baseURL: API_URL,
-	timeout: 15000, // Increased timeout for slower connections
+	timeout: 20000,
 	withCredentials: true,
 	headers: {
 		Accept: 'application/json',
+		'Content-Type': 'application/json',
 	},
 });
 
@@ -128,6 +138,94 @@ API.interceptors.request.use(
 	},
 );
 
+/**
+ * Convert S3 URLs to CloudFront URLs for HTTP/2 benefits
+ * @param {string} url - Original S3 URL
+ * @returns {string} - CloudFront URL or original URL if CloudFront not configured
+ */
+export const getCloudFrontUrl = (url) => {
+	if (!CLOUDFRONT_DOMAIN || !url) return url;
+
+	// Check if it's an S3 URL
+	if (url.includes('ds-photo.s3.eu-north-1.amazonaws.com')) {
+		// Extract the path part from the S3 URL
+		const s3Path = url.split('ds-photo.s3.eu-north-1.amazonaws.com')[1];
+		// Return CloudFront URL
+		return `https://${CLOUDFRONT_DOMAIN}${s3Path}`;
+	}
+
+	return url;
+};
+
+// Function to optimize images using a proxy service
+export const getOptimizedImageUrl = (
+	originalUrl,
+	width = 800,
+	format = 'webp',
+	quality = 80,
+) => {
+	// First, convert to CloudFront if available
+	const cloudFrontUrl = getCloudFrontUrl(originalUrl);
+
+	// If we're in development or the image proxy isn't set up, return the CloudFront/original URL
+	if (
+		!IMAGE_PROXY_URL ||
+		IMAGE_PROXY_URL === 'https://api.fotods.no/image-proxy'
+	) {
+		return cloudFrontUrl;
+	}
+
+	// Encode the URL to pass as a parameter
+	const encodedUrl = encodeURIComponent(cloudFrontUrl);
+
+	// Return the proxied URL with transformation parameters
+	return `${IMAGE_PROXY_URL}?url=${encodedUrl}&width=${width}&format=${format}&quality=${quality}`;
+};
+
+// Add Authorization header for requests that need it
+export const setAuthToken = (token) => {
+	if (token) {
+		API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	} else {
+		delete API.defaults.headers.common['Authorization'];
+	}
+};
+
+// Request Interceptor for handling auth
+API.interceptors.request.use(
+	(config) => {
+		// Get token from localStorage
+		const token = localStorage.getItem('authToken');
+
+		// If token exists, add to headers
+		if (token) {
+			config.headers['Authorization'] = `Bearer ${token}`;
+		}
+
+		return config;
+	},
+	(error) => {
+		return Promise.reject(error);
+	},
+);
+
+// Response Interceptor for handling errors
+API.interceptors.response.use(
+	(response) => {
+		return response;
+	},
+	(error) => {
+		if (error.response) {
+			// Unauthorized - handle logout
+			if (error.response.status === 401) {
+				// You might want to redirect or clear auth here
+				localStorage.removeItem('authToken');
+			}
+		}
+		return Promise.reject(error);
+	},
+);
+
 // Export API methods with error boundaries
 const withErrorBoundary =
 	(apiCall) =>
@@ -159,3 +257,5 @@ export const loginUser = withErrorBoundary((loginData) =>
 export const deleteImage = withErrorBoundary((imageId) =>
 	API.delete(`/images/${imageId}`),
 );
+
+export default API;

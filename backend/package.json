@@ -11,7 +11,7 @@
 		"anymatch": "^3.1.3",
 		"append-field": "^1.0.0",
 		"array-flatten": "^1.1.1",
-		"aws-sdk": "^2.1691.0",
+		"aws-sdk": "^2.1528.0",
 		"backend": "file:",
 		"bcryptjs": "^2.4.3",
 		"compression": "^1.7.4",
@@ -27,7 +27,8 @@
 		"node-forge": "^1.3.1",
 		"nodemon": "^3.1.7",
 		"pem": "^1.14.8",
-		"selfsigned": "^2.4.1"
+		"selfsigned": "^2.4.1",
+		"sharp": "^0.32.6"
 	},
 	"scripts": {
 		"start": "node scripts/start.sh",

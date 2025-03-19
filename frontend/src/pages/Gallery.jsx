@@ -63,10 +63,20 @@ const GalleryPage = () => {
 							name="description"
 							content="Se mine nyeste fotografier i bryllup, natur, portrett, og mer."
 						/>
+						{/* Add preconnect and dns-prefetch for AWS S3 */}
+						<link
+							rel="preconnect"
+							href="https://ds-photo.s3.eu-north-1.amazonaws.com"
+							crossOrigin="anonymous"
+						/>
+						<link
+							rel="dns-prefetch"
+							href="https://ds-photo.s3.eu-north-1.amazonaws.com"
+						/>
 					</Helmet>
 				</h1>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-					{galleryData.map((section) => (
+					{galleryData.map((section, index) => (
 						<Link
 							to={`/gallery/${section.id}`}
 							key={section.id}
@@ -78,6 +88,7 @@ const GalleryPage = () => {
 									alt={section.title}
 									className="w-full h-64 object-cover"
 									sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+									priority={index < 3} // Prioritize first 3 images (visible on most screens)
 								/>
 							) : (
 								<div className="w-full h-64 bg-gray-300 flex items-center justify-center">

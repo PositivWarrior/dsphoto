@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ImageOptimizer from './ImageOptimizer';
 
 const Carousel = ({ images }) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -51,6 +52,22 @@ const Carousel = ({ images }) => {
 		); // Cycle backward
 	};
 
+	// Preload the next few images
+	useEffect(() => {
+		// Preload next 2 images
+		const preloadNextImages = () => {
+			for (let i = 1; i <= 2; i++) {
+				const nextIndex = (currentIndex + i) % images.length;
+				const img = new Image();
+				img.src = images[nextIndex].url;
+			}
+		};
+
+		if (images.length > 1) {
+			preloadNextImages();
+		}
+	}, [currentIndex, images]);
+
 	return (
 		<div>
 			{/* Modal for enlarging image */}
@@ -83,14 +100,7 @@ const Carousel = ({ images }) => {
 			)}
 
 			{/* Carousel */}
-			<div
-				className="relative w-full h-[500px] overflow-hidden rounded-lg shadow-lg"
-				// style={{
-				// 	marginTop: '30px',
-				// 	marginBottom: '30px',
-				// 	borderRadius: '15px', // Add rounded corners
-				// }}
-			>
+			<div className="relative w-full h-[500px] overflow-hidden rounded-lg shadow-lg">
 				{/* Images (no clickability on carousel images) */}
 				{images.map((image, index) => (
 					<div
@@ -99,15 +109,11 @@ const Carousel = ({ images }) => {
 							index === currentIndex ? 'opacity-100' : 'opacity-0'
 						}`}
 					>
-						<img
+						<ImageOptimizer
 							src={image.url}
 							alt={`slide ${index}`}
 							className="w-full h-full object-contain rounded-lg"
-							// style={{
-							// 	marginTop: '20px',
-							// 	marginBottom: '20px', // Add margin on top and bottom
-							// 	borderRadius: '15px', // Add rounded corners to images
-							// }}
+							priority={index === 0} // Prioritize the first image
 						/>
 					</div>
 				))}
@@ -152,10 +158,11 @@ const Carousel = ({ images }) => {
 						className="w-full h-auto cursor-pointer"
 						onClick={() => openModal(index)} // Open modal for grid images, using the image index
 					>
-						<img
+						<ImageOptimizer
 							src={image.url}
 							alt={image.title || `Gallery image ${index + 1}`}
 							className="w-full h-64 object-cover rounded-lg shadow-lg"
+							priority={index < 3 && currentIndex === 0} // Prioritize first 3 grid images on initial load
 						/>
 					</div>
 				))}
