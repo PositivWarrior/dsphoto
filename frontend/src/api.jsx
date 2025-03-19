@@ -148,10 +148,24 @@ export const getCloudFrontUrl = (url) => {
 
 	// Check if it's an S3 URL
 	if (url.includes('ds-photo.s3.eu-north-1.amazonaws.com')) {
-		// Extract the path part from the S3 URL
-		const s3Path = url.split('ds-photo.s3.eu-north-1.amazonaws.com')[1];
-		// Return CloudFront URL
-		return `https://${CLOUDFRONT_DOMAIN}${s3Path}`;
+		try {
+			// Extract the path part from the S3 URL
+			const s3Path = url.split('ds-photo.s3.eu-north-1.amazonaws.com')[1];
+
+			// Make sure CloudFront domain doesn't already have https:// in it
+			const cleanDomain = CLOUDFRONT_DOMAIN.replace(/^https?:\/\//, '');
+
+			// Build properly formatted CloudFront URL
+			const cloudFrontUrl = `https://${cleanDomain}${s3Path}`;
+
+			console.log('Original URL:', url);
+			console.log('CloudFront URL:', cloudFrontUrl);
+
+			return cloudFrontUrl;
+		} catch (error) {
+			console.error('Error creating CloudFront URL:', error);
+			return url; // Return original URL if there's an error
+		}
 	}
 
 	return url;
@@ -166,6 +180,9 @@ export const getOptimizedImageUrl = (
 ) => {
 	// First, convert to CloudFront if available
 	const cloudFrontUrl = getCloudFrontUrl(originalUrl);
+
+	// Log the CloudFront URL for debugging
+	console.log('Final URL used:', cloudFrontUrl);
 
 	// If we're in development or the image proxy isn't set up, return the CloudFront/original URL
 	if (
