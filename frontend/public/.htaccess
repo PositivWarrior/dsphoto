@@ -1,8 +1,11 @@
 # Enable rewrite engine
 RewriteEngine On
-
-# Set the base directory
 RewriteBase /
+
+# Handle both www and non-www with SSL
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
 
 # If the request is not for a file
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -19,6 +22,7 @@ Header set X-Content-Type-Options "nosniff"
 Header set X-XSS-Protection "1; mode=block"
 Header set X-Frame-Options "SAMEORIGIN"
 Header set Referrer-Policy "strict-origin-when-cross-origin"
+Header set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
 
 # Enable CORS if needed
 Header set Access-Control-Allow-Origin "*"

@@ -79,4 +79,9 @@ echo -e "${GREEN}Deployment verified successfully!${NC}"
 echo -e "${YELLOW}Please check the following URLs:${NC}"
 echo "1. Main site: https://fotods.no"
 echo "2. Verification file: https://fotods.no/verify.txt"
-echo "3. Gallery sections: https://fotods.no/gallery" 
+echo "3. Gallery sections: https://fotods.no/gallery"
+
+# Test and restart Nginx
+sudo nginx -t && sudo systemctl restart nginx
+
+curl -I -H "Origin: https://fotods.no" https://api.fotods.no
