@@ -38,17 +38,19 @@ export const updateBookingStatus = async (req, res) => {
 		await booking.save();
 
 		if (req.body.status === 'accepted') {
-			await emailjs.send(service_rn45rec, 'template_id_accept', {
+			await emailjs.send(service_y1tvzoi, 'template_id_accept', {
 				to_name: booking.name,
 				to_email: booking.email,
 				message: 'Your booking has been accepted!',
+				reply_to: 'info@fotods.no',
 			});
 		} else if (req.body.status === 'declined') {
-			await emailjs.send(service_rn45rec, 'template_id_decline', {
+			await emailjs.send(service_y1tvzoi, 'template_id_decline', {
 				to_name: booking.name,
 				to_email: booking.email,
 				message:
 					'Sorry, the requested date is unavailable. Please try another date or contact me.',
+				reply_to: 'info@fotods.no',
 			});
 		}
 

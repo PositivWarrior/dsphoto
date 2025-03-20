@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Configuration
-FTP_HOST="fotods.no"
-FTP_USER="u123456789"  # Replace with your Hostinger FTP username
+FTP_HOST="145.223.91.230"
+FTP_USER="u432051507.fotods.no"  # Corrected Hostinger FTP username
+FTP_PASS=".Niepokonani8"  # Added FTP password
 FTP_PATH="/public_html"
 BUILD_DIR="build"
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S UTC")
@@ -35,33 +36,34 @@ echo "Deployment verification file
 Timestamp: $TIMESTAMP
 Site: fotods.no" > build/verify.txt
 
-# Create a temporary script for FTP commands
-echo "#!/bin/bash
-echo 'open $FTP_HOST'
-echo 'user $FTP_USER'
-echo 'prompt off'
-echo 'cd $FTP_PATH'
-echo 'mput build/*'
-echo 'mput build/.htaccess'
-echo 'bye'" > deploy-ftp.tmp
-
-# Make the script executable
-chmod +x deploy-ftp.tmp
-
 echo -e "${YELLOW}Uploading files to Hostinger...${NC}"
-echo -e "${YELLOW}Please enter your FTP password when prompted${NC}"
 
-# Run the FTP script
-ftp -n < deploy-ftp.tmp
+# Create a list of files to upload
+find build -type f > files_to_upload.txt
 
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Deployment failed!${NC}"
-    rm deploy-ftp.tmp
-    exit 1
-fi
+# Upload each file individually using curl
+while IFS= read -r file; do
+    # Get the relative path for the destination
+    rel_path="${file#build/}"
+    echo "Uploading $file to $FTP_PATH/$rel_path"
+    
+    # Create the directory structure if needed
+    dir_path=$(dirname "$rel_path")
+    if [ "$dir_path" != "." ]; then
+        # Create the directory structure
+        curl -s --ftp-create-dirs -u "$FTP_USER:$FTP_PASS" "ftp://$FTP_HOST/$FTP_PATH/$dir_path/" || true
+    fi
+    
+    # Upload the file
+    curl -T "$file" -u "$FTP_USER:$FTP_PASS" "ftp://$FTP_HOST/$FTP_PATH/$rel_path"
+    
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Failed to upload $file${NC}"
+    fi
+done < files_to_upload.txt
 
 # Clean up
-rm deploy-ftp.tmp
+rm files_to_upload.txt
 
 echo -e "${GREEN}Deployment completed successfully!${NC}"
 echo -e "${YELLOW}Verifying deployment...${NC}"

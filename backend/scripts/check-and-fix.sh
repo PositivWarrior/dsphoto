@@ -227,7 +227,7 @@ sleep 30
 
 # Obtain SSL certificate using webroot mode
 echo -e "${YELLOW}Obtaining SSL certificate using webroot mode...${NC}"
-if ! sudo certbot certonly --webroot -w /var/www/html -d api.fotods.no --non-interactive --agree-tos --email kacper.margol@gmail.com --preferred-challenges http; then
+if ! sudo certbot certonly --webroot -w /var/www/html -d api.fotods.no --non-interactive --agree-tos --email info@fotods.no --preferred-challenges http; then
     echo -e "${RED}Failed to obtain SSL certificate${NC}"
     echo -e "${YELLOW}Checking Certbot logs...${NC}"
     sudo tail -n 50 /var/log/letsencrypt/letsencrypt.log

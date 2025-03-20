@@ -155,7 +155,7 @@ if [ ! -f /etc/nginx/dhparam.pem ]; then
 fi
 
 # Force renew SSL certificate
-sudo certbot --nginx -d api.fotods.no --non-interactive --agree-tos --email daniel.skarpnes@gmail.com --force-renewal
+sudo certbot --nginx -d api.fotods.no --non-interactive --agree-tos --email info@fotods.no --force-renewal
 
 # Copy configurations
 sudo cp /tmp/nginx.conf /etc/nginx/nginx.conf

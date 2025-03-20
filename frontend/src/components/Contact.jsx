@@ -6,6 +6,7 @@ const Contact = () => {
 		name: '',
 		email: '',
 		message: '',
+		reply_to: 'info@fotods.no',
 	});
 	const [successMessage, setSuccessMessage] = useState('');
 
@@ -22,7 +23,7 @@ const Contact = () => {
 
 		emailjs
 			.send(
-				'service_rn45rec', //  Service ID
+				'service_y1tvzoi', //  Service ID
 				'template_dewkewe', // Template ID
 				formData,
 				'ouIL0a7IpDVcizQLE', // Public Key
@@ -40,7 +41,12 @@ const Contact = () => {
 				},
 			);
 
-		setFormData({ name: '', email: '', message: '' });
+		setFormData({
+			name: '',
+			email: '',
+			message: '',
+			reply_to: 'info@fotods.no',
+		});
 	};
 
 	return (

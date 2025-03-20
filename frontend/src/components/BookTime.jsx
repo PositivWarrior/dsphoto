@@ -17,12 +17,13 @@ const BookTime = () => {
 			from_email: email,
 			booking_date: date,
 			message: message,
+			reply_to: 'info@fotods.no',
 		};
 
 		// Send email using EmailJS
 		try {
 			await emailjs.send(
-				'service_rn45rec',
+				'service_y1tvzoi',
 				'template_t3sedmj',
 				templateParams,
 				'ouIL0a7IpDVcizQLE',
