@@ -171,32 +171,15 @@ export const getCloudFrontUrl = (url) => {
 	return url;
 };
 
-// Function to optimize images using a proxy service
+// Function to optimize images - simplified to just return the original URL
 export const getOptimizedImageUrl = (
 	originalUrl,
 	width = 800,
 	format = 'webp',
 	quality = 80,
 ) => {
-	// First, convert to CloudFront if available
-	const cloudFrontUrl = getCloudFrontUrl(originalUrl);
-
-	// Log the CloudFront URL for debugging
-	console.log('Final URL used:', cloudFrontUrl);
-
-	// If we're in development or the image proxy isn't set up, return the CloudFront/original URL
-	if (
-		!IMAGE_PROXY_URL ||
-		IMAGE_PROXY_URL === 'https://api.fotods.no/image-proxy'
-	) {
-		return cloudFrontUrl;
-	}
-
-	// Encode the URL to pass as a parameter
-	const encodedUrl = encodeURIComponent(cloudFrontUrl);
-
-	// Return the proxied URL with transformation parameters
-	return `${IMAGE_PROXY_URL}?url=${encodedUrl}&width=${width}&format=${format}&quality=${quality}`;
+	// Just convert to CloudFront if available, don't use image proxy
+	return getCloudFrontUrl(originalUrl);
 };
 
 // Add Authorization header for requests that need it
