@@ -28,7 +28,7 @@ const Contact = () => {
 
 		emailjs
 			.send(
-				'service_rn45rec', //  Service ID
+				'service_y1tvzoi', //  Service ID
 				'template_dewkewe', // Template ID
 				templateParams, // Template parameters
 				'ouIL0a7IpDVcizQLE', // Public Key

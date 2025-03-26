@@ -1,9 +1,7 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import About from '../components/About';
 import GallerySections from '../components/GallerySections';
-import Footer from '../components/Footer';
 import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
@@ -21,12 +19,10 @@ const Home = () => {
 				/>
 				<meta name="author" content="Dawid Siedlec" />
 			</Helmet>
-			<Navbar />
 			<Hero />
 			<div className="px-4 sm:px-6 lg:px-8">
 				<About />
 				<GallerySections />
-				<Footer />
 			</div>
 		</div>
 	);
