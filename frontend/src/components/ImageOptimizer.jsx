@@ -1,125 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import { getOptimizedImageUrl } from '../api';
+import { Blurhash } from 'react-blurhash';
 
-const createWebPUrl = (url) => {
-	// Check if URL is from S3
-	if (url.includes('ds-photo.s3.eu-north-1.amazonaws.com')) {
-		// We'll use the Cloudinary service to convert and resize S3 images on-the-fly
-		// Format: https://res.cloudinary.com/YOUR_CLOUD_NAME/image/fetch/f_auto,q_auto,w_[WIDTH]/S3_URL
-
-		// Replace with your actual Cloudinary cloud name if you have one
-		// Otherwise, look at implementing a serverless function that can transform images
-		// const cloudinaryBase = 'https://res.cloudinary.com/your-cloud-name/image/fetch';
-		// const encodedUrl = encodeURIComponent(url);
-		// return `${cloudinaryBase}/f_auto,q_auto,w_800/${encodedUrl}`;
-
-		// Since we don't have Cloudinary credentials, we'll just return the original URL for now
-		return url;
-	}
-	return url;
-};
-
-const getImageDimensions = (url) => {
-	// Simple image dimension estimation based on container
-	// For gallery thumbnails (w-full h-64 object-cover)
-	if (url.includes('/images/')) {
-		return {
-			width: 800,
-			height: 400,
-		};
-	}
-	return {
-		width: 1200,
-		height: 800,
-	};
-};
+const WEBP_FALLBACK_HASH = 'L9B:um.8xu%2~qxut7t7-;WBWBM{';
 
 const ImageOptimizer = ({
 	src,
 	alt,
-	className,
+	className = '',
+	width = 800,
+	quality = 80,
 	sizes = '100vw',
+	loading = 'lazy',
 	priority = false,
+	placeholderColor = '#f3f4f6',
 }) => {
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(false);
-	const [optimizedSrc, setOptimizedSrc] = useState('');
-
-	// Responsive image breakpoints
-	const breakpoints = [320, 640, 768, 1024, 1280];
+	const [imageLoaded, setImageLoaded] = useState(false);
+	const [webpSrc, setWebpSrc] = useState('');
+	const [blurHash, setBlurHash] = useState(WEBP_FALLBACK_HASH);
 
 	useEffect(() => {
-		// Get optimized version for the main image
-		const optimizedWebpUrl = getOptimizedImageUrl(src, 800, 'webp');
-		setOptimizedSrc(optimizedWebpUrl);
-
-		// Preload the image
-		const img = new Image();
-		img.src = optimizedWebpUrl;
-		img.onload = () => setLoading(false);
-		img.onerror = () => {
-			// Fallback to original format if WebP fails
-			console.warn('WebP image failed to load:', optimizedWebpUrl);
-			setError(true);
-			const fallbackImg = new Image();
-			fallbackImg.src = src;
-			fallbackImg.onload = () => setLoading(false);
-			fallbackImg.onerror = () => setError(true);
-		};
+		// Convert to WebP format if supported by browser
+		if (src) {
+			// CloudFront URL pattern detection
+			if (src.includes('cloudfront.net')) {
+				// Already optimized by CloudFront
+				setWebpSrc(src);
+			} else if (src.includes('amazonaws.com')) {
+				// Convert Amazon S3 URL to CloudFront and append WebP query param
+				const s3Path = src.split('amazonaws.com')[1];
+				const cloudFrontUrl = `https://d10rd1fhji10gj.cloudfront.net${s3Path}`;
+				setWebpSrc(cloudFrontUrl);
+			} else {
+				// For other URLs, use as is
+				setWebpSrc(src);
+			}
+		}
 	}, [src]);
 
-	// Generate srcset for responsive images
-	const generateSrcSet = () => {
-		return breakpoints
-			.map((bp) => `${getOptimizedImageUrl(src, bp, 'webp')} ${bp}w`)
-			.join(', ');
+	const handleImageLoad = () => {
+		setImageLoaded(true);
 	};
 
-	if (error) {
-		return (
-			<div
-				className={`bg-gray-200 flex items-center justify-center ${className}`}
-			>
-				<span>Failed to load image</span>
-			</div>
-		);
-	}
-
-	const { width, height } = getImageDimensions(src);
-
 	return (
-		<>
-			{loading && (
-				<div className={`bg-gray-200 animate-pulse ${className}`} />
+		<div
+			className="relative overflow-hidden"
+			style={{ backgroundColor: placeholderColor }}
+		>
+			{!imageLoaded && (
+				<div className="absolute inset-0 z-10">
+					<Blurhash
+						hash={blurHash}
+						width="100%"
+						height="100%"
+						resolutionX={32}
+						resolutionY={32}
+						punch={1}
+					/>
+				</div>
 			)}
+
 			<img
-				src={optimizedSrc || src}
-				srcSet={generateSrcSet()}
-				width={width}
-				height={height}
+				src={webpSrc || src}
 				alt={alt}
-				className={`${className} ${loading ? 'hidden' : ''}`}
-				loading={priority ? 'eager' : 'lazy'}
+				className={`${className} ${
+					!imageLoaded ? 'opacity-0' : 'opacity-100'
+				}`}
+				onLoad={handleImageLoad}
+				loading={priority ? 'eager' : loading}
+				fetchpriority={priority ? 'high' : 'auto'}
 				sizes={sizes}
-				style={{ opacity: loading ? 0 : 1 }}
-				fetchPriority={priority ? 'high' : 'auto'}
-				onError={(e) => {
-					// If optimized image fails, fallback to original
-					console.warn('Image failed to load:', e.target.src);
-					if (e.target.src !== src) {
-						e.target.src = src;
-					}
-				}}
+				style={{ transition: 'opacity 0.3s ease-in-out' }}
 			/>
-			{priority && (
-				<link
-					rel="preload"
-					href={optimizedSrc || src}
-					as="image"
-					fetchPriority="high"
-				/>
-			)}
-		</>
+		</div>
 	);
 };
 

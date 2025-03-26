@@ -1,3 +1,10 @@
+#!/bin/bash
+
+# Backup current server.js
+cp /var/www/dsphoto-backend/server.js /var/www/dsphoto-backend/server.js.bak
+
+# Create a fixed version of server.js
+cat > /var/www/dsphoto-backend/server.js << 'EOF'
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
@@ -135,3 +142,12 @@ process.on('uncaughtException', (err) => {
 	// Don't exit the process, just log the error
 	console.error('Process will continue running...');
 });
+EOF
+
+# Set proper permissions
+chown ubuntu:ubuntu /var/www/dsphoto-backend/server.js
+
+# Restart the backend
+su - ubuntu -c "cd /var/www/dsphoto-backend && pm2 restart dsphoto-backend && pm2 save"
+
+echo "Server.js fixed and restarted!" 

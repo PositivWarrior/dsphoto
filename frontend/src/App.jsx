@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
+import { checkWebPSupport } from './api';
 
 // Import components directly for now to debug
 import Layout from './components/Layout';
@@ -20,6 +21,12 @@ console.log('App component loading...');
 
 function App() {
 	console.log('App component rendering...');
+
+	useEffect(() => {
+		// Check for WebP support when app loads
+		checkWebPSupport();
+	}, []);
+
 	return (
 		<div className="App">
 			<Layout>

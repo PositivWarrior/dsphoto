@@ -14,7 +14,9 @@ const IMAGE_PROXY_URL =
 	'https://api.fotods.no/image-proxy';
 
 // CloudFront distribution domain (when set up)
-const CLOUDFRONT_DOMAIN = process.env.REACT_APP_CLOUDFRONT_DOMAIN || '';
+const CLOUDFRONT_DOMAIN =
+	process.env.REACT_APP_CLOUDFRONT_DOMAIN ||
+	'https://d10rd1fhji10gj.cloudfront.net';
 
 // Direct S3 URL for fallback
 const S3_DIRECT_URL =
@@ -333,16 +335,90 @@ export const testCloudFrontConnectivity = async () => {
 // Run the CloudFront test periodically
 setInterval(testCloudFrontConnectivity, 60000); // Test every minute
 
-// Function to optimize images - simplified to just return the original URL
-export const getOptimizedImageUrl = (
-	originalUrl,
-	width = 800,
-	format = 'webp',
-	quality = 80,
-) => {
-	// Just convert to CloudFront if available, don't use image proxy
-	return getCloudFrontUrl(originalUrl);
+/**
+ * Optimize image URL for better performance
+ * @param {string} url - Original image URL
+ * @param {number} width - Desired width
+ * @param {string} format - Image format (webp, jpeg, etc)
+ * @returns {string} - Optimized URL
+ */
+export const getOptimizedImageUrl = (url, width = 800, format = 'webp') => {
+	// Check browser support for WebP
+	const supportsWebP = localStorage.getItem('supports_webp') === 'true';
+
+	// If browser doesn't support WebP and the requested format is WebP, fallback to JPEG
+	const finalFormat = !supportsWebP && format === 'webp' ? 'jpeg' : format;
+
+	// Check if URL is from S3 or CloudFront
+	if (url.includes('amazonaws.com')) {
+		// Convert S3 URL to CloudFront
+		const s3Path = url.split('amazonaws.com')[1];
+		return `${CLOUDFRONT_DOMAIN}${s3Path}?width=${width}&format=${finalFormat}`;
+	} else if (url.includes('cloudfront.net')) {
+		// Already using CloudFront, just add params
+		const separator = url.includes('?') ? '&' : '?';
+		return `${url}${separator}width=${width}&format=${finalFormat}`;
+	}
+
+	// If not an S3 or CloudFront URL, return the original
+	return url;
 };
+
+// Check WebP support on mount
+export const checkWebPSupport = () => {
+	if (
+		typeof localStorage !== 'undefined' &&
+		localStorage.getItem('supports_webp') === null
+	) {
+		const webp = new Image();
+		webp.onload = function () {
+			const result = webp.width > 0 && webp.height > 0;
+			localStorage.setItem('supports_webp', result.toString());
+		};
+		webp.onerror = function () {
+			localStorage.setItem('supports_webp', 'false');
+		};
+		webp.src =
+			'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
+	}
+};
+
+// Cached image fetch for galleries
+export async function fetchImagesWithCache() {
+	try {
+		// Check cache first
+		const cachedData = getFromCache('all_images');
+		if (cachedData) {
+			console.log('Using cached image data');
+			return cachedData;
+		}
+
+		// If not in cache, fetch from API
+		const response = await API.get('/images');
+		const data = response.data;
+
+		// Save to cache for future use
+		saveToCache('all_images', data);
+		return data;
+	} catch (error) {
+		console.error('Error fetching images:', error);
+
+		// If offline, try to return cached data even if expired
+		try {
+			const cacheKey = 'api_cache_all_images';
+			const cacheItem = localStorage.getItem(cacheKey);
+			if (cacheItem) {
+				const { data } = JSON.parse(cacheItem);
+				console.log('Using expired cache data during offline mode');
+				return data;
+			}
+		} catch (e) {
+			console.error('Failed to retrieve expired cache:', e);
+		}
+
+		throw error;
+	}
+}
 
 // Add Authorization header for requests that need it
 export const setAuthToken = (token) => {
@@ -431,11 +507,6 @@ export const fetchWithCache = async (endpoint) => {
 		// If no cached data, rethrow the error
 		throw error;
 	}
-};
-
-// Export specific API methods with caching
-export const fetchImagesWithCache = async () => {
-	return fetchWithCache('/images');
 };
 
 // Export API methods

@@ -7,6 +7,7 @@ import {
 	fetchImagesWithCache,
 	diagnoseBrokenConnections,
 } from '../api';
+import ImageOptimizer from './ImageOptimizer';
 
 // Mock data for when API fails completely
 const FALLBACK_GALLERY_DATA = [
@@ -303,7 +304,7 @@ const GallerySections = () => {
 					</div>
 				) : (
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-						{galleryData.map((section) => (
+						{galleryData.map((section, index) => (
 							<Link
 								to={`/gallery/${section.id}`}
 								key={section.id}
@@ -311,17 +312,11 @@ const GallerySections = () => {
 							>
 								{section.images && section.images.length > 0 ? (
 									<div className="relative">
-										<img
+										<ImageOptimizer
 											src={section.images[0].url}
 											alt={`Preview of ${section.title} gallery`}
 											className="w-full h-64 object-cover"
-											onError={(e) => {
-												console.error(
-													`Failed to load image: ${section.images[0].url}`,
-												);
-												e.target.src =
-													'/placeholder-image.jpg'; // Add a placeholder image
-											}}
+											priority={index < 3}
 										/>
 										<div className="absolute inset-0 bg-black bg-opacity-30 transition-opacity group-hover:bg-opacity-40" />
 									</div>

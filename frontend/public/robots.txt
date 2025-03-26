@@ -1,3 +1,9 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+
+# Improve crawling efficiency
+Crawl-delay: 10
+
+# Sitemaps for search engines
+Sitemap: https://fotods.no/sitemap.xml
