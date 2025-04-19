@@ -147,56 +147,72 @@ API.interceptors.response.use(
 		return response;
 	},
 	async (error) => {
-		const { config } = error;
+		const { config, response } = error;
+
+		// If it's a 401 Unauthorized error, handle logout/redirect
+		if (response?.status === 401) {
+			console.error(
+				'Authentication Error (401): Token might be invalid or expired.',
+			);
+			localStorage.removeItem('token');
+			localStorage.removeItem('userInfo');
+			// Redirect to login page - check if window object is available
+			if (typeof window !== 'undefined') {
+				// Avoid redirecting if already on login page
+				if (!window.location.pathname.includes('/login')) {
+					window.location.href = '/login';
+				}
+			}
+			// Reject the promise to prevent further processing or retries for this request
+			return Promise.reject(error);
+		}
 
 		// Initialize retry count
 		config.retryCount = config.retryCount || 0;
 
-		// Specific error handling
+		// Specific error handling for network/server issues (excluding 401)
 		const errorType =
-			error.code ||
-			(error.response ? `HTTP ${error.response.status}` : 'Unknown');
+			error.code || (response ? `HTTP ${response.status}` : 'Unknown');
 		const isNetworkError =
-			!error.response &&
+			!response &&
 			(error.code === 'ECONNABORTED' ||
 				error.code === 'ECONNREFUSED' ||
 				error.message.includes('Network Error'));
 		const isServerError =
-			error.response && [502, 503, 504].includes(error.response.status);
+			response && [500, 502, 503, 504].includes(response.status); // Added 500
 
-		// Update connection status
-		updateConnectionStatus(isNetworkError || isServerError);
+		// Update connection status only for network/server issues
+		if (isNetworkError || isServerError) {
+			updateConnectionStatus(true);
+		}
 
-		// Check if we should retry
+		// Check if we should retry (only for network/server errors)
 		const shouldRetry =
 			config.retryCount < MAX_RETRIES &&
 			(isNetworkError || isServerError);
 
 		if (!shouldRetry) {
-			// If using API_URL and we've exhausted retries, try using FALLBACK_URL
-			if (config.baseURL === API_URL && !useFallbackURL) {
+			// Fallback logic only for network/server errors
+			if (
+				(isNetworkError || isServerError) &&
+				config.baseURL === API_URL &&
+				!useFallbackURL
+			) {
 				console.warn(
-					`API connection failed. Switching to fallback URL: ${FALLBACK_URL}`,
+					`API connection failed (${errorType}). Switching to fallback URL: ${FALLBACK_URL}`,
 				);
 				useFallbackURL = true;
 				API.defaults.baseURL = FALLBACK_URL;
-
-				// Reset retry count to give the fallback URL its own retry attempts
 				config.retryCount = 0;
 				return API(config);
 			}
 
-			// If using HTTPS and we've exhausted retries, try HTTP as a last resort
-			if (config.url.startsWith('https://') && !config.triedHTTP) {
-				console.warn('SSL Connection failed, falling back to HTTP');
-				config.url = config.url.replace('https://', 'http://');
-				config.baseURL = config.baseURL.replace('https://', 'http://');
-				config.triedHTTP = true;
-				return API(config);
-			}
-
-			// Set offline mode if we've tried everything and failed
-			if (useFallbackURL && config.retryCount >= MAX_RETRIES) {
+			// Set offline mode if we've tried everything and failed (only for network/server errors)
+			if (
+				(isNetworkError || isServerError) &&
+				useFallbackURL &&
+				config.retryCount >= MAX_RETRIES
+			) {
 				isOfflineMode = true;
 				console.warn(
 					'All API connection attempts failed, entering offline mode',
@@ -204,13 +220,13 @@ API.interceptors.response.use(
 			}
 
 			// Log detailed error information
-			console.error('API Request Failed:', {
+			console.error('API Request Failed (Final):', {
 				url: config.url,
 				method: config.method,
 				errorType,
 				message: error.message,
 				retryCount: config.retryCount,
-				usedHTTPFallback: config.triedHTTP || false,
+				status: response?.status,
 				usedFallbackURL: useFallbackURL,
 				isOfflineMode,
 			});
@@ -218,6 +234,7 @@ API.interceptors.response.use(
 			return Promise.reject(error);
 		}
 
+		// --- Retry logic continues for network/server errors below ---
 		config.retryCount += 1;
 
 		// Log the retry attempt with more details
@@ -226,6 +243,7 @@ API.interceptors.response.use(
 			method: config.method,
 			errorType,
 			message: error.message,
+			status: response?.status,
 		});
 
 		// Wait before retrying with exponential backoff
