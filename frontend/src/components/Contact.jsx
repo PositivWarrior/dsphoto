@@ -6,7 +6,6 @@ const Contact = () => {
 		name: '',
 		email: '',
 		message: '',
-		reply_to: 'info@fotods.no',
 	});
 	const [successMessage, setSuccessMessage] = useState('');
 
@@ -21,12 +20,18 @@ const Contact = () => {
 	const sendEmail = (e) => {
 		e.preventDefault();
 
+		// Prepare template parameters, including dynamic reply_to
+		const templateParams = {
+			...formData, // Includes name, email, message
+			reply_to: formData.email, // Set reply_to to the user's email
+		};
+
 		emailjs
 			.send(
-				'service_y1tvzoi', //  Service ID
+				'service_r8wxhfk', // Updated Service ID
 				'template_dewkewe', // Template ID
-				formData,
-				'ouIL0a7IpDVcizQLE', // Public Key
+				templateParams, // Use prepared params with reply_to
+				'ouIL0a7IpDVcizQLE', // Existing Public Key (Verify if Service ID change requires a new one)
 			)
 			.then(
 				(response) => {
@@ -41,11 +46,11 @@ const Contact = () => {
 				},
 			);
 
+		// Reset form fields
 		setFormData({
 			name: '',
 			email: '',
 			message: '',
-			reply_to: 'info@fotods.no',
 		});
 	};
 
