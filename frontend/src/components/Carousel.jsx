@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import ImageOptimizer from './ImageOptimizer';
 
-const Carousel = ({ images }) => {
+const Carousel = memo(({ images }) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalImageIndex, setModalImageIndex] = useState(null); // Track the index of the modal image
@@ -169,6 +169,6 @@ const Carousel = ({ images }) => {
 			</div>
 		</div>
 	);
-};
+});
 
 export default Carousel;

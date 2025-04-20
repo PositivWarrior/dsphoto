@@ -16,7 +16,7 @@ const ImageOptimizer = ({
 }) => {
 	const [imageLoaded, setImageLoaded] = useState(false);
 	const [webpSrc, setWebpSrc] = useState('');
-	const [blurHash, setBlurHash] = useState(WEBP_FALLBACK_HASH);
+	const [blurHash] = useState(WEBP_FALLBACK_HASH);
 
 	useEffect(() => {
 		// Convert to WebP format if supported by browser

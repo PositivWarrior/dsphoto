@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import UploadForm from '../components/UploadForm';
-import AdminGalleryOrder from '../components/AdminGalleryOrder';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
+// import UploadForm from '../components/UploadForm'; // Lazy load if needed
+// import AdminGalleryOrder from '../components/AdminGalleryOrder'; // Lazy load this
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { jwtDecode } from 'jwt-decode';
 import { Helmet } from 'react-helmet-async';
-import ImageList from '../components/ImageList';
+// import ImageList from '../components/ImageList'; // Lazy load if needed
 import { API } from '../api';
+
+// Lazy load admin components
+const LazyUploadForm = lazy(() => import('../components/UploadForm'));
+const LazyAdminGalleryOrder = lazy(() =>
+	import('../components/AdminGalleryOrder'),
+);
+const LazyImageList = lazy(() => import('../components/ImageList'));
 
 const Admin = () => {
 	const [bookings, setBookings] = useState([]);
@@ -150,11 +157,23 @@ const Admin = () => {
 					</ul>
 				);
 			case 'upload':
-				return <UploadForm />;
+				return (
+					<Suspense fallback={<LoadingSpinner />}>
+						<LazyUploadForm />
+					</Suspense>
+				);
 			case 'manageGalleries':
-				return <AdminGalleryOrder />;
+				return (
+					<Suspense fallback={<LoadingSpinner />}>
+						<LazyAdminGalleryOrder />
+					</Suspense>
+				);
 			case 'imageList':
-				return <ImageList />;
+				return (
+					<Suspense fallback={<LoadingSpinner />}>
+						<LazyImageList />
+					</Suspense>
+				);
 			default:
 				return null;
 		}

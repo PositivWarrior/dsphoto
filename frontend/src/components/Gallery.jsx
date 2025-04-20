@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import ImageOptimizer from './ImageOptimizer';
-import ImageModal from './ImageModal';
+// Import LoadingSpinner for Suspense fallback
+import LoadingSpinner from './LoadingSpinner';
+
+// Lazy load the ImageModal component
+const LazyImageModal = lazy(() => import('./ImageModal'));
 
 const Gallery = ({ images, categoryFilter }) => {
 	const [selectedImage, setSelectedImage] = useState(null);
@@ -18,6 +22,7 @@ const Gallery = ({ images, categoryFilter }) => {
 
 	const closeModal = () => {
 		setModalOpen(false);
+		setSelectedImage(null); // Also clear selected image on close
 	};
 
 	return (
@@ -39,9 +44,14 @@ const Gallery = ({ images, categoryFilter }) => {
 				))}
 			</div>
 
-			{/* Image Modal for viewing larger images */}
+			{/* Image Modal for viewing larger images - Now lazy loaded */}
 			{modalOpen && selectedImage && (
-				<ImageModal image={selectedImage} onClose={closeModal} />
+				<Suspense fallback={<LoadingSpinner />}>
+					<LazyImageModal
+						image={selectedImage}
+						onClose={closeModal}
+					/>
+				</Suspense>
 			)}
 		</>
 	);

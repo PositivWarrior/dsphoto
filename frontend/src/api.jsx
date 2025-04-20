@@ -9,9 +9,9 @@ const FALLBACK_URL =
 	process.env.REACT_APP_FALLBACK_API_URL || 'http://localhost:5500';
 
 // Use a proxy for image optimization if available
-const IMAGE_PROXY_URL =
-	process.env.REACT_APP_IMAGE_PROXY_URL ||
-	'https://api.fotods.no/image-proxy';
+// const IMAGE_PROXY_URL =
+// 	process.env.REACT_APP_IMAGE_PROXY_URL ||
+// 	'https://api.fotods.no/image-proxy';
 
 // CloudFront distribution domain (when set up)
 const CLOUDFRONT_DOMAIN =
@@ -557,14 +557,14 @@ export const diagnoseBrokenConnections = async () => {
 		try {
 			console.log(`Testing ${label} at ${url}...`);
 			const startTime = Date.now();
-			const response = await fetch(url, {
+			await fetch(url, {
 				method: 'HEAD',
-				mode: 'no-cors',
+				mode: 'no-cors', // This allows us to at least attempt the connection
 				cache: 'no-store',
 			});
 			const elapsed = Date.now() - startTime;
 
-			// In no-cors mode we can't check status, but at least we know the request didn't throw an error
+			// No-cors mode will always return status 0, but we can detect network errors
 			results[label] = {
 				status: 'reachable',
 				latency: elapsed,

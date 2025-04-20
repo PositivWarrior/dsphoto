@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
 import {
-	API,
 	getConnectionStatus,
 	fetchImagesWithCache,
 	diagnoseBrokenConnections,
@@ -34,7 +33,6 @@ const GallerySections = () => {
 	const [error, setError] = useState(null);
 	const [retryCount, setRetryCount] = useState(0);
 	const [usingFallbackData, setUsingFallbackData] = useState(false);
-	const [usingCachedData, setUsingCachedData] = useState(false);
 	const [connectionStatus, setConnectionStatus] = useState(
 		getConnectionStatus(),
 	);
@@ -168,7 +166,7 @@ const GallerySections = () => {
 		};
 
 		fetchGalleryData();
-	}, []); // Note: retryCount is intentionally left out to prevent infinite loops
+	}, [retryCount]); // Added retryCount dependency
 
 	// Render diagnostic results if available
 	const renderDiagnosticResults = () => {
@@ -221,7 +219,7 @@ const GallerySections = () => {
 		);
 	}
 
-	if (error && !usingFallbackData && !usingCachedData) {
+	if (error && !usingFallbackData) {
 		return (
 			<div className="min-h-screen flex items-center justify-center">
 				<div className="text-center">
@@ -260,16 +258,16 @@ const GallerySections = () => {
 				<h1 className="text-5xl font-heading text-center mb-12">
 					Explore My Latest Works
 				</h1>
-				{(usingFallbackData ||
-					usingCachedData ||
-					connectionStatus.isConnectionIssue) && (
+				{(usingFallbackData || connectionStatus.isConnectionIssue) && (
 					<div className="text-center text-amber-600 mb-8 p-4 bg-amber-100 rounded-lg">
 						<p>
 							Currently showing{' '}
-							{usingCachedData ? 'cached' : 'limited'} gallery
-							content due to server connection issues. Please
-							check back later for updated content or contact the
-							administrator.
+							{usingFallbackData
+								? 'limited (fallback)'
+								: 'limited'}{' '}
+							gallery content due to server connection issues.
+							Please check back later for updated content or
+							contact the administrator.
 						</p>
 						{connectionStatus.isOfflineMode && (
 							<p className="mt-2">

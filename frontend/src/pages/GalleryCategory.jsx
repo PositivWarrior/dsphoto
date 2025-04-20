@@ -1,10 +1,13 @@
 // src/pages/GalleryCategory.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import Carousel from '../components/Carousel';
+// import Carousel from '../components/Carousel'; // Import lazily now
 import { Helmet } from 'react-helmet-async';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { API } from '../api'; // Import the API instance
+
+// Lazy load the Carousel component
+const LazyCarousel = lazy(() => import('../components/Carousel'));
 
 const IMAGES_PER_PAGE = 6; // Adjust this number as needed
 
@@ -93,9 +96,11 @@ const GalleryCategory = () => {
 				</Helmet>
 			</h2>
 
-			{/* Carousel */}
+			{/* Carousel - Lazy loaded */}
 			{displayedImages.length > 0 && (
-				<Carousel images={displayedImages} />
+				<Suspense fallback={<LoadingSpinner />}>
+					<LazyCarousel images={displayedImages} />
+				</Suspense>
 			)}
 
 			{/* Show More Button */}

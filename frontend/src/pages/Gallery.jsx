@@ -87,6 +87,7 @@ const GalleryPage = () => {
 									src={section.images[0].url}
 									alt={section.title}
 									className="w-full h-64 object-cover"
+									width={600}
 									sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 									priority={index < 3} // Prioritize first 3 images (visible on most screens)
 								/>
