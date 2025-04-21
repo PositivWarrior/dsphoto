@@ -52,17 +52,10 @@ const Contact = () => {
 	};
 
 	return (
-		<section id="contact" className="py-20 bg-white text-center">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<h2 className="text-4xl font-bold text-gray-800 mb-8">
-					Kontakt
-				</h2>
-				<p className="text-lg text-gray-600 mb-4">
-					Har du noen spørsmål? Ta gjerne kontakt med meg.
-				</p>
-
-				{/* Contact Info Block */}
-				<div className="mb-10 text-lg text-gray-700">
+		<section id="contact" className="py-20 bg-white">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+				{/* Contact Info Block - Positioned Top Left */}
+				<div className="absolute top-0 left-4 sm:left-6 lg:left-8 text-lg text-gray-700 text-left">
 					<p className="mb-2">
 						Telefon:{' '}
 						<a
@@ -82,7 +75,7 @@ const Contact = () => {
 						</a>
 					</p>
 					{/* Social Media Icons */}
-					<div className="flex justify-center space-x-6 mt-4">
+					<div className="flex justify-start space-x-4">
 						<a
 							href="https://www.instagram.com/fotods.no/"
 							target="_blank"
@@ -90,7 +83,8 @@ const Contact = () => {
 							className="text-gray-500 hover:text-pink-600"
 							aria-label="Follow us on Instagram"
 						>
-							<FontAwesomeIcon icon={faInstagram} size="2x" />
+							<FontAwesomeIcon icon={faInstagram} size="lg" />{' '}
+							{/* Adjusted size */}
 						</a>
 						<a
 							href="https://www.facebook.com/fotods.no"
@@ -99,11 +93,25 @@ const Contact = () => {
 							className="text-gray-500 hover:text-blue-600"
 							aria-label="Follow us on Facebook"
 						>
-							<FontAwesomeIcon icon={faFacebook} size="2x" />
+							<FontAwesomeIcon icon={faFacebook} size="lg" />{' '}
+							{/* Adjusted size */}
 						</a>
 					</div>
 				</div>
 
+				{/* Centered Content */}
+				<div className="text-center">
+					<h2 className="text-4xl font-bold text-gray-800 mb-8">
+						Kontakt
+					</h2>
+					<p className="text-lg text-gray-600 mb-12">
+						{' '}
+						{/* Increased bottom margin */}
+						Har du noen spørsmål? Ta gjerne kontakt med meg.
+					</p>
+				</div>
+
+				{/* Centered Form */}
 				<form onSubmit={sendEmail} className="max-w-lg mx-auto">
 					<div className="mb-4">
 						<input
