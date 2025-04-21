@@ -360,26 +360,38 @@ setInterval(testCloudFrontConnectivity, 60000); // Test every minute
  * @param {string} format - Image format (webp, jpeg, etc)
  * @returns {string} - Optimized URL
  */
-export const getOptimizedImageUrl = (url, width = 800, format = 'webp') => {
+export const getOptimizedImageUrl = (
+	url,
+	width = 800,
+	format = 'webp',
+	quality = 80,
+) => {
 	// Check browser support for WebP
 	const supportsWebP = localStorage.getItem('supports_webp') === 'true';
 
 	// If browser doesn't support WebP and the requested format is WebP, fallback to JPEG
 	const finalFormat = !supportsWebP && format === 'webp' ? 'jpeg' : format;
 
+	let resultUrl = url; // Start with original
+
 	// Check if URL is from S3 or CloudFront
 	if (url.includes('amazonaws.com')) {
 		// Convert S3 URL to CloudFront
 		const s3Path = url.split('amazonaws.com')[1];
-		return `${CLOUDFRONT_DOMAIN}${s3Path}?width=${width}&format=${finalFormat}`;
+		resultUrl = `${CLOUDFRONT_DOMAIN}${s3Path}?width=${width}&format=${finalFormat}&quality=${quality}`;
 	} else if (url.includes('cloudfront.net')) {
 		// Already using CloudFront, just add params
 		const separator = url.includes('?') ? '&' : '?';
-		return `${url}${separator}width=${width}&format=${finalFormat}`;
+		resultUrl = `${url}${separator}width=${width}&format=${finalFormat}&quality=${quality}`;
 	}
 
-	// If not an S3 or CloudFront URL, return the original
-	return url;
+	// Log the generated URL
+	console.log(
+		`[getOptimizedImageUrl] Input: ${url}, Width: ${width}, Format: ${finalFormat}, Quality: ${quality} => Output: ${resultUrl}`,
+	);
+
+	// If not an S3 or CloudFront URL, return the original (already handled by initializing resultUrl)
+	return resultUrl;
 };
 
 // Check WebP support on mount

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInstagram, faFacebook } from '@fortawesome/free-brands-svg-icons';
 
 const Contact = () => {
 	const [formData, setFormData] = useState({
@@ -58,6 +60,50 @@ const Contact = () => {
 				<p className="text-lg text-gray-600 mb-4">
 					Har du noen spørsmål? Ta gjerne kontakt med meg.
 				</p>
+
+				{/* Contact Info Block */}
+				<div className="mb-10 text-lg text-gray-700">
+					<p className="mb-2">
+						Telefon:{' '}
+						<a
+							href="tel:+4792550152"
+							className="text-lollipop hover:underline"
+						>
+							925 50 152
+						</a>
+					</p>
+					<p className="mb-4">
+						E-post:{' '}
+						<a
+							href="mailto:info@fotods.no"
+							className="text-lollipop hover:underline"
+						>
+							info@fotods.no
+						</a>
+					</p>
+					{/* Social Media Icons */}
+					<div className="flex justify-center space-x-6 mt-4">
+						<a
+							href="https://www.instagram.com/fotods.no/"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-gray-500 hover:text-pink-600"
+							aria-label="Follow us on Instagram"
+						>
+							<FontAwesomeIcon icon={faInstagram} size="2x" />
+						</a>
+						<a
+							href="https://www.facebook.com/fotods.no"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-gray-500 hover:text-blue-600"
+							aria-label="Follow us on Facebook"
+						>
+							<FontAwesomeIcon icon={faFacebook} size="2x" />
+						</a>
+					</div>
+				</div>
+
 				<form onSubmit={sendEmail} className="max-w-lg mx-auto">
 					<div className="mb-4">
 						<input
